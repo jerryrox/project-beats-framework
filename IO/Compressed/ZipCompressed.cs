@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using PBFramework.Debugging;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -16,7 +16,7 @@ namespace PBFramework.IO.Compressed
 
         private const int ProgressInterval = 256;
 
-        public FileInfo Source { get; set; }
+        public FileInfo Source { get; private set; }
 
 
         public ZipCompressed(FileInfo file)
@@ -45,7 +45,7 @@ namespace PBFramework.IO.Compressed
             return Task.Run(() => {
                 if (destination == null)
                 {
-                    Debug.LogError($"ZipCompressed.Uncompress - destination is null!");
+                    Logger.LogError($"ZipCompressed.Uncompress - destination is null!");
                     return null;
                 }
                 if(!Source.Exists)
@@ -106,7 +106,7 @@ namespace PBFramework.IO.Compressed
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"ZipCompressed.Uncompress - Error: {e.Message}");
+                    Logger.LogError($"ZipCompressed.Uncompress - Error: {e.Message}");
                     return null;
                 }
             });
