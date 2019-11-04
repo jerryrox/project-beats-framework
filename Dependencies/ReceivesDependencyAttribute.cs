@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using PBFramework.Exceptions;
 
 namespace PBFramework.Dependencies
 {
@@ -62,30 +63,6 @@ namespace PBFramework.Dependencies
                     throw new DependencyNotCachedException(type, requestingType);
                 return dependency;
             };
-        }
-
-
-        public class ReceivesDependencyFailedException : Exception
-        {
-            public ReceivesDependencyFailedException(Type type, PropertyInfo property, Exception innerException) : base(
-                string.Format(
-                    "Failed to inject dependency into property for type ({0}), property ({1}).\n" +
-                    "Inner Exception: ({2}) with trace: {3}",
-                    type.Name,
-                    property.Name,
-                    innerException == null ? "null" : innerException.Message,
-                    innerException == null ? "null" : innerException.StackTrace
-                ),
-                innerException
-            )
-            { }
-        }
-
-        public class PropertyNotSettableException : Exception
-        {
-            public PropertyNotSettableException(Type type, string name) : base(string.Format("Property ({0}) from type ({1}) " +
-                "can not be written to!", name, type.Name))
-            { }
         }
     }
 }

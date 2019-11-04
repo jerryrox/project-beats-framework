@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PBFramework.Dependencies
+namespace PBFramework.Exceptions
 {
     public class DependencyNotCachedException : Exception
     {
