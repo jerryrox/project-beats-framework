@@ -7,7 +7,7 @@ namespace PBFramework.Threading
     /// <summary>
     /// A basic implementation of IProgress interface.
     /// </summary>
-    public class SimpleProgress : IProgress<float> {
+    public class SimpleProgress : ISimpleProgress {
 
         public float Progress { get; set; }
 
