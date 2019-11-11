@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using PBFramework.Services;
+using PBFramework.Threading;
 
 using Logger = PBFramework.Debugging.Logger;
 
@@ -11,10 +12,7 @@ namespace PBFramework.Networking
 {
     public class WebRequest : IWebRequest {
 
-        /// <summary>
-        /// Event called when a request has been finished.
-        /// </summary>
-        public event Action<IWebRequest> OnFinished;
+        public event Action OnFinished;
 
         protected UnityWebRequest request;
         protected WebResponse response;
@@ -25,7 +23,7 @@ namespace PBFramework.Networking
         protected bool isDisposed = false;
 
         private Coroutine requestRoutine;
-        private IProgress<float> progressListener;
+        private IReturnableProgress<IWebRequest> progressListener;
 
         private uint curRetryCount;
         private uint retryCount;
@@ -38,6 +36,7 @@ namespace PBFramework.Networking
         public bool IsAlive => request != null;
 
         public virtual bool IsDone => request != null && request.isDone;
+        public bool IsFinished => IsDone;
 
         public float Progress
         {
@@ -63,14 +62,19 @@ namespace PBFramework.Networking
 
         public IWebResponse Response => response;
 
+        public virtual object Result => this;
+
 
         public WebRequest(string url, int timeout = 60, int retryCount = 0)
         {
             this.url = url.GetUriEscaped();
             this.timeout = timeout;
+
+            // Setup default OnFinish action
+            OnFinished += () => progressListener?.InvokeFinished();
         }
 
-        public void Request(IProgress<float> progress = null)
+        public void Request(IReturnableProgress<IWebRequest> progress = null)
         {
             if(isDisposed) throw new ObjectDisposedException(nameof(WebRequest));
             if (request != null)
@@ -79,7 +83,10 @@ namespace PBFramework.Networking
                 return;
             }
 
-            this.progressListener = progress;
+            // Associate progress listener.
+            progressListener = progress;
+            if(progressListener != null)
+                progressListener.Value = this;
 
             // Dispose last request
             DisposeSoft();
@@ -111,6 +118,10 @@ namespace PBFramework.Networking
                 Abort();
             Request(progressListener);
         }
+
+        public void Start() => Request();
+
+        public void Revoke() => Abort();
 
         /// <summary>
         /// Creates a new UnityWebRequest instance for requesting.
@@ -179,7 +190,7 @@ namespace PBFramework.Networking
             else
             {
                 // Fire event.
-                OnFinished?.Invoke(this);
+                OnFinished?.Invoke();
             }
         }
     }

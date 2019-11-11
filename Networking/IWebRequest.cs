@@ -1,11 +1,12 @@
 using System;
+using PBFramework.Threading;
 
 namespace PBFramework.Networking
 {
     /// <summary>
     /// Interface of an object which can make web requests to local or remote server.
     /// </summary>
-    public interface IWebRequest {
+    public interface IWebRequest : IPromise {
 
         /// <summary>
         /// An extra data that can be associated with this request.
@@ -53,7 +54,7 @@ namespace PBFramework.Networking
         /// <summary>
         /// Makes the web request to remote or local server.
         /// </summary>
-        void Request(IProgress<float> progress = null);
+        void Request(IReturnableProgress<IWebRequest> progress = null);
 
         /// <summary>
         /// Attempts to abort current request if on-going.
