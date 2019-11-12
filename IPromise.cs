@@ -43,7 +43,7 @@ namespace PBFramework
         /// <summary>
         /// Event called from underlying process when it has finished.
         /// </summary>
-        new event Action<T> OnFinishedResult;
+        event Action<T> OnFinishedResult;
 
         /// <summary>
         /// The result evaluated from underlying process.
