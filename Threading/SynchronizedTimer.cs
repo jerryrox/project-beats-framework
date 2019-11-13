@@ -23,6 +23,8 @@ namespace PBFramework.Threading
             remove => OnFinished -= delegate { value(); };
         }
 
+        public event Action<float> OnProgress;
+
         private Coroutine timerCoroutine;
 
 
@@ -32,7 +34,7 @@ namespace PBFramework.Threading
 
         public bool IsRunning => timerCoroutine != null;
 
-        public IProgress<float> Progress { get; set; }
+        public float Progress { get; set; }
 
         public ITimer Result => this;
         object IPromise.Result => this;
@@ -84,7 +86,7 @@ namespace PBFramework.Threading
                     // Clamp
                     Current = Limit;
                     // Notify
-                    Progress?.Report(1f);
+                    ReportCurrent();
                     // Finished
                     OnFinished?.Invoke(this);
                     // Stop the routine.
@@ -106,9 +108,15 @@ namespace PBFramework.Threading
         private void ReportCurrent()
         {
             if(Limit <= 0)
-                Progress?.Report(0f);
+                Progress = 0f;
             else
-                Progress?.Report(Current / Limit);
+            {
+                if(Current >= Limit)
+                    Progress = 1f;
+                else
+                    Progress = Current / Limit;
+            }
+            OnProgress?.Invoke(Progress);
         }
     }
 }

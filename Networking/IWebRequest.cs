@@ -30,11 +30,6 @@ namespace PBFramework.Networking
         bool IsDone { get; }
 
         /// <summary>
-        /// Returns the upload / download progress of the web request.
-        /// </summary>
-        float Progress { get; }
-
-        /// <summary>
         /// The timeout time of the request in seconds.
         /// </summary>
         int Timeout { get; set; }

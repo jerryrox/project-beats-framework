@@ -39,6 +39,16 @@ namespace PBFramework.Allocation.Caching
             this.request = request;
 
             // Add callback handler action.
+            request.OnProgress += (p) =>
+            {
+                foreach (var listener in listeners.Values)
+                {
+                    if (listener != null)
+                    {
+                        listener.Report(p);
+                    }
+                }
+            };
             request.OnFinishedResult += (v) =>
             {
                 foreach(var listener in listeners.Values)

@@ -1,4 +1,5 @@
 using System;
+using PBFramework.Threading;
 
 namespace PBFramework
 {
@@ -6,7 +7,7 @@ namespace PBFramework
     /// An interface used to generalize a long-running process which may be running (a)synchronously but its
     /// completion state and result must be known at some point.
     /// </summary>
-    public interface IPromise {
+    public interface IPromise : IHasProgress {
 
         /// <summary>
         /// Event called from underlying process when it has finished.

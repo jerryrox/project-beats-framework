@@ -23,6 +23,8 @@ namespace PBFramework.Threading
             remove => OnFinished -= delegate { value(); };
         }
 
+        public event Action<float> OnProgress;
+
         private int delta;
         private object locker = new object();
         private float limit = float.MaxValue;
@@ -48,7 +50,7 @@ namespace PBFramework.Threading
             get { lock (locker) { return shouldRun; } }
         }
 
-        public IProgress<float> Progress { get; set; }
+        public float Progress { get; set; }
 
         public ITimer Result => this;
         object IPromise.Result => this;
@@ -128,7 +130,7 @@ namespace PBFramework.Threading
                             // Clamp
                             current = limit;
                             // Notify asynchronously.
-                            Progress?.Report(1f);
+                            Progress = 1f;
                             // Finished
                             OnFinished?.Invoke(this);
                             // Stop the routine.
@@ -157,9 +159,9 @@ namespace PBFramework.Threading
             lock (locker)
             {
                 if(limit <= 0)
-                    Progress?.Report(0f);
+                    Progress = 0f;
                 else
-                    Progress?.Report(current / limit);
+                    Progress = current / limit;
             }
         }
     }

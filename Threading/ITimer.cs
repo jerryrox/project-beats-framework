@@ -29,11 +29,6 @@ namespace PBFramework.Threading
         /// </summary>
         bool IsRunning { get; }
 
-        /// <summary>
-        /// A specifiable progress listener if desired.
-        /// </summary>
-        IProgress<float> Progress { get; set; }
-
 
         /// <summary>
         /// Pauses the timer.

@@ -13,6 +13,7 @@ namespace PBFramework.Networking
     public class WebRequest : IWebRequest {
 
         public event Action OnFinished;
+        public event Action<float> OnProgress;
 
         protected UnityWebRequest request;
         protected WebResponse response;
@@ -70,8 +71,9 @@ namespace PBFramework.Networking
             this.url = url.GetUriEscaped();
             this.timeout = timeout;
 
-            // Setup default OnFinish action
+            // Setup default event actions.
             OnFinished += () => progressListener?.InvokeFinished();
+            OnProgress += (p) => progressListener?.Report(p);
         }
 
         public void Request(IReturnableProgress<IWebRequest> progress = null)
@@ -175,7 +177,7 @@ namespace PBFramework.Networking
             // Polling till finished.
             while (request != null && !request.isDone && !request.isNetworkError)
             {
-                progressListener?.Report(Progress);
+                OnProgress?.Invoke(Progress);
                 yield return null;
             }
             progressListener?.Report(1);
