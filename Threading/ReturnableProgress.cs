@@ -23,14 +23,14 @@ namespace PBFramework.Threading
         public T Value { get; set; }
 
 
-        public void InvokeFinished(T value)
+        public virtual void InvokeFinished(T value)
         {
             Value = value;
             OnFinished?.Invoke(value);
         }
 
-        public void InvokeFinished(object value) => InvokeFinished((T)value);
+        public virtual void InvokeFinished(object value) => InvokeFinished((T)value);
 
-        public void InvokeFinished() => InvokeFinished(default(T));
+        public virtual void InvokeFinished() => InvokeFinished(default(T));
     }
 }
