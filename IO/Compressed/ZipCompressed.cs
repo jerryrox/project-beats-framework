@@ -40,7 +40,7 @@ namespace PBFramework.IO.Compressed
             return size;
         }
 
-        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, IProgress<double> progress)
+        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, IProgress<float> progress)
         {
             return Task.Run(() => {
                 if (destination == null)
@@ -59,14 +59,14 @@ namespace PBFramework.IO.Compressed
                     using(var fs = new FileStream(Source.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         // Find total size of the zip first.
-                        double totalSize = GetUncompressedSize();
+                        float totalSize = GetUncompressedSize();
                         // Start unzipping.
                         using(var zis = new ZipInputStream(fs))
                         {
                             string destPath = destination.FullName;
                             ZipEntry entry;
                             byte[] buffer = new byte[4096];
-                            double curSize = 0;
+                            float curSize = 0;
                             int curInterval = ProgressInterval;
                             while((entry = zis.GetNextEntry()) != null)
                             {

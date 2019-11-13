@@ -25,6 +25,6 @@ namespace PBFramework.IO.Compressed
         /// Uncompresses the compressed file to the specified destination.
         /// If successful, returns the same directory provided. Otherwise, null is returned.
         /// </summary>
-        Task<DirectoryInfo> Uncompress(DirectoryInfo destination, IProgress<double> progress = null);
+        Task<DirectoryInfo> Uncompress(DirectoryInfo destination, IProgress<float> progress = null);
     }
 }
