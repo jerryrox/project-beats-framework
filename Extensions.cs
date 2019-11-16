@@ -37,6 +37,15 @@ namespace PBFramework
         }
 
         /// <summary>
+        /// Adds all elements from specified enumerator.
+        /// </summary>
+        public static void AddEnumerator<T>(this List<T> context, IEnumerator<T> enumerator)
+        {
+            while(enumerator.MoveNext())
+                context.Add(enumerator.Current);
+        }
+
+        /// <summary>
         /// Returns the last element contained in this array.
         /// </summary>
         public static T GetLast<T>(this List<T> context)
