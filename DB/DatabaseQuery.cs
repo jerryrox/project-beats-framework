@@ -156,14 +156,14 @@ namespace PBFramework.DB
             // If not fully loaded, load the data and convert to type T.
             if (fullLoaded)
             {
-                foreach (var s in source)
-                    yield return processor.LoadData(s["Id"].ToString(), true);
+                foreach(var s in source)
+                    yield return processor.ConvertToData(s);
             }
             // If fully loaded, simply convert the Json object to type T.
             else
             {
-                foreach(var s in source)
-                    yield return processor.ConvertToData(s);
+                foreach (var s in source)
+                    yield return processor.LoadData(s["Id"].ToString(), true);
             }
         }
 
