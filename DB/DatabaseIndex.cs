@@ -34,11 +34,11 @@ namespace PBFramework.DB
             }
         }
 
-        public void Set(JObject index) => index[index["Id"].ToString()] = index;
+        public void Set(JObject index) => this.index[index["Id"].ToString()] = index;
 
         public void Remove(string key) => index.Remove(key);
 
-        public void Remove(JObject index) => index.Remove(index["Id"].ToString());
+        public void Remove(JObject index) => this.index.Remove(index["Id"].ToString());
 
         public List<JObject> GetAll() => index.Values.ToList();
 
