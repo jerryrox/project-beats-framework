@@ -12,7 +12,7 @@ namespace PBFramework.DB
     public class DatabaseProcessor<T> : IDatabaseProcessor<T>
         where T : class, IDatabaseEntity, new()
     {
-        private object locker;
+        private object locker = new object();
         private bool disposed = false;
 
         private IDatabase<T> database;
