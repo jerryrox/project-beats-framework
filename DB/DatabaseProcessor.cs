@@ -117,7 +117,12 @@ namespace PBFramework.DB
             {
                 for (int i = 0; i < data.Count; i++)
                 {
-                    index.Remove(data[i].Id.ToString());
+                    var id = data[i].Id.ToString();
+                    index.Remove(id);
+
+                    var dataPath = GetDataPath(id);
+                    if(File.Exists(dataPath))
+                        File.Delete(dataPath);
                 }
             }
         }
@@ -129,7 +134,7 @@ namespace PBFramework.DB
             Func<JObject> process = () =>
             {
                 var path = GetDataPath(key);
-                if(!File.Exists(key))
+                if(!File.Exists(path))
                     throw new FileNotFoundException();
                 return JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path));
             };
@@ -160,6 +165,11 @@ namespace PBFramework.DB
 
         public void Dispose()
         {
+            if (!disposed && index != null && indexFile != null)
+            {
+                SaveIndex();
+            }
+
             disposed = true;
             locker = null;
             database = null;
@@ -173,7 +183,7 @@ namespace PBFramework.DB
         /// </summary>
         private string GetDataPath(string key)
         {
-            return Path.Combine(database.Directory.FullName, $"{key}.data");
+            return Path.Combine(dataDirectory.FullName, $"{key}.data");
         }
     }
 }

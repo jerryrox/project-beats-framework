@@ -70,17 +70,19 @@ namespace PBFramework.DB
         /// </summary>
         private void BuildIndex(IDatabaseProcessor<T> processor, FileInfo[] dataFiles, int startIndex, int loopCount)
         {
-            var localIndex = new JObject[RebuildDataPerTask];
-            for (int i = startIndex; i < loopCount; i++)
+            var localIndex = new JObject[loopCount];
+            for (int i = 0; i < loopCount; i++)
             {
-                var file = dataFiles[i];
-                localIndex[i - startIndex] = processor.LoadData(file.Name, false).SerializeIndex();
+                var file = dataFiles[i + startIndex];
+                localIndex[i] = processor.LoadData(Path.GetFileNameWithoutExtension(file.Name), false).SerializeIndex();
             }
 
             lock (index)
             {
                 for (int i = 0; i < localIndex.Length; i++)
+                {
                     Set(localIndex[i]);
+                }
             }
         }
     }
