@@ -19,6 +19,11 @@ namespace PBFramework.DB
         private List<T> removeList;
 
 
+        public int WriteCount => writeList == null ? 0 : writeList.Count;
+
+        public int RemoveCount => removeList == null ? 0 : removeList.Count;
+
+
         public DatabaseEditor(IDatabaseProcessor<T> processor)
         {
             this.processor = processor;
@@ -28,6 +33,11 @@ namespace PBFramework.DB
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseEditor<T>));
 
+            if (writeList == null)
+            {
+                writeList = new List<JObject>();
+                writeIndexList = new List<JObject>();
+            }
             writeList.Add(data.Serialize());
             writeIndexList.Add(data.SerializeIndex());
         }
@@ -44,6 +54,8 @@ namespace PBFramework.DB
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseEditor<T>));
 
+            if(removeList == null)
+                removeList = new List<T>();
             removeList.Add(data);
         }
 
@@ -51,6 +63,8 @@ namespace PBFramework.DB
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseEditor<T>));
 
+            if(removeList == null)
+                removeList = new List<T>();
             removeList.AddEnumerable(range);
         }
 
@@ -58,8 +72,10 @@ namespace PBFramework.DB
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseEditor<T>));
 
-            processor.RemoveData(removeList);
-            processor.WriteData(writeList, writeIndexList);
+            if(removeList != null)
+                processor.RemoveData(removeList);
+            if(writeList != null && writeIndexList != null)
+                processor.WriteData(writeList, writeIndexList);
             Dispose();
         }
 

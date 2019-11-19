@@ -11,6 +11,17 @@ namespace PBFramework.DB
         where T : class, IDatabaseEntity, new()
     {
         /// <summary>
+        /// Returns the total number of data write operation registered.
+        /// </summary>
+        int WriteCount { get; }
+
+        /// <summary>
+        /// Returns the total number of data remove operation registered.
+        /// </summary>
+        int RemoveCount { get; }
+
+
+        /// <summary>
         /// Saves the specified data into database.
         /// </summary>
         void Write(T data);
