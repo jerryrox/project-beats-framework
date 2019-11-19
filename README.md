@@ -15,8 +15,6 @@ Because of my current work, the progress will be delayed till mid November'ish.
 - Migration
 #### Audio
 - Migration
-#### Database
-- Develop from scratch
 #### GUI
 - Migration & Some redesigning
 #### Inputs
