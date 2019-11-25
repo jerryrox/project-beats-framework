@@ -1,14 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PBFramework.Utils;
 
 namespace PBFramework
 {
     public static class Extensions
     {
-
+        #region List<T>
         /// <summary>
         /// Returns a new list containing the elements within the specified range.
         /// </summary>
@@ -54,7 +56,9 @@ namespace PBFramework
                 return default;
             return context[context.Count - 1];
         }
+        #endregion
 
+        #region T[]
         /// <summary>
         /// Returns a new array containing the elements within the specified range.
         /// </summary>
@@ -80,7 +84,9 @@ namespace PBFramework
             for(int i = 0; i < context.Length; i++)
                 action(context[i]);
         }
+        #endregion
 
+        #region IEnumerable<T>
         /// <summary>
         /// Returns an enumerable using specified mapper.
         /// </summary>
@@ -93,7 +99,9 @@ namespace PBFramework
                     yield return result;
             }
         }
+        #endregion
 
+        #region Transform
         /// <summary>
         /// Resets this transform's transform values except its rotation.
         /// </summary>
@@ -103,7 +111,9 @@ namespace PBFramework
             context.localScale = Vector3.one;
             context.localRotation = Quaternion.identity;
         }
+        #endregion
 
+        #region UITexture
         /// <summary>
         /// Sets the maintexture property of this UITexture and makes it pixel perfect.
         /// </summary>
@@ -112,16 +122,16 @@ namespace PBFramework
             context.mainTexture = texture;
             context.MakePixelPerfect();
         }
+        #endregion
 
+        #region DirectoryInfo
         /// <summary>
-        /// Returns a single attribute instance of specified type.
+        /// Copies this directory to specified directory.
         /// </summary>
-        public static T GetCustomAttribute<T>(this MethodInfo context) where T : Attribute
+        public static void Copy(this DirectoryInfo context, DirectoryInfo to)
         {
-            var attributes = context.GetCustomAttributes(typeof(T), false);
-            if(attributes == null || attributes.Length == 0)
-                return null;
-            return attributes[0] as T;
+            IOUtils.CopyDirectory(context, to);
         }
+        #endregion
     }
 }
