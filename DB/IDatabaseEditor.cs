@@ -24,22 +24,22 @@ namespace PBFramework.DB
         /// <summary>
         /// Saves the specified data into database.
         /// </summary>
-        void Write(T data);
+        IDatabaseEditor<T> Write(T data);
 
         /// <summary>
         /// Saves all data within the specified range.
         /// </summary>
-        void WriteRange(IEnumerable<T> range);
+        IDatabaseEditor<T> WriteRange(IEnumerable<T> range);
 
         /// <summary>
         /// Removes the specified data from the database.
         /// </summary>
-        void Remove(T data);
+        IDatabaseEditor<T> Remove(T data);
 
         /// <summary>
         /// Removes all data within the specified range.
         /// </summary>
-        void RemoveRange(IEnumerable<T> range);
+        IDatabaseEditor<T> RemoveRange(IEnumerable<T> range);
 
         /// <summary>
         /// Commits the changes queued in the editor.

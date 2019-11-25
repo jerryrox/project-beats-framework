@@ -29,7 +29,7 @@ namespace PBFramework.DB
             this.processor = processor;
         }
 
-        public void Write(T data)
+        public IDatabaseEditor<T> Write(T data)
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseEditor<T>));
 
@@ -40,32 +40,36 @@ namespace PBFramework.DB
             }
             writeList.Add(data.Serialize());
             writeIndexList.Add(data.SerializeIndex());
+            return this;
         }
 
-        public void WriteRange(IEnumerable<T> range)
+        public IDatabaseEditor<T> WriteRange(IEnumerable<T> range)
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseEditor<T>));
 
             foreach(var data in range)
                 Write(data);
+            return this;
         }
 
-        public void Remove(T data)
+        public IDatabaseEditor<T> Remove(T data)
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseEditor<T>));
 
             if(removeList == null)
                 removeList = new List<T>();
             removeList.Add(data);
+            return this;
         }
 
-        public void RemoveRange(IEnumerable<T> range)
+        public IDatabaseEditor<T> RemoveRange(IEnumerable<T> range)
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseEditor<T>));
 
             if(removeList == null)
                 removeList = new List<T>();
             removeList.AddEnumerable(range);
+            return this;
         }
 
         public void Commit()

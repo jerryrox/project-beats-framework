@@ -127,6 +127,25 @@ namespace PBFramework.DB
             }
         }
 
+        public void Wipe()
+        {
+            if(disposed) throw new ObjectDisposedException(nameof(DatabaseProcessor<T>));
+
+            lock (locker)
+            {
+                // Delete the physical copies of the data.
+                indexFile.Delete();
+                dataDirectory.Delete(true);
+                dataDirectory.Create();
+
+                indexFile.Refresh();
+                dataDirectory.Refresh();
+
+                // Remove all the cached data within the memory.
+                RebuildIndex();
+            }
+        }
+
         public JObject LoadRaw(string key, bool requireLock = true)
         {
             if(disposed) throw new ObjectDisposedException(nameof(DatabaseProcessor<T>));

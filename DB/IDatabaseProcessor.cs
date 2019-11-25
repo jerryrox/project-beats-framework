@@ -54,6 +54,11 @@ namespace PBFramework.DB
         void RemoveData(List<T> data);
 
         /// <summary>
+        /// Removes all data stored in the database.
+        /// </summary>
+        void Wipe();
+
+        /// <summary>
         /// Loads the data associated with specified key as json object.
         /// </summary>
         JObject LoadRaw(string key, bool requireLock = true);

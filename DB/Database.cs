@@ -63,6 +63,14 @@ namespace PBFramework.DB
             return new DatabaseQuery<T>(processor);
         }
 
+        public void Wipe()
+        {
+            if(disposed) throw new ObjectDisposedException(nameof(Database<T>));
+            if(!isInitialized) throw new DatabaseUninitializedException();
+
+            
+        }
+
         public void Dispose()
         {
             disposed = true;

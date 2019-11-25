@@ -36,5 +36,10 @@ namespace PBFramework.DB
         /// Returns a new object for querying data from the database.
         /// </summary>
         IDatabaseQuery<T> Query();
+
+        /// <summary>
+        /// Clears the entire database content.
+        /// </summary>
+        void Wipe();
     }
 }
