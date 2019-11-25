@@ -89,6 +89,26 @@ namespace PBFramework.Storages
             }
         }
 
+        public void Delete(string name)
+        {
+            var path = GetFullPath(name);
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
+        }
+
+        public void DeleteAll()
+        {
+            // Delete the managing directory itself
+            directory.Delete(true);
+            directory.Refresh();
+
+            // Re-create the directory to start fresh.
+            directory.Create();
+            directory.Refresh();
+        }
+
         /// <summary>
         /// Returns the full path of the specified directory name.
         /// </summary>
