@@ -15,6 +15,9 @@ namespace PBFramework.Storages
         private string id;
 
 
+        public int Count => json.Count;
+
+
         public PrefStorage(string id)
         {
             this.id = id;
@@ -28,6 +31,8 @@ namespace PBFramework.Storages
                 json = new JObject();
             }
         }
+
+        public bool Exists(string name) => json.ContainsKey(name);
 
         public string GetString(string key, string defaultValue = null)
         {
@@ -76,6 +81,10 @@ namespace PBFramework.Storages
         {
             json[key] = (JObject)JToken.FromObject(value);
         }
+
+        public void Delete(string name) => json.Remove(name);
+
+        public void DeleteAll() => json = new JObject();
 
         public void Save()
         {

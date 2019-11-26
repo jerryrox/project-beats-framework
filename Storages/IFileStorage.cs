@@ -5,18 +5,13 @@ namespace PBFramework.Storages
     /// <summary>
     /// Interface of an anonymous file access storage.
     /// </summary>
-    public interface IFileStorage {
+    public interface IFileStorage : IStorage {
 
         /// <summary>
         /// Returns the directory which contains all the file data in this storage.
         /// </summary>
         DirectoryInfo Container { get; }
 
-
-        /// <summary>
-        /// Returns whether the file of specified name exists.
-        /// </summary>
-        bool Exists(string name);
 
         /// <summary>
         /// Returns the information of the file with specified name.

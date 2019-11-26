@@ -6,7 +6,7 @@ namespace PBFramework.Storages
     /// <summary>
     /// Interface for storage types that store many subdirectories as data.
     /// </summary>
-    public interface IDirectoryStorage {
+    public interface IDirectoryStorage : IStorage {
 
         /// <summary>
         /// Returns the directory which contains all the directory data in this storage.
@@ -19,11 +19,6 @@ namespace PBFramework.Storages
         /// Returns a list of all names of the directories which have been rescued.
         /// </summary>
         List<string> RestoreBackup();
-
-        /// <summary>
-        /// Returns whether there is a directory of specified name.
-        /// </summary>
-        bool Exists(string name);
 
         /// <summary>
         /// Returns the information of the direcotry stored at specified name.
@@ -44,15 +39,5 @@ namespace PBFramework.Storages
         /// Copies the source directory under the managed directory of the storage using specified name.
         /// </summary>
         void Copy(string name, DirectoryInfo source);
-
-        /// <summary>
-        /// Deletes the directory associated with specified name.
-        /// </summary>
-        void Delete(string name);
-
-        /// <summary>
-        /// Deletes all directories within the storage.
-        /// </summary>
-        void DeleteAll();
     }
 }

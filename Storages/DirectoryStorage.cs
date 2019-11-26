@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using PBFramework.Utils;
 using PBFramework.Debugging;
@@ -12,6 +13,8 @@ namespace PBFramework.Storages
 
 
         public DirectoryInfo Container => directory;
+
+        public int Count => directory.EnumerateDirectories().Where(d => !IsBackup(d.Name)).Count();
 
 
         public DirectoryStorage(DirectoryInfo directory)

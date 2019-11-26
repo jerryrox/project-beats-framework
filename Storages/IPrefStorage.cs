@@ -1,6 +1,6 @@
 namespace PBFramework.Storages
 {
-    public interface IPrefStorage {
+    public interface IPrefStorage : IStorage {
 
         /// <summary>
         /// Returns the string value mapped to specified key.
