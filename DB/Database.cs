@@ -39,7 +39,7 @@ namespace PBFramework.DB
         public bool Initialize()
         {
             if(disposed) throw new ObjectDisposedException(nameof(Database<T>));
-            if(isInitialized) throw new DatabaseInitializedException();
+            if(isInitialized) return false;
 
             processor = new DatabaseProcessor<T>(this);
             processor.LoadIndex();
