@@ -51,6 +51,15 @@ namespace PBFramework.Storages
 
         public DirectoryInfo Get(string name) => new DirectoryInfo(GetFullPath(name));
 
+        public IEnumerable<DirectoryInfo> GetAll()
+        {
+            foreach (var dir in directory.GetDirectories())
+            {
+                if(!IsBackup(dir.Name))
+                    yield return dir;
+            }
+        }
+
         public void Move(string name, DirectoryInfo source)
         {
             if (!source.Exists) throw new DirectoryNotFoundException();
@@ -139,6 +148,14 @@ namespace PBFramework.Storages
         private DirectoryInfo[] FindBackupDirectories()
         {
             return directory.GetDirectories("*_backup");
+        }
+
+        /// <summary>
+        /// Returns whether specified directory name is a backup directory.
+        /// </summary>
+        private bool IsBackup(string name)
+        {
+            return name.EndsWith("_backup", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

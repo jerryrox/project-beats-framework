@@ -25,6 +25,11 @@ namespace PBFramework.Storages
         DirectoryInfo Get(string name);
 
         /// <summary>
+        /// Returns all directory information being managed by the storage.
+        /// </summary>
+        IEnumerable<DirectoryInfo> GetAll();
+
+        /// <summary>
         /// Moves the source directory under the managed directory of the storage using specified name.
         /// </summary>
         void Move(string name, DirectoryInfo source);
