@@ -133,5 +133,12 @@ namespace PBFramework
             IOUtils.CopyDirectory(context, to);
         }
         #endregion
+
+        #region FileInfo
+        public static string GetNameWithoutExtension(this FileInfo context)
+        {
+            return Path.GetFileNameWithoutExtension(context.Name);
+        }
+        #endregion
     }
 }

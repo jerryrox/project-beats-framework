@@ -10,15 +10,20 @@ namespace PBFramework.IO.Compressed
 
         /// <summary>
         /// Returns the ICompressed interface for the specified file.
+        /// Returns a default compressed object if returnDefault is true and the specified file was not detectible.
         /// </summary>
-        public static ICompressed GetCompressed(FileInfo file)
+        public static ICompressed GetCompressed(FileInfo file, bool returnDefault = false)
         {
             switch (file.Extension.ToLowerInvariant())
             {
-                case ".zip": return new ZipCompressed(file);
+                case ".zip":
+                case ".osz":
+                    return new ZipCompressed(file);
             }
             Logger.LogWarning($"CompressedHelper.GetCompressed - Unknown extension type: ({file.Extension})");
-            return new DefaultCompressed(file);
+            if(returnDefault)
+                return new DefaultCompressed(file);
+            return null;
         }
     }
 }
