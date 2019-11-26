@@ -10,7 +10,7 @@ namespace PBFramework.Utils
         /// <summary>
         /// Copies the specified directory 'from' to 'to' directory.
         /// </summary>
-        public static void CopyDirectory(DirectoryInfo from, DirectoryInfo to)
+        public static void CopyDirectory(DirectoryInfo from, DirectoryInfo to, bool overwrite)
         {
             if(from == null) throw new ArgumentNullException(nameof(from));
             if(to == null) throw new ArgumentNullException(nameof(to));
@@ -23,7 +23,7 @@ namespace PBFramework.Utils
                 // Copy each file into the new directory.
                 foreach (FileInfo file in s.GetFiles())
                 {
-                    file.CopyTo(Path.Combine(t.FullName, file.Name), true);
+                    file.CopyTo(Path.Combine(t.FullName, file.Name), overwrite);
                 }
                 // Copy each subdirectory using recursion.
                 foreach (DirectoryInfo sourceSub in s.GetDirectories())

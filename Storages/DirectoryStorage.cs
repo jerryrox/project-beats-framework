@@ -49,9 +49,19 @@ namespace PBFramework.Storages
             return names;
         }
 
-        public bool Exists(string name) => Directory.Exists(GetFullPath(name));
+        public bool Exists(string name)
+        {
+            if(string.IsNullOrEmpty(name)) throw new ArgumentException("name mustn't be null or empty!");
 
-        public DirectoryInfo Get(string name) => new DirectoryInfo(GetFullPath(name));
+            return Directory.Exists(GetFullPath(name));
+        }
+
+        public DirectoryInfo Get(string name)
+        {
+            if(string.IsNullOrEmpty(name)) throw new ArgumentException("name mustn't be null or empty!");
+
+            return new DirectoryInfo(GetFullPath(name));
+        }
 
         public IEnumerable<DirectoryInfo> GetAll()
         {
@@ -64,44 +74,33 @@ namespace PBFramework.Storages
 
         public void Move(string name, DirectoryInfo source)
         {
+            if(string.IsNullOrEmpty(name)) throw new ArgumentException("name mustn't be null or empty!");
             if (!source.Exists) throw new DirectoryNotFoundException();
 
-            string targetPath = GetFullPath(name);
-            string backupPath = GetBackupPath(name);
-            if(Directory.Exists(targetPath))
-                Directory.Move(targetPath, backupPath);
-            source.MoveTo(targetPath);
+            // Create a copy of the info, so the argument source will not be changed.
+            source = new DirectoryInfo(source.FullName);
+
+            SafeWriteDirectory(name, (targetPath) =>
+            {
+                source.MoveTo(targetPath);
+            });
         }
 
-        public void Copy(string name, DirectoryInfo source, bool overwrite)
+        public void Copy(string name, DirectoryInfo source)
         {
+            if(string.IsNullOrEmpty(name)) throw new ArgumentException("name mustn't be null or empty!");
             if(!source.Exists) throw new DirectoryNotFoundException();
 
-            DirectoryInfo target = new DirectoryInfo(GetFullPath(name));
-            DirectoryInfo backup = new DirectoryInfo(GetBackupPath(name));
-            try
+            SafeWriteDirectory(name, (targetPath) =>
             {
-                if (target.Exists)
-                {
-                    if(overwrite)
-                        IOUtils.CopyDirectory(target, backup);
-                    else
-                        target.MoveTo(backup.FullName);
-                }
-                source.Copy(target);
-            }
-            catch (Exception e)
-            {
-                target.Refresh();
-                backup.Refresh();
-                if(target.Exists && backup.Exists)
-                    target.Delete(true);
-                throw e;
-            }
+                source.Copy(new DirectoryInfo(targetPath), true);
+            });
         }
 
         public void Delete(string name)
         {
+            if(string.IsNullOrEmpty(name)) throw new ArgumentException("name mustn't be null or empty!");
+
             var path = GetFullPath(name);
             if (Directory.Exists(path))
             {
@@ -118,6 +117,39 @@ namespace PBFramework.Storages
             // Re-create the directory to start fresh.
             directory.Create();
             directory.Refresh();
+        }
+
+        /// <summary>
+        /// Performs a safe writing process.
+        /// </summary>
+        private void SafeWriteDirectory(string name, Action<string> action)
+        {
+            string targetPath = GetFullPath(name);
+            string backupPath = GetBackupPath(name);
+            try
+            {
+                if (Directory.Exists(targetPath))
+                {
+                    if(Directory.Exists(backupPath))
+                        Directory.Delete(backupPath, true);
+                    Directory.Move(targetPath, backupPath);
+                }
+                action.Invoke(targetPath);
+
+                if(Directory.Exists(backupPath))
+                    Directory.Delete(backupPath, true);
+            }
+            catch (Exception e)
+            {
+                if (Directory.Exists(backupPath))
+                {
+                    if(Directory.Exists(targetPath))
+                        Directory.Delete(targetPath, true);
+
+                    Directory.Move(backupPath, targetPath);
+                }
+                throw e;
+            }
         }
 
         /// <summary>

@@ -128,9 +128,9 @@ namespace PBFramework
         /// <summary>
         /// Copies this directory to specified directory.
         /// </summary>
-        public static void Copy(this DirectoryInfo context, DirectoryInfo to)
+        public static void Copy(this DirectoryInfo context, DirectoryInfo to, bool overwrite)
         {
-            IOUtils.CopyDirectory(context, to);
+            IOUtils.CopyDirectory(context, to, overwrite);
         }
         #endregion
 

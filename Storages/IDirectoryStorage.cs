@@ -43,7 +43,7 @@ namespace PBFramework.Storages
         /// <summary>
         /// Copies the source directory under the managed directory of the storage using specified name.
         /// </summary>
-        void Copy(string name, DirectoryInfo source, bool overwrite);
+        void Copy(string name, DirectoryInfo source);
 
         /// <summary>
         /// Deletes the directory associated with specified name.
