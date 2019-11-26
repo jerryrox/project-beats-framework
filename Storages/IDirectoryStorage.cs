@@ -9,6 +9,12 @@ namespace PBFramework.Storages
     public interface IDirectoryStorage {
 
         /// <summary>
+        /// Returns the directory which contains all the directory data in this storage.
+        /// </summary>
+        DirectoryInfo Container { get; }
+
+
+        /// <summary>
         /// Attempts to restore all backup directories which are left over by the process due to an error.
         /// Returns a list of all names of the directories which have been rescued.
         /// </summary>

@@ -8,6 +8,12 @@ namespace PBFramework.Storages
     public interface IFileStorage {
 
         /// <summary>
+        /// Returns the directory which contains all the file data in this storage.
+        /// </summary>
+        DirectoryInfo Container { get; }
+
+
+        /// <summary>
         /// Returns whether the file of specified name exists.
         /// </summary>
         bool Exists(string name);

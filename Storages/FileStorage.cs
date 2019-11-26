@@ -10,6 +10,9 @@ namespace PBFramework.Storages
         protected readonly DirectoryInfo directory;
 
 
+        public DirectoryInfo Container => directory;
+
+
         public FileStorage(DirectoryInfo directory)
         {
             this.directory = directory;
