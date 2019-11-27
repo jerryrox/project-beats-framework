@@ -106,6 +106,7 @@ namespace PBFramework.DB
                 {
                     File.WriteAllText(GetDataPath(data[i]["Id"].ToString()), data[i].ToString());
                 }
+                SaveIndex();
             }
         }
 
@@ -124,6 +125,7 @@ namespace PBFramework.DB
                     if(File.Exists(dataPath))
                         File.Delete(dataPath);
                 }
+                SaveIndex();
             }
         }
 
@@ -135,13 +137,15 @@ namespace PBFramework.DB
             {
                 // Delete the physical copies of the data.
                 indexFile.Delete();
-                dataDirectory.Delete(true);
-                dataDirectory.Create();
-
                 indexFile.Refresh();
+
+                dataDirectory.Delete(true);
+                dataDirectory.Refresh();
+                dataDirectory.Create();
                 dataDirectory.Refresh();
 
                 // Remove all the cached data within the memory.
+                SaveIndex();
                 RebuildIndex();
             }
         }

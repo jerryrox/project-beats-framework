@@ -68,7 +68,7 @@ namespace PBFramework.DB
             if(disposed) throw new ObjectDisposedException(nameof(Database<T>));
             if(!isInitialized) throw new DatabaseUninitializedException();
 
-            
+            processor.Wipe();
         }
 
         public void Dispose()
