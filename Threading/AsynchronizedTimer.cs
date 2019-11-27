@@ -130,7 +130,7 @@ namespace PBFramework.Threading
                             // Clamp
                             current = limit;
                             // Notify asynchronously.
-                            Progress = 1f;
+                            ReportCurrent();
                             // Finished
                             OnFinished?.Invoke(this);
                             // Stop the routine.
@@ -161,7 +161,13 @@ namespace PBFramework.Threading
                 if(limit <= 0)
                     Progress = 0f;
                 else
-                    Progress = current / limit;
+                {
+                    if(current >= limit)
+                        Progress = 1f;
+                    else
+                        Progress = current / limit;
+                }
+                OnProgress?.Invoke(Progress);
             }
         }
     }
