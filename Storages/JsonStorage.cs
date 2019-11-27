@@ -15,12 +15,16 @@ namespace PBFramework.Storages
 
         public JObject GetObject(string name)
         {
-            return JsonConvert.DeserializeObject<JObject>(GetText(name));
+            var text = GetText(name);
+            if(string.IsNullOrEmpty(text)) return null;
+            return JsonConvert.DeserializeObject<JObject>(text);
         }
 
         public JArray GetArray(string name)
         {
-            return JsonConvert.DeserializeObject<JArray>(GetText(name));
+            var text = GetText(name);
+            if(string.IsNullOrEmpty(text)) return null;
+            return JsonConvert.DeserializeObject<JArray>(text);
         }
 
         public void Write(string name, JObject json)
@@ -35,27 +39,29 @@ namespace PBFramework.Storages
 
         public override void Write(string name, string text)
         {
-            try
-            {
-                Write(name, JsonConvert.DeserializeObject<JObject>(text));
-            }
-            catch (Exception)
-            {
-                Logger.LogWarning($"JsonStorage.Write - Failed to write text. (Invalid Json format)");
-            }
+            WriteTextAsJson(name, text);
         }
 
         public override void Write(string name, byte[] data)
         {
-            try
+            string text = System.Text.Encoding.UTF8.GetString(data);
+            WriteTextAsJson(name, text);
+        }
+
+        private void WriteTextAsJson(string name, string text)
+        {
+            text = text.Trim();
+            if (text.StartsWith("{") && text.EndsWith("}"))
             {
-                string text = System.Text.Encoding.UTF8.GetString(data);
                 Write(name, JsonConvert.DeserializeObject<JObject>(text));
+                return;
             }
-            catch (Exception)
+            else if(text.StartsWith("[") && text.EndsWith("]"))
             {
-                Logger.LogWarning($"JsonStorage.Write - Failed to write text. (Invalid Json format)");
+                Write(name, JsonConvert.DeserializeObject<JArray>(text));
+                return;
             }
+            throw new InvalidCastException("Specified text could not be converted to a JSON object nor an array!");
         }
     }
 }
