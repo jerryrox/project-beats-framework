@@ -18,6 +18,7 @@ namespace PBFramework.Storages
         public FileStorage(DirectoryInfo directory)
         {
             this.directory = directory;
+            directory.Create();
         }
 
         public bool Exists(string name) => File.Exists(GetFullPath(name));

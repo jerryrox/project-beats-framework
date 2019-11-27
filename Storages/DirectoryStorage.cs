@@ -20,6 +20,7 @@ namespace PBFramework.Storages
         public DirectoryStorage(DirectoryInfo directory)
         {
             this.directory = directory;
+            directory.Create();
         }
 
         public List<string> RestoreBackup()

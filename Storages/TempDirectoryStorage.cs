@@ -13,5 +13,11 @@ namespace PBFramework.Storages
             // Delete all data on initialization.
             DeleteAll();
         }
+
+        public TempDirectoryStorage(DirectoryInfo directory) : base(new DirectoryInfo(Path.Combine(Application.persistentDataPath, $"temp/{directory.Name}")))
+        {
+            // Delete all data on initialization.
+            DeleteAll();
+        }
     }
 }
