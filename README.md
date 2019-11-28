@@ -21,8 +21,6 @@ Slowly making progress 🧩
 - Migration & Develop from scratch
 #### IO/Formats
 - Migration
-#### Services -> UnityThreadService
-- Add functions to dispatch a task on the Unity thread.
 #### Services/Notifications
 - Develop from scratch
 #### Platform
