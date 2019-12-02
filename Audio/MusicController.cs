@@ -24,11 +24,6 @@ namespace PBFramework.Audio
 
         
         /// <summary>
-        /// Internal audio player component.
-        /// </summary>
-        private AudioSource source;
-
-        /// <summary>
         /// Volume of the audio.
         /// </summary>
         private float volume = 1f;
@@ -47,11 +42,6 @@ namespace PBFramework.Audio
         /// Current volume fading scale.
         /// </summary>
         private float curFadeScale = 1f;
-
-        /// <summary>
-        /// Whether the controller is disposed.
-        /// </summary>
-        private bool isDisposed = false;
 
 
         public override bool IsPlaying => Clock.IsPlaying;
@@ -105,6 +95,7 @@ namespace PBFramework.Audio
             if(isDisposed) throw new ObjectDisposedException(nameof(MusicController));
 
             this.volume = volume;
+            curFadeScale = 0.999f;
         }
 
         public void Fade(float from, float to)
@@ -113,7 +104,7 @@ namespace PBFramework.Audio
 
             fadeScaleFrom = from;
             fadeScaleTo = to;
-            curFadeScale = from;
+            curFadeScale = 0f;
         }
 
         public void Fade(float to)
@@ -131,7 +122,7 @@ namespace PBFramework.Audio
 
             fadeScaleFrom = fade;
             fadeScaleTo = fade;
-            curFadeScale = 1f;
+            curFadeScale = 0.999f;
         }
 
         public void SetTempo(float tempo)

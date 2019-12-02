@@ -30,17 +30,17 @@ namespace PBFramework.Audio
         /// <summary>
         /// Internal audio player component.
         /// </summary>
-        private AudioSource source;
+        protected AudioSource source;
 
         /// <summary>
         /// Whether the controller is disposed.
         /// </summary>
-        private bool isDisposed = false;
+        protected bool isDisposed = false;
 
         /// <summary>
         /// The actual mounted audio on this controller.
         /// </summary>
-        private new UnityAudio audio;
+        protected new UnityAudio audio;
 
 
         public IAudio Audio => audio;
@@ -173,7 +173,8 @@ namespace PBFramework.Audio
         {
             source.clip = null;
             UnityEngine.Object.Destroy(source);
-            
+            source = null;
+
             audio = null;
 
             enabled = false;

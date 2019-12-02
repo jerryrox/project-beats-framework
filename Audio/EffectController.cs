@@ -26,6 +26,11 @@ namespace PBFramework.Audio
         public override bool IsStopped => !isPlaying && !isPaused;
 
 
+        public static EffectController Create()
+        {
+            return new GameObject("_EffectController").AddComponent<EffectController>();
+        }
+
         public override void Play(float delay)
         {
             base.Play(delay);
