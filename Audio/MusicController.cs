@@ -144,6 +144,8 @@ namespace PBFramework.Audio
             OnTempo?.Invoke(tempo);
         }
 
+        protected override bool ShouldPlayFromStart() => IsStopped && CurrentTime - Clock.Offset <= 0.00001f;
+
         protected override bool CanPlay() => base.CanPlay() && Clock.IsRunning;
 
         protected override bool CanPause() => base.CanPause() && Clock.IsRunning;

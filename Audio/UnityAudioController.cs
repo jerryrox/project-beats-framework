@@ -57,7 +57,7 @@ namespace PBFramework.Audio
 
         public virtual float CurrentTime => ToMs(source.time);
 
-        public bool IsLoop { get; set; } = true;
+        public bool IsLoop { get; set; } = false;
 
 
         protected virtual void Awake()
@@ -77,6 +77,7 @@ namespace PBFramework.Audio
 
             // Mount the audio.
             this.audio = newAudio;
+            source.clip = newAudio.Clip;
             InvokeMounted(audio);
         }
 
@@ -88,12 +89,7 @@ namespace PBFramework.Audio
             if(!CanPlay())
                 return;
 
-            if (IsPaused)
-            {
-                source.UnPause();
-                InvokeUnpause(ToMs(source.time));
-            }
-            else if(IsStopped)
+            if(ShouldPlayFromStart())
             {
                 delay = Math.Max(0, delay);
 
@@ -101,6 +97,15 @@ namespace PBFramework.Audio
                 source.timeSamples = 0;
                 source.PlayScheduled(playTime);
                 InvokePlay(-delay);
+            }
+            else
+            {
+                // Even if the controller is stopped, the above if statement may not be executed due to additional conditions.
+                // In case the controller is currently not paused, make it paused first.
+                if (!IsPaused)
+                    source.Pause();
+                source.UnPause();
+                InvokeUnpause(ToMs(source.time));
             }
         }
 
@@ -130,7 +135,7 @@ namespace PBFramework.Audio
             if(!CanSeek())
                 return;
 
-			// Seek to specified time.
+            // Seek to specified time.
             source.timeSamples = (int)(audio.Frequency * FromMs(time));
             InvokeSeek(time);
         }
@@ -150,6 +155,11 @@ namespace PBFramework.Audio
             }
             isDisposed = true;
         }
+
+        /// <summary>
+        /// Returns whether Play() should play the audio from start or unpause.
+        /// </summary>
+        protected virtual bool ShouldPlayFromStart() => IsStopped && CurrentTime <= 0f;
 
         protected virtual bool CanPlay() => !IsPlaying;
 
@@ -174,9 +184,6 @@ namespace PBFramework.Audio
             // Handle audio end and loop.
             if (audio != null && CurrentTime > audio.Duration)
             {
-                // Invoke end event
-                InvokeEnd();
-
                 // If automatially loop
                 if(IsLoop)
                 {
@@ -189,6 +196,14 @@ namespace PBFramework.Audio
 
                     // Invoke loop event
                     InvokeLoop();
+                }
+                else
+                {
+                    // Stop the audio.
+                    Stop();
+
+                    // Invoke end event
+                    InvokeEnd();
                 }
             }
         }
