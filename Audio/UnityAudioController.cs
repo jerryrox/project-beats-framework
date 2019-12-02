@@ -183,7 +183,7 @@ namespace PBFramework.Audio
         protected virtual void Update()
         {
             // Handle audio end and loop.
-            if (audio != null && CurrentTime > audio.Duration)
+            if (audio != null && CurrentTime >= audio.Duration)
             {
                 // If automatially loop
                 if(IsLoop)
