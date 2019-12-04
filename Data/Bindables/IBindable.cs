@@ -6,15 +6,21 @@ namespace PBFramework.Data.Bindables
     {
         /// <summary>
         /// Events called when the inner value has changed.
-        /// Passes an Object type of the value as parameter.
+        /// Passes the new value and the previous value as parameter.
         /// </summary>
-        event Action<object> OnRawValueChanged;
+        event Action<object, object> OnRawValueChanged;
 
 
         /// <summary>
         /// The inner value stored in Object type.
         /// </summary>
         object RawValue { get; set; }
+
+        /// <summary>
+        /// Whether the triggering of value change should only occur when the new value is different.
+        /// Default: false.
+        /// </summary>
+        bool TriggerWhenDifferent { get; set; }
 
 
         /// <summary>
@@ -33,7 +39,7 @@ namespace PBFramework.Data.Bindables
         /// <summary>
         /// Events called when the inner value has changed.
         /// </summary>
-        event Action<T> OnValueChanged;
+        event Action<T, T> OnValueChanged;
 
 
         /// <summary>

@@ -4,11 +4,11 @@ using PBFramework.Debugging;
 
 namespace PBFramework.Data.Bindables
 {
-    public class Bindable<T> : IBindable<T>
+    public class Bindable<T> : IReadOnlyBindable<T>, IReadOnlyBindable, IBindable<T>
     {
-        public event Action<T> OnValueChanged;
+        public event Action<T, T> OnValueChanged;
 
-        public event Action<object> OnRawValueChanged;
+        public event Action<object, object> OnRawValueChanged;
 
         /// <summary>
         /// The actual value stored.
@@ -26,10 +26,18 @@ namespace PBFramework.Data.Bindables
             get => value;
             set
             {
+                T oldValue = this.value;
+                // If triggers only when different, but the values are the same, just return.
+                if (TriggerWhenDifferent && EqualityComparer<T>.Default.Equals(this.value, value))
+                    return;
                 this.value = value;
-                Trigger();
+                TriggerInternal(this.value, value);
             }
         }
+
+        T IReadOnlyBindable<T>.Value => Value;
+
+        public bool TriggerWhenDifferent { get; set; } = false;
 
         public object RawValue
         {
@@ -47,6 +55,8 @@ namespace PBFramework.Data.Bindables
             }
         }
 
+        object IReadOnlyBindable.RawValue => Value;
+
 
         public Bindable() : this(default) {}
 
@@ -57,11 +67,7 @@ namespace PBFramework.Data.Bindables
             isNullableT = !typeof(T).IsValueType;
         }
 
-        public void Trigger()
-        {
-            OnValueChanged?.Invoke(value);
-            OnRawValueChanged?.Invoke(value);
-        }
+        public void Trigger() => TriggerInternal(value, value);
 
         public virtual void Parse(string value)
         {
@@ -74,6 +80,15 @@ namespace PBFramework.Data.Bindables
             if(isNullableT && value == null)
                 return "null";
             return value.ToString();
+        }
+
+        /// <summary>
+        /// Internally processes the Trigger routine.
+        /// </summary>
+        protected void TriggerInternal(T newValue, T oldValue)
+        {
+            OnValueChanged?.Invoke(newValue, oldValue);
+            OnRawValueChanged?.Invoke(newValue, oldValue);
         }
     }
 }
