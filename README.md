@@ -13,14 +13,10 @@ Slowly making progress 🧩
 - Migration
 #### Assets/Fonts
 - Migration
-#### Audio
-- Migration
 #### GUI
 - Migration & Some redesigning
 #### Inputs
 - Migration & Develop from scratch
-#### IO/Formats
-- Migration
 #### Services/Notifications
 - Develop from scratch
 #### Platform
