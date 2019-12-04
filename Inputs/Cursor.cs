@@ -1,17 +1,24 @@
 using UnityEngine;
+using PBFramework.Data.Bindables;
 
 namespace PBFramework.Inputs
 {
     public abstract class Cursor : ICursor {
 
-        protected readonly int id;
+        protected readonly KeyCode keyCode;
 
         /// <summary>
         /// Conversion scale applied while converting raw vector to processed vector.
         /// </summary>
         protected readonly Vector2 processScale;
 
+        /// <summary>
+        /// Resolution of the game.
+        /// </summary>
         protected readonly Vector2 resolution;
+
+        protected readonly Bindable<InputState> state;
+        protected readonly BindableBool isActive;
 
         protected Vector2 rawPosition = new Vector2();
         protected Vector2 rawDelta = new Vector2();
@@ -19,11 +26,11 @@ namespace PBFramework.Inputs
         protected Vector2 delta = new Vector2();
 
 
-        public uint Id { get; private set; }
+        public KeyCode Key => keyCode;
 
-        public bool IsActive { get; protected set; }
+        public IReadOnlyBindable<InputState> State => state;
 
-        public InputState State { get; protected set; } = InputState.Idle;
+        public IReadOnlyBindable<bool> IsActive => isActive;
 
         public Vector2 RawPosition => rawPosition;
 
@@ -34,16 +41,30 @@ namespace PBFramework.Inputs
         public Vector2 Delta => delta;
 
 
-        protected Cursor(uint id, Vector2 resolution)
+        protected Cursor(KeyCode keyCode, Vector2 resolution)
         {
-            this.id = (int)id;
+            this.keyCode = keyCode;
             this.resolution = resolution;
 
-            processScale = new Vector2(1f / Screen.width, 1f / Screen.height);
+            this.state = new Bindable<InputState>(InputState.Idle)
+            {
+                TriggerWhenDifferent = true
+            };
+            this.isActive = new BindableBool(false)
+            {
+                TriggerWhenDifferent = true
+            };
 
-            Id = id;
+            processScale = new Vector2(1f / Screen.width, 1f / Screen.height);
         }
 
+        public virtual void SetActive(bool active) => isActive.Value = active;
+
+        public virtual void Release() => state.Value = InputState.Idle;
+
+        /// <summary>
+        /// Internally processes cursor position, including raw and non-raw positions.
+        /// </summary>
         protected void ProcessPosition(float newX, float newY)
         {
             rawDelta.x = newX - rawPosition.x;

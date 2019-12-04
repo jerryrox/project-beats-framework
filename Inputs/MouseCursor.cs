@@ -4,22 +4,30 @@ namespace PBFramework.Inputs
 {
     public class MouseCursor : Cursor {
 
-        public MouseCursor(uint id, Vector2 resolution) : base(id, resolution) {}
+        private int mouseIndex;
+
+
+        public MouseCursor(KeyCode keyCode, Vector2 resolution) : base(keyCode, resolution)
+        {
+            mouseIndex = keyCode - KeyCode.Mouse0;
+        }
 
         /// <summary>
         /// Updates the state of the mouse cursor.
         /// </summary>
         public void Process()
         {
+            if(!isActive.Value) return;
+
             // Refresh cursor state
-            if (Input.GetMouseButtonDown(id))
-                State = InputState.Press;
-            else if (Input.GetMouseButtonUp(id))
-                State = InputState.Release;
-            else if (Input.GetMouseButton(id))
-                State = InputState.Hold;
+            if (Input.GetMouseButtonDown(mouseIndex))
+                state.Value = InputState.Press;
+            else if (Input.GetMouseButtonUp(mouseIndex))
+                state.Value = InputState.Release;
+            else if (Input.GetMouseButton(mouseIndex))
+                state.Value = InputState.Hold;
             else
-                State = InputState.Idle;
+                state.Value = InputState.Idle;
 
             // Refresh cursor positions
             var newPos = Input.mousePosition;

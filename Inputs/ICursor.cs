@@ -5,23 +5,8 @@ namespace PBFramework.Inputs
     /// <summary>
     /// Represents an input which is either a mouse or a touch pointer.
     /// </summary>
-    public interface ICursor {
+    public interface ICursor : IInput {
     
-        /// <summary>
-        /// Returns the ID of the cursor.
-        /// </summary>
-        uint Id { get; }
-
-        /// <summary>
-        /// Returns whether this cursor is currently active.
-        /// </summary>
-        bool IsActive { get; }
-
-        /// <summary>
-        /// Returns the current state of the cursor.
-        /// </summary>
-        InputState State { get; }
-
         /// <summary>
         /// Returns the raw position of the cursor.
         /// </summary>
