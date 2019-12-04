@@ -17,7 +17,7 @@ namespace PBFramework.IO.Decoding
 		private Dictionary<Type, Dictionary<string, DecoderCreateHandler>> decoders;
 
 
-        private static Decoders Instance => I ?? (I = new Decoders());
+        private static Decoders Instance => I ?? new Decoders();
 
 
         /// <summary>
@@ -26,10 +26,12 @@ namespace PBFramework.IO.Decoding
         public delegate IDecoder DecoderCreateHandler(string header);
 
 
-        public Decoders()
+        private Decoders()
         {
+            I = this;
             decoders = new Dictionary<Type, Dictionary<string, DecoderCreateHandler>>();
 
+            JsonDecoder.RegisterDecoder();
         }
 
         /// <summary>

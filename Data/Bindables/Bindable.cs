@@ -31,7 +31,7 @@ namespace PBFramework.Data.Bindables
                 if (TriggerWhenDifferent && EqualityComparer<T>.Default.Equals(this.value, value))
                     return;
                 this.value = value;
-                TriggerInternal(this.value, value);
+                TriggerInternal(this.value, oldValue);
             }
         }
 

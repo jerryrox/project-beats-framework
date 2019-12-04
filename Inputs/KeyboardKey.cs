@@ -28,6 +28,15 @@ namespace PBFramework.Inputs
         public KeyboardKey(KeyCode keyCode)
         {
             this.keyCode = keyCode;
+
+            this.state = new Bindable<InputState>()
+            {
+                TriggerWhenDifferent = true
+            };
+            this.isActive = new BindableBool()
+            {
+                TriggerWhenDifferent = true
+            };
         }
 
         public void Release() => state.Value = InputState.Idle;

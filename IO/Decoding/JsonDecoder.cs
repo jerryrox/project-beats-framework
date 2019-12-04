@@ -9,9 +9,9 @@ namespace PBFramework.IO.Decoding
         private string header;
 
 
-        static JsonDecoder()
+        public static void RegisterDecoder()
         {
-            Decoders.AddDecoder<JsonDecoder>("{", (header) => {
+            Decoders.AddDecoder<JObject>("{", (header) => {
                 var decoder = new JsonDecoder()
                 {
                     header = header
@@ -23,7 +23,7 @@ namespace PBFramework.IO.Decoding
         public override void Decode(StreamReader stream, JObject target)
         {
             var text = header + stream.ReadToEnd();
-            var token = JsonConvert.DeserializeObject<JObject>(header);
+            var token = JsonConvert.DeserializeObject<JObject>(text);
             foreach (var pair in token)
             {
                 target[pair.Key] = token[pair.Key];
