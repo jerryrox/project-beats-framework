@@ -8,9 +8,9 @@ namespace PBFramework.Inputs
 {
     public class InputManager : MonoBehaviour, IInputManager {
 
-        private bool useMouse = true;
-        private bool useTouch = true;
-        private bool useKeyboard = true;
+        private bool useMouse;
+        private bool useTouch;
+        private bool useKeyboard;
 
         private MouseCursor[] mouseCursors;
         private TouchCursor[] touchCursors;
@@ -101,6 +101,11 @@ namespace PBFramework.Inputs
                 touchCursors[i] = new TouchCursor(KeyCode.Mouse0 + i, resolution);
 
             keyboardKeys = new List<KeyboardKey>(4);
+
+            // Use inputs by default.
+            UseMouse(true);
+            UseTouch(true);
+            UseKeyboard(true);
         }
 
         /// <summary>
