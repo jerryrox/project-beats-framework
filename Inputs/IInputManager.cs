@@ -15,6 +15,21 @@ namespace PBFramework.Inputs
         /// </summary>
         int MaxTouchCount { get; }
 
+        /// <summary>
+        /// Whether the mouse input will be processed by the manager.
+        /// </summary>
+        bool UseMouse { get; set; }
+
+        /// <summary>
+        /// Whether the touch input will be processed by the manager.
+        /// </summary>
+        bool UseTouch { get; set; }
+
+        /// <summary>
+        /// Whether the keyboard input will be processed by the manager.
+        /// </summary>
+        bool UseKeyboard { get; set; }
+
 
         /// <summary>
         /// Adds the specified keycode to be managed by this object.
@@ -42,23 +57,18 @@ namespace PBFramework.Inputs
         IKey GetKey(KeyCode keyCode);
 
         /// <summary>
+        /// Returns all mouse currently being managed.
+        /// </summary>
+        IEnumerable<ICursor> GetMouses();
+
+        /// <summary>
+        /// Returns all touches currently being managed.
+        /// </summary>
+        IEnumerable<ICursor> GetTouches();
+
+        /// <summary>
         /// Returns all keys currently being managed.
         /// </summary>
         IEnumerable<IKey> GetKeys();
-
-        /// <summary>
-        /// Sets whether mouse cursor will be processed by the manager.
-        /// </summary>
-        void UseMouse(bool use);
-
-        /// <summary>
-        /// Sets whether touch cursor will be processed by the manager.
-        /// </summary>
-        void UseTouch(bool use);
-
-        /// <summary>
-        /// Sets whether keyboard 
-        /// </summary>
-        void UseKeyboard(bool use);
     }
 }

@@ -23,6 +23,36 @@ namespace PBFramework.Inputs
 
         public int MaxTouchCount { get; private set; }
 
+        public bool UseMouse
+        {
+            get => useMouse;
+            set
+            {
+                useMouse = value;
+                UseInput(mouseCursors, value, ref useMouse);
+            }
+        }
+
+        public bool UseTouch
+        {
+            get => useTouch;
+            set
+            {
+                useTouch = value;
+                UseInput(touchCursors, value, ref useTouch);
+            }
+        }
+
+        public bool UseKeyboard
+        {
+            get => useKeyboard;
+            set
+            {
+                useKeyboard = value;
+                UseInput(keyboardKeys, value, ref useKeyboard);
+            }
+        }
+
 
         /// <summary>
         /// Creates a new instance of the InputManager.
@@ -48,8 +78,9 @@ namespace PBFramework.Inputs
             if(key != null) return key;
             // If not already exist, register a new keycode
             var newKey = new KeyboardKey(keyCode);
-            newKey.SetActive(true);
+            newKey.SetActive(useKeyboard);
             keyboardKeys.Add(newKey);
+            Debug.Log($"Added new key of code: {keyCode}. Count: {keyboardKeys.Count}");
             return newKey;
         }
 
@@ -59,29 +90,20 @@ namespace PBFramework.Inputs
             if(key == null) return;
             key.Release();
             key.SetActive(false);
+            keyboardKeys.Remove(key as KeyboardKey);
         }
 
         public ICursor GetMouse(int index) => mouseCursors[index];
 
         public ICursor GetTouch(int index) => touchCursors[index];
 
-        public IKey GetKey(KeyCode keyCode)
-        {
-            for (int i = 0; i < keyboardKeys.Count; i++)
-            {
-                if(keyboardKeys[i].Key == keyCode)
-                    return keyboardKeys[i];
-            }
-            return null;
-        }
+        public IKey GetKey(KeyCode keyCode) => FindKey(keyCode);
+
+        public IEnumerable<ICursor> GetMouses() => mouseCursors;
+
+        public IEnumerable<ICursor> GetTouches() => touchCursors;
 
         public IEnumerable<IKey> GetKeys() => keyboardKeys;
-
-        public void UseMouse(bool use) => UseInput(mouseCursors, use, ref useMouse);
-
-        public void UseTouch(bool use) => UseInput(touchCursors, use, ref useTouch);
-
-        public void UseKeyboard(bool use) => UseInput(keyboardKeys, use, ref useKeyboard);
 
         /// <summary>
         /// Initializes the manager.
@@ -103,9 +125,7 @@ namespace PBFramework.Inputs
             keyboardKeys = new List<KeyboardKey>(4);
 
             // Use inputs by default.
-            UseMouse(true);
-            UseTouch(true);
-            UseKeyboard(true);
+            UseMouse = UseTouch = UseKeyboard = true;
         }
 
         /// <summary>
