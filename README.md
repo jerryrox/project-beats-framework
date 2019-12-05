@@ -13,10 +13,10 @@ Slowly making progress 🧩
 - Migration
 #### Assets/Fonts
 - Migration
-#### GUI
+#### Graphics/UI
 - Migration & Some redesigning
 #### Inputs
-- Migration & Develop from scratch
+- Implemenet layer-based input propagation when GUI framework is established.
 #### Services/Notifications
 - Develop from scratch
 #### Platform
