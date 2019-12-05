@@ -30,8 +30,6 @@ namespace PBFramework.Inputs
 
         public void Process(Touch touch, uint updateId)
         {
-            if(!isActive.Value) return;
-
             // Store update id
             this.updateId = updateId;
 
@@ -46,9 +44,11 @@ namespace PBFramework.Inputs
                     break;
                 case TouchPhase.Ended:
                 case TouchPhase.Canceled:
+                    if(!isActive.Value) return;
                     state.Value = InputState.Release;
                     break;
                 default:
+                    if(!isActive.Value) return;
                     state.Value = InputState.Hold;
                     break;
             }

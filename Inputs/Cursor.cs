@@ -73,7 +73,7 @@ namespace PBFramework.Inputs
             rawPosition.y = newY;
 
             float newProcessedX = (rawPosition.x * processScale.x - 0.5f) * resolution.x;
-            float newProcessedY = (rawPosition.y * processScale.y - 0.5f) * -resolution.y;
+            float newProcessedY = (rawPosition.y * processScale.y - 0.5f) * resolution.y;
             delta.x = newProcessedX - position.x;
             delta.y = newProcessedY - position.y;
             position.x = newProcessedX;
