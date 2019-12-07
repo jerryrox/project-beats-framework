@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using PBFramework.Graphics.UI.Elements;
 
 namespace PBFramework.Graphics.UI
@@ -11,7 +12,7 @@ namespace PBFramework.Graphics.UI
         /// <summary>
         /// Returns the parent display object in the hierarchy.
         /// </summary>
-        IDisplay Parent { get; set; }
+        IDisplay Parent { get; }
 
 
         /// <summary>
@@ -30,28 +31,8 @@ namespace PBFramework.Graphics.UI
         void AddChildren(IEnumerable<IDisplay> displays);
 
         /// <summary>
-        /// Adds the specified element to this display.
+        /// Sets the parent object of specified display to this object.
         /// </summary>
-        T AddElement<T>(T element) where T : IElement;
-
-        /// <summary>
-        /// Returns the element attached on this object.
-        /// </summary>
-        T GetElement<T>() where T : IElement;
-
-        /// <summary>
-        /// Returns the first element found in the child objects.
-        /// </summary>
-        T GetElementInChildren<T>() where T : IElement;
-
-        /// <summary>
-        /// Returns all the elements in the children objects.
-        /// </summary>
-        IEnumerable<T> GetElementsInChildren<T>() where T : IElement;
-
-        /// <summary>
-        /// Returns the element in the parent object.
-        /// </summary>
-        T GetElementInParent<T>() where T : IElement;
+        void SetParent(IDisplay display);
     }
 }

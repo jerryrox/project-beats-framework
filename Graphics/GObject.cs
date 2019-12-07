@@ -11,11 +11,11 @@ namespace PBFramework.Graphics
     /// </summary>
     public class GObject : MonoBehaviour, IObject {
 
-        private GameObject myObject;
+        protected GameObject myObject;
 
-        private Transform myTransform;
+        protected Transform myTransform;
 
-        private IDependencyContainer dependencies;
+        protected IDependencyContainer dependencies;
 
 
         public bool IsEnabled
@@ -74,9 +74,9 @@ namespace PBFramework.Graphics
                 AddChild(child);
         }
 
-        public void SetParent(Transform transform) => myTransform.SetParent(transform);
+        public virtual void SetParent(Transform transform) => myTransform.SetParent(transform);
 
-        public void SetParent(IObject obj) => myTransform.SetParent(obj.Transform);
+        public virtual void SetParent(IObject obj) => myTransform.SetParent(obj.Transform);
 
         public T AddComponent<T>() where T : Component => myObject.AddComponent<T>();
 
