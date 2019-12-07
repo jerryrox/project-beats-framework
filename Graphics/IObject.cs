@@ -36,6 +36,21 @@ namespace PBFramework.Graphics
         void AddChildren(IEnumerable<IObject> children);
 
         /// <summary>
+        /// Sets the parent object of this object to specified transform.
+        /// </summary>
+        void SetParent(Transform transform);
+
+        /// <summary>
+        /// Sets the parent object of this object to specified object.
+        /// </summary>
+        void SetParent(IObject obj);
+
+        /// <summary>
+        /// Adds the specified component to the object.
+        /// </summary>
+        T AddComponent<T>() where T : Component;
+
+        /// <summary>
         /// Performs GetComponent on the gameObject instance.
         /// </summary>
         T GetComponent<T>() where T : Component;

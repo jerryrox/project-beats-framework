@@ -12,17 +12,18 @@ namespace PBFramework.Graphics
         /// Whether this component should update every frame.
         /// Default: false.
         /// </summary>
-        bool ShouldUpdate { get; set; }
+        bool IsEnabled { get; set; }
 
         /// <summary>
-        /// The GameObject component of this component which this is derived from.
+        /// Returns the GameObject component of this component which this is derived from.
         /// </summary>
-        GameObject RawObject { get; set; }
+        GameObject RawObject { get; }
 
         /// <summary>
-        /// The transformation component of this component.
+        /// Returns the transformation component of this component.
         /// </summary>
-        Transform Transform { get; set; }
+        Transform Transform { get; }
+
 
         /// <summary>
         /// Injects dependencies from specified container to this element.

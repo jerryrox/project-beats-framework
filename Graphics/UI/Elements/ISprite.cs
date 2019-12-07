@@ -3,7 +3,7 @@ namespace PBFramework.Graphics.UI.Elements
     /// <summary>
     /// Abstraction of a 2D sprite.
     /// </summary>
-    public interface ISprite : IElement, IHasSize, IHasColor {
+    public interface ISprite : IElement, IHasSize, IHasColor, IHasDepth {
 
         /// <summary>
         /// Name of the sprite displayed on the object.

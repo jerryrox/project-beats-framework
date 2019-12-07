@@ -13,11 +13,6 @@ namespace PBFramework.Graphics.UI
         /// </summary>
         IDisplay Parent { get; set; }
 
-        /// <summary>
-        /// Depth which determines the order of rendering of displays.
-        /// </summary>
-        int Depth { get; set; }
-
 
         /// <summary>
         /// Creates a new 2D child and returns it.
