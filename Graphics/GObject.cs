@@ -6,6 +6,9 @@ using PBFramework.Dependencies;
 
 namespace PBFramework.Graphics
 {
+    /// <summary>
+    /// Default IObject implementation.
+    /// </summary>
     public class GObject : MonoBehaviour, IObject {
 
         private GameObject myObject;
