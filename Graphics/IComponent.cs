@@ -23,11 +23,5 @@ namespace PBFramework.Graphics
         /// Returns the transformation component of this component.
         /// </summary>
         Transform Transform { get; }
-
-
-        /// <summary>
-        /// Injects dependencies from specified container to this element.
-        /// </summary>
-        void Inject(IDependencyContainer container);
     }
 }

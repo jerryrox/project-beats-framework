@@ -51,26 +51,6 @@ namespace PBFramework.Graphics
         T AddComponent<T>() where T : Component;
 
         /// <summary>
-        /// Performs GetComponent on the gameObject instance.
-        /// </summary>
-        T GetComponent<T>() where T : Component;
-
-        /// <summary>
-        /// Performs GetComponentInChildren on the gameObject instance.
-        /// </summary>
-        T GetComponentInChildren<T>() where T : Component;
-
-        /// <summary>
-        /// Performs GetComponentsInChildren on the gameObject instance.
-        /// </summary>
-        T[] GetComponentsInChildren<T>(bool includeInactive) where T : Component;
-
-        /// <summary>
-        /// Performs GetComponentInParent on the gameObject instance.
-        /// </summary>
-        T GetComponentInParent<T>() where T : Component;
-
-        /// <summary>
         /// Destroys this object completely from the game.
         /// </summary>
         void Destroy();

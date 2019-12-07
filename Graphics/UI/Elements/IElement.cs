@@ -11,6 +11,5 @@ namespace PBFramework.Graphics.UI.Elements
         /// Returns the display object which the element is attached to.
         /// </summary>
         IDisplay Display { get; }
-
     }
 }

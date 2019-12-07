@@ -26,7 +26,7 @@ namespace PBFramework.Graphics.UI
         {
             var child = new GameObject().AddComponent<NguiDisplay>();
             child.SetParent(this);
-            child.Inject(dependencies);
+            dependencies?.Inject(child);
             return child;
         }
 
@@ -63,6 +63,18 @@ namespace PBFramework.Graphics.UI
                 SetParent(display);
             else
                 base.SetParent(obj);
+        }
+
+        public override T AddComponent<T>() where T : Component
+        {
+            var component = myObject.AddComponent<T>();
+            if(component is NguiElement element)
+            {
+                element.Display = this;
+            }
+            // Dependencies must be injected after element's display has been set, if applicable.
+            dependencies?.Invoke(component);
+            return component;
         }
     }
 }

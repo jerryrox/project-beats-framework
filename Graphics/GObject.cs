@@ -47,25 +47,18 @@ namespace PBFramework.Graphics
             this.myTransform = transform;
         }
 
-        public void Inject(IDependencyContainer container)
-        {
-            if(container == null) throw new ArgumentNullException(nameof(container));
-            this.dependencies = container;
-            container.Inject(this);
-        }
-
         public virtual IObject CreateChild()
         {
             var obj = new GameObject("child").AddComponent<GObject>();
             obj.SetParent(this);
-            obj.Inject(dependencies);
+            dependencies?.Inject(obj);
             return obj;
         }
 
         public virtual void AddChild(IObject child)
         {
             child.SetParent(this);
-            child.Inject(dependencies);
+            dependencies?.Inject(child);
         }
 
         public virtual void AddChildren(IEnumerable<IObject> children)
@@ -78,15 +71,11 @@ namespace PBFramework.Graphics
 
         public virtual void SetParent(IObject obj) => myTransform.SetParent(obj.Transform);
 
-        public T AddComponent<T>() where T : Component => myObject.AddComponent<T>();
-
-        public new T GetComponent<T>() where T : Component => base.GetComponent<T>();
-
-        public new T GetComponentInChildren<T>() where T : Component => base.GetComponentInChildren<T>();
-
-        public new T[] GetComponentsInChildren<T>(bool includeInactive) where T : Component => base.GetComponentsInChildren<T>(includeInactive);
-
-        public new T GetComponentInParent<T>() where T : Component => base.GetComponentInParent<T>();
+        public virtual T AddComponent<T>() where T : Component
+        {
+            var component = myObject.AddComponent<T>();
+            dependencies?.Inject(component);
+        }
 
         public virtual void Destroy() => Destroy(myObject);
     }
