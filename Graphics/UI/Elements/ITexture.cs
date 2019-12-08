@@ -5,12 +5,12 @@ namespace PBFramework.Graphics.UI.Elements
     /// <summary>
     /// Abstraction of a 2D texture.
     /// </summary>
-    public interface ITexture : IElement, IHasSize, IHasColor, IHasDepth {
+    public interface ITexture : IElement, IHasSize, IHasGradient, IHasDepth {
     
         /// <summary>
         /// Texture to be displayed.
         /// </summary>
-        Texture2D Texture { get; set; }
+        Texture Texture { get; set; }
 
         
     }

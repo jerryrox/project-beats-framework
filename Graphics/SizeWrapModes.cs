@@ -7,5 +7,7 @@ namespace PBFramework.Graphics
     
         Free = 0,
         Clamp,
+        Shrink,
+        ResizeHeight
     }
 }
