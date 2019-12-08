@@ -1,12 +1,12 @@
-namespace PBFramework.Graphics
+﻿namespace PBFramework.Graphics
 {
     /// <summary>
-    /// Indicates that the object has an alpha value.
+    /// Indicates that the object has an adjustable alpha.
     /// </summary>
     public interface IHasAlpha {
     
         /// <summary>
-        /// Direct access to alpha value of the object.
+        /// Alpha value of the object.
         /// </summary>
         float Alpha { get; set; }
     }

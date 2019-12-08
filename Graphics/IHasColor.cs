@@ -1,9 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace PBFramework.Graphics
 {
     /// <summary>
-    /// Indicates that the object has a color property.
+    /// Indicates that the object has an adjustable color.
     /// </summary>
     public interface IHasColor : IHasAlpha {
     
