@@ -51,8 +51,8 @@ namespace PBFramework.Graphics.UI.Elements
 
         public string Spritename
         {
-            get => sprite.spritename;
-            set => sprite.spritename = value;
+            get => sprite.spriteName;
+            set => sprite.spriteName = value;
         }
 
 

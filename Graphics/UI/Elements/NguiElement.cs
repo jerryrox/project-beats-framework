@@ -8,8 +8,7 @@ namespace PBFramework.Graphics.UI.Elements
     /// <summary>
     /// Base implementation of all elements.
     /// </summary>
-    public abstract class NguiElement<T> : MonoBehaviour, IElement
-        where T : Component
+    public abstract class NguiElement : MonoBehaviour, IElement
     {
         protected GameObject myObject;
 
@@ -20,16 +19,11 @@ namespace PBFramework.Graphics.UI.Elements
         /// </summary>
         protected IDisplay display;
 
-        /// <summary>
-        /// The backing component under this element.
-        /// </summary>
-        protected T component;
-
 
         public bool IsEnabled
         {
             get => enabled;
-            set => display.enabled = enabled = value;
+            set => display.IsEnabled = enabled = value;
         }
 
         public GameObject RawObject => myObject;
@@ -47,6 +41,24 @@ namespace PBFramework.Graphics.UI.Elements
         {
             myObject = gameObject;
             myTransform = transform;
+        }
+    }
+
+    /// <summary>
+    /// Generic implementation of NguiElement where the component T is automatically added for you.
+    /// </summary>
+    public abstract class NguiElement<T> : NguiElement
+        where T : Component
+    {
+        /// <summary>
+        /// The backing component under this element.
+        /// </summary>
+        protected T component;
+
+
+        protected override void Awake()
+        {
+            base.Awake();
             component = myObject.AddComponent<T>();
         }
     }

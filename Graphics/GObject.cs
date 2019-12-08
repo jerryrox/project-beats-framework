@@ -75,6 +75,7 @@ namespace PBFramework.Graphics
         {
             var component = myObject.AddComponent<T>();
             dependencies?.Inject(component);
+            return component;
         }
 
         public virtual void Destroy() => Destroy(myObject);

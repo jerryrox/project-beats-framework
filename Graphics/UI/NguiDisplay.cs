@@ -65,7 +65,7 @@ namespace PBFramework.Graphics.UI
                 base.SetParent(obj);
         }
 
-        public override T AddComponent<T>() where T : Component
+        public override T AddComponent<T>()
         {
             var component = myObject.AddComponent<T>();
             if(component is NguiElement element)
@@ -73,7 +73,7 @@ namespace PBFramework.Graphics.UI
                 element.Display = this;
             }
             // Dependencies must be injected after element's display has been set, if applicable.
-            dependencies?.Invoke(component);
+            dependencies?.Inject(component);
             return component;
         }
     }
