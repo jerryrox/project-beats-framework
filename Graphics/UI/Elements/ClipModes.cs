@@ -3,7 +3,7 @@ namespace PBFramework.Graphics.UI.Elements
     /// <summary>
     /// Types of rendering modes a panel may exhibit.
     /// </summary>
-    public enum PanelModes {
+    public enum ClipModes {
     
         /// <summary>
         /// No sizing affects panel.

@@ -8,6 +8,6 @@ namespace PBFramework.Graphics.UI.Elements
         /// <summary>
         /// The panel's rendering mode.
         /// </summary>
-        PanelModes PanelMode { get; set; }
+        ClipModes ClipMode { get; set; }
     }
 }

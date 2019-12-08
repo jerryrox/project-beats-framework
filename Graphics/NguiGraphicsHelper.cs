@@ -1,4 +1,5 @@
 using System;
+using PBFramework.Graphics.UI.Elements;
 
 namespace PBFramework.Graphics
 {
@@ -58,6 +59,28 @@ namespace PBFramework.Graphics
                 case Alignments.Right: return NGUIText.Alignment.Right;
             }
             throw new ArgumentException($"Unknown wrap mode: {alignment}");
+        }
+
+        public static UIDrawCall.Clipping GraphicsToNguiClipping(ClipModes clip)
+        {
+            switch (clip)
+            {
+                case ClipModes.NoConstraints: return UIDrawCall.Clipping.None;
+                case ClipModes.NoClip: return UIDrawCall.Clipping.ConstrainButDontClip;
+                case ClipModes.Clip: return UIDrawCall.Clipping.SoftClip;
+            }
+            throw new ArgumentException($"Unknown clip mode: {clip}");
+        }
+
+        public static ClipModes NguiToGraphicsClipping(UIDrawCall.Clipping clip)
+        {
+            switch (clip)
+            {
+                case UIDrawCall.Clipping.None: return ClipModes.NoConstraints;
+                case UIDrawCall.Clipping.ConstrainButDontClip: return ClipModes.NoClip;
+                case UIDrawCall.Clipping.SoftClip: return ClipModes.Clip;
+            }
+            throw new ArgumentException($"Unknown clip mode: {clip}");
         }
     }
 }

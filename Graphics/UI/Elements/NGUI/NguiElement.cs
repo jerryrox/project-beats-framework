@@ -20,10 +20,10 @@ namespace PBFramework.Graphics.UI.Elements.NGUI
         protected IDisplay display;
 
 
-        public bool IsEnabled
+        public virtual bool IsEnabled
         {
             get => enabled;
-            set => display.IsEnabled = enabled = value;
+            set => enabled = value;
         }
 
         public GameObject RawObject => myObject;
@@ -48,12 +48,19 @@ namespace PBFramework.Graphics.UI.Elements.NGUI
     /// Generic implementation of NguiElement where the component T is automatically added for you.
     /// </summary>
     public abstract class NguiElement<T> : NguiElement
-        where T : Component
+        where T : MonoBehaviour
     {
         /// <summary>
         /// The backing component under this element.
         /// </summary>
         protected T component;
+
+
+        public override bool IsEnabled
+        {
+            get => base.IsEnabled;
+            set => component.enabled = base.IsEnabled = value;
+        }
 
 
         protected override void Awake()
