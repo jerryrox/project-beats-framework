@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using PBFramework.Graphics.UI.Elements;
+using PBFramework.Graphics.UI.Elements.NGUI;
 
 namespace PBFramework.Graphics.UI
 {
@@ -40,6 +40,7 @@ namespace PBFramework.Graphics.UI
 
         public void SetParent(IDisplay display)
         {
+            display.Layer = Layer;
             base.SetParent(display);
 
             // Do additional process.
@@ -51,6 +52,7 @@ namespace PBFramework.Graphics.UI
 
         public override void SetParent(Transform transform)
         {
+            transform.gameObject.layer = myObject.layer;
             if(transform is IDisplay display)
                 SetParent(display);
             else
@@ -59,6 +61,7 @@ namespace PBFramework.Graphics.UI
 
         public override void SetParent(IObject obj)
         {
+            obj.Layer = Layer;
             if(obj is IDisplay display)
                 SetParent(display);
             else

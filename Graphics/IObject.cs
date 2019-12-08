@@ -19,6 +19,11 @@ namespace PBFramework.Graphics
         /// </summary>
         bool IsActive { get; set; }
 
+        /// <summary>
+        /// The layer of the gameObject.
+        /// </summary>
+        int Layer { get; set; }
+
 
         /// <summary>
         /// Creates a new child and returns it.

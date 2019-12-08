@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PBFramework.Graphics.UI.Elements
+namespace PBFramework.Graphics.UI.Elements.NGUI
 {
     /// <summary>
     /// Base implementation of all elements.

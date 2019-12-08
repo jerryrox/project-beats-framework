@@ -40,6 +40,12 @@ namespace PBFramework.Graphics
             set => myObject.SetActive(value);
         }
 
+        public int Layer
+        {
+            get => myObject.layer;
+            set => myObject.layer = value;
+        }
+
 
         protected virtual void Awake()
         {
