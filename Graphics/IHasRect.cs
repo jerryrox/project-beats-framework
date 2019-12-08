@@ -28,11 +28,6 @@ namespace PBFramework.Graphics
         float Height { get; set; }
 
         /// <summary>
-        /// Pivot point of the rect.
-        /// </summary>
-        Pivots Pivot { get; set; }
-
-        /// <summary>
         /// Position of the rect in vector.
         /// </summary>
         Vector2 Position { get; set; }
