@@ -36,10 +36,5 @@ namespace PBFramework.Graphics
         /// Size of the rect in vector.
         /// </summary>
         Vector2 Size { get; set; }
-
-        /// <summary>
-        /// Rect containing the position and size of the object.
-        /// </summary>
-        Rect Rect { get; set; }
     }
 }
