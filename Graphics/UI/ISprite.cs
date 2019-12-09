@@ -1,18 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
-public class ISprite : MonoBehaviour
+namespace PBFramework.Graphics.UI
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    public interface ISprite : IHasColor, IHasMaterial, IHasFill {
         
-    }
+        /// <summary>
+        /// The sprite to be displayed on the object.
+        /// </summary>
+        Sprite Sprite { get; set; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        /// <summary>
+        /// Type of image displaying method.
+        /// </summary>
+        Image.Type ImageType { get; set; }
     }
 }

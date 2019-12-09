@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Data;
 using PBFramework.Dependencies;
@@ -134,6 +133,8 @@ namespace PBFramework.Graphics
 
             children = new SortedList<UguiObject>();
         }
+
+        public virtual void ResetSize() {}
 
         public IGraphicObject CreateChild(string name = "")
         {

@@ -36,5 +36,11 @@ namespace PBFramework.Graphics
         /// Size of the rect in vector.
         /// </summary>
         Vector2 Size { get; set; }
+
+
+        /// <summary>
+        /// Resets the size of the element using this rect.
+        /// </summary>
+        void ResetSize();
     }
 }
