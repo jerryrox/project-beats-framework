@@ -6,13 +6,13 @@ using PBFramework.Dependencies;
 
 namespace PBFramework.Graphics
 {
-    public class GraphicObject : MonoBehaviour, IGraphicObject {
+    public class UguiObject : MonoBehaviour, IGraphicObject {
 
         protected GameObject myObject;
         protected RectTransform myTransform;
 
-        private GraphicObject parent;
-        private SortedList<GraphicObject> children;
+        private UguiObject parent;
+        private SortedList<UguiObject> children;
 
         private Pivots pivot = Pivots.Center;
         private Anchors anchor = Anchors.Center;
@@ -132,12 +132,12 @@ namespace PBFramework.Graphics
             myObject = gameObject;
             myTransform = GetComponent<RectTransform>();
 
-            children = new SortedList<GraphicObject>();
+            children = new SortedList<UguiObject>();
         }
 
         public IGraphicObject CreateChild(string name = "")
         {
-            return CreateChild<GraphicObject>(name);
+            return CreateChild<UguiObject>(name);
         }
 
         public virtual T CreateChild<T>(string name = "") where T : MonoBehaviour, IGraphicObject
@@ -152,7 +152,7 @@ namespace PBFramework.Graphics
         {
             if(parent == null) throw new ArgumentNullException(nameof(parent));
             if(parent.Equals(this)) throw new ArgumentException($"parent mustn't be itself!");
-            if(!(parent is GraphicObject graphicParent)) throw new ArgumentException($"parent must be a type of {nameof(GraphicObject)}");
+            if(!(parent is UguiObject graphicParent)) throw new ArgumentException($"parent must be a type of {nameof(UguiObject)}");
 
             // Move out from existing parent.
             this.parent?.children.Remove(this);
@@ -193,6 +193,22 @@ namespace PBFramework.Graphics
             {
                 children[i].myTransform.SetSiblingIndex(i);
             }
+        }
+    }
+
+    /// <summary>
+    /// Generic implementation of GraphicObject which assumes encapsulated component to provide its function.
+    /// </summary>
+    public abstract class UguiObject<T> : UguiObject
+        where T : MonoBehaviour
+    {
+        protected T component;
+
+
+        protected override void Awake()
+        {
+            base.Awake();
+            component = myObject.AddComponent<T>();
         }
     }
 }
