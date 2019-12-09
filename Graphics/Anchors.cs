@@ -12,7 +12,9 @@ namespace PBFramework.Graphics
         Left,
         Center,
         Right,
+
         BottomLeft,
+        Bottom,
         BottomRight,
 
         TopStretch,
