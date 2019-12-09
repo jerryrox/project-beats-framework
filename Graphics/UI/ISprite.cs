@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace PBFramework.Graphics.UI
 {
-    public interface ISprite : IHasColor, IHasMaterial, IHasFill {
+    public interface ISprite : IGraphicObject, IHasColor, IHasMaterial, IHasFill {
         
         /// <summary>
         /// The sprite to be displayed on the object.
