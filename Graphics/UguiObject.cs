@@ -5,6 +5,7 @@ using PBFramework.Dependencies;
 
 namespace PBFramework.Graphics
 {
+    [RequireComponent(typeof(RectTransform))]
     public class UguiObject : MonoBehaviour, IGraphicObject {
 
         protected GameObject myObject;
@@ -66,6 +67,18 @@ namespace PBFramework.Graphics
         {
             get => myTransform.sizeDelta;
             set => myTransform.sizeDelta = value;
+        }
+
+        public float RotationX
+        {
+            get => myTransform.localEulerAngles.x;
+            set => myTransform.SetLocalEulerX(value);
+        }
+
+        public float RotationY
+        {
+            get => myTransform.localEulerAngles.y;
+            set => myTransform.SetLocalEulerY(value);
         }
 
         public float RotationZ
@@ -144,7 +157,14 @@ namespace PBFramework.Graphics
         public virtual T CreateChild<T>(string name = "") where T : MonoBehaviour, IGraphicObject
         {
             var child = new GameObject(name).AddComponent<T>();
+            // Assign parent
             child.SetParent(this);
+
+            // Reset properties
+            child.gameObject.layer = myObject.layer;
+            child.transform.ResetTransform();
+
+            // Inject dependencies
             dependencies?.Inject(child);
             return child;
         }

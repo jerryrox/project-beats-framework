@@ -6,7 +6,17 @@ namespace PBFramework.Graphics
     /// Indicates that the object has a rotation.
     /// </summary>
     public interface IHasRotation {
-    
+
+        /// <summary>
+        /// Direct access to X euler angle.
+        /// </summary>
+        float RotationX { get; set; }
+
+        /// <summary>
+        /// Direct access to Y euler angle.
+        /// </summary>
+        float RotationY { get; set; }
+
         /// <summary>
         /// Direct access to Z euler angle.
         /// </summary>

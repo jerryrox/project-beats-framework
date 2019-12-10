@@ -103,7 +103,7 @@ namespace PBFramework
 
         #region Transform
         /// <summary>
-        /// Resets this transform's transform values except its rotation.
+        /// Resets this transform's transform values.
         /// </summary>
         public static void ResetTransform(this Transform context)
         {
