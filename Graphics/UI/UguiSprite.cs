@@ -3,11 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using PBFramework.Dependencies;
+using PBFramework.Assets.Atlasing;
 
 namespace PBFramework.Graphics.UI
 {
     public class UguiSprite : UguiObject<Image>, ISprite {
-    
+
+        private string lastSpriteName;
+
+
         public float Alpha
         {
             get => component.color.a;
@@ -23,7 +28,21 @@ namespace PBFramework.Graphics.UI
         public Sprite Sprite
         {
             get => component.sprite;
-            set => component.sprite = value;
+            set
+            {
+                component.sprite = value;
+                lastSpriteName = null;
+            }
+        }
+
+        public string SpriteName
+        {
+            get => lastSpriteName;
+            set
+            {
+                component.sprite = Atlas?.Get(value);
+                lastSpriteName = value;
+            }
         }
 
         public Material Material
@@ -49,6 +68,9 @@ namespace PBFramework.Graphics.UI
             get => !component.fillClockwise;
             set => component.fillClockwise = !value;
         }
+
+        [ReceivesDependency]
+        public IAtlas<Sprite> Atlas { get; set; }
 
 
         public override void ResetSize()

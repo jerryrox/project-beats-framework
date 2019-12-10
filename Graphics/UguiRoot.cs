@@ -42,6 +42,7 @@ namespace PBFramework.Graphics
             scaler = myObject.AddComponent<CanvasScaler>();
             raycaster = myObject.AddComponent<GraphicRaycaster>();
 
+            canvas.planeDistance = 1f;
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
         }

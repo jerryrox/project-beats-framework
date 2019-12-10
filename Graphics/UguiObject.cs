@@ -18,8 +18,6 @@ namespace PBFramework.Graphics
         private Anchors anchor = Anchors.Center;
         private int depth = 0;
 
-        private IDependencyContainer dependencies;
-
 
         public string Name
         {
@@ -138,6 +136,9 @@ namespace PBFramework.Graphics
             }
         }
 
+        [ReceivesDependency]
+        protected IDependencyContainer Dependency { get; private set; }
+
 
         protected virtual void Awake()
         {
@@ -165,7 +166,7 @@ namespace PBFramework.Graphics
             child.transform.ResetTransform();
 
             // Inject dependencies
-            dependencies?.Inject(child);
+            Dependency?.Inject(child);
             return child;
         }
 
