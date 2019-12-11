@@ -1,18 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class iTexture : MonoBehaviour
+namespace PBFramework.Graphics.UI
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public interface ITexture : IGraphicObject, IHasColor, IHasMaterial {
+    
+        /// <summary>
+        /// The texture to render.
+        /// </summary>
+        Texture Texture { get; set; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        /// <summary>
+        /// The UV rect applied on rendering.
+        /// </summary>
+        Rect UVRect { get; set; }
+
+
+        /// <summary>
+        /// Adjusts the UV rect to fill the RectTransform size while respecting the texture's aspect ratio.
+        /// </summary>
+        void FillTexture();
     }
 }
