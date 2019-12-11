@@ -37,7 +37,7 @@ namespace PBFramework.Graphics.UI
 
         /// <summary>
         /// The pivot point which the text will be aligned from.
-        /// Default: UpperLeft
+        /// Default: MiddleCenter
         /// </summary>
         TextAnchor Alignment { get; set; }
 

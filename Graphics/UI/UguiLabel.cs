@@ -91,7 +91,7 @@ namespace PBFramework.Graphics.UI
         {
             base.Awake();
             FontSize = 20;
-            Alignment = TextAnchor.UpperLeft;
+            Alignment = TextAnchor.MiddleCenter;
             WrapText = false;
             this.Color = Color.white;
         }
@@ -135,11 +135,13 @@ namespace PBFramework.Graphics.UI
             {
                 component.horizontalOverflow = HorizontalWrapMode.Wrap;
                 component.verticalOverflow = VerticalWrapMode.Truncate;
+                component.resizeTextForBestFit = true;
             }
             else
             {
                 component.horizontalOverflow = HorizontalWrapMode.Overflow;
                 component.verticalOverflow = VerticalWrapMode.Overflow;
+                component.resizeTextForBestFit = false;
             }
         }
     }
