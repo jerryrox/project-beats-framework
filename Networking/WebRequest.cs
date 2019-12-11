@@ -72,7 +72,7 @@ namespace PBFramework.Networking
             this.timeout = timeout;
 
             // Setup default event actions.
-            OnFinished += () => progressListener?.InvokeFinished();
+            OnFinished += () => progressListener?.InvokeFinished(this);
             OnProgress += (p) => progressListener?.Report(p);
         }
 
