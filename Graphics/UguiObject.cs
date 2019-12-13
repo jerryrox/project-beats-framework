@@ -192,6 +192,17 @@ namespace PBFramework.Graphics
             return child;
         }
 
+        public virtual T AddComponentInject<T>() where T : MonoBehaviour
+        {
+            var component = myObject.AddComponent<T>();
+            if (component is UguiObject uguiComponent)
+            {
+                uguiComponent.parent = this.parent;
+            }
+            Dependency?.Inject(component);
+            return component;
+        }
+
         public void SetParent(IGraphicObject parent)
         {
             if(parent == null) throw new ArgumentNullException(nameof(parent));

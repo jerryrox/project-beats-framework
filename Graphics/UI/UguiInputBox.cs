@@ -128,12 +128,12 @@ namespace PBFramework.Graphics.UI
             base.Awake();
 
             canvasGroup = myObject.AddComponent<CanvasGroup>();
-            backgroundSprite = myObject.AddComponent<UguiSprite>();
         }
 
         [InitWithDependency]
         private void Init()
         {
+            backgroundSprite = AddComponentInject<UguiSprite>();
             placeholderLabel = CreateChild<UguiLabel>("placeholder");
             valueLabel = CreateChild<UguiLabel>("value");
 

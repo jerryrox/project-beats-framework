@@ -20,19 +20,27 @@ namespace PBFramework.Graphics.UI
         public ISprite Background => sprite;
 
 
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+
         [InitWithDependency]
         private void Init()
         {
-            sprite = CreateChild<UguiSprite>();
+            sprite = AddComponentInject<UguiSprite>();
             label = CreateChild<UguiLabel>();
-            sprite.Depth = -1;
 
             button = myObject.AddComponent<Button>();
             button.targetGraphic = sprite.GetComponent<Image>();
             button.onClick.AddListener(() => OnClick?.Invoke());
 
+            Size = new Vector2(200, 64);
+
             SetNoTransition();
         }
+
+        public void InvokeClick() => button.onClick.Invoke();
 
         public void SetNoTransition() => button.SetNoTransition();
 

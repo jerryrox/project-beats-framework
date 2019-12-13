@@ -55,6 +55,11 @@ namespace PBFramework.Graphics
         T CreateChild<T>(string name = "") where T : MonoBehaviour, IGraphicObject;
 
         /// <summary>
+        /// Adds the specified type of component while injecting dependencies.
+        /// </summary>
+        T AddComponentInject<T>() where T : MonoBehaviour;
+
+        /// <summary>
         /// Sets the parent of this object to the specified object.
         /// </summary>
         void SetParent(IGraphicObject parent);
