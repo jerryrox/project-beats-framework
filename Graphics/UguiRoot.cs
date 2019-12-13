@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using PBFramework.Dependencies;
 
 namespace PBFramework.Graphics
@@ -45,6 +46,15 @@ namespace PBFramework.Graphics
             canvas.planeDistance = 1f;
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+
+            var eventSystem = new GameObject("EventSystem");
+            var es = eventSystem.AddComponent<EventSystem>();
+            var standaloneModule = eventSystem.AddComponent<StandaloneInputModule>();
+
+            es.sendNavigationEvents = false;
+            es.pixelDragThreshold = 10;
+            standaloneModule.inputActionsPerSecond = 10;
+            standaloneModule.repeatDelay = 0.5f;
         }
 
         public void SetOverlayRender(int sortOrder = 0)
