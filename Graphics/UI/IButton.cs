@@ -21,5 +21,10 @@ namespace PBFramework.Graphics.UI
         /// </summary>
         ISprite Background { get; }
 
+
+        /// <summary>
+        /// Invokes click event.
+        /// </summary>
+        void InvokeClick();
     }
 }
