@@ -18,25 +18,24 @@ namespace PBFramework.Graphics
         float Y { get; set; }
 
         /// <summary>
-        /// Width of the rect.
-        /// </summary>
-        float Width { get; set; }
-
-        /// <summary>
-        /// Height of the rect.
-        /// </summary>
-        float Height { get; set; }
-
-        /// <summary>
         /// Position of the rect in vector.
         /// </summary>
         Vector2 Position { get; set; }
 
         /// <summary>
+        /// Width of the rect.
+        /// </summary>
+        float Width { get; set; }
+
+        /// <summary>
+        /// Height of the rect..
+        /// </summary>
+        float Height { get; set; }
+
+        /// <summary>
         /// Size of the rect in vector.
         /// </summary>
         Vector2 Size { get; set; }
-
 
         /// <summary>
         /// Resets the size of the element using this rect.

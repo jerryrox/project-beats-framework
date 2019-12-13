@@ -7,22 +7,21 @@ namespace PBFramework.Graphics
 {
     public static class RectTransformExtensions
     {
-
-        public static void SetSizeX(this RectTransform context, float x)
+        public static void SetSizeDeltaX(this RectTransform context, float x)
         {
             var size = context.sizeDelta;
             size.x = x;
             context.sizeDelta = size;
         }
 
-        public static void SetSizeY(this RectTransform context, float y)
+        public static void SetSizeDeltaY(this RectTransform context, float y)
         {
             var size = context.sizeDelta;
             size.y = y;
             context.sizeDelta = size;
         }
 
-        public static void SetSizeXY(this RectTransform context, float x, float y)
+        public static void SetSizeDelta(this RectTransform context, float x, float y)
         {
             var size = context.sizeDelta;
             size.x = x;

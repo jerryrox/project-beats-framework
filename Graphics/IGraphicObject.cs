@@ -28,6 +28,21 @@ namespace PBFramework.Graphics
         /// </summary>
         int Depth { get; set; }
 
+        /// <summary>
+        /// (Optional) If implementation supports it, access the unprocessed, raw width value of the transform.
+        /// </summary>
+        float RawWidth { get; set; }
+
+        /// <summary>
+        /// (Optional) If implementation supports it, access the unprocessed, raw height value of the transform.
+        /// </summary>
+        float RawHeight { get; set; }
+
+        /// <summary>
+        /// (Optional) If implementation supports it, access the unprocessed, raw size value of the transform.
+        /// </summary>
+        Vector2 RawSize { get; set; }
+
 
         /// <summary>
         /// Creates a new plain GraphicObject instance under this object and returns it.

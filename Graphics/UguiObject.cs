@@ -43,25 +43,47 @@ namespace PBFramework.Graphics
             set => myTransform.SetLocalPositionY(value);
         }
 
-        public float Width
-        {
-            get => myTransform.sizeDelta.x;
-            set => myTransform.SetSizeX(value);
-        }
-
-        public float Height
-        {
-            get => myTransform.sizeDelta.y;
-            set => myTransform.SetSizeY(value);
-        }
-
         public Vector2 Position
         {
             get => myTransform.localPosition;
             set => myTransform.localPosition = value;
         }
 
+        public float Width
+        {
+            get => FromSizeDeltaX(myTransform.sizeDelta.x);
+            set => myTransform.SetSizeDeltaX(ToSizeDeltaX(value));
+        }
+
+        public float Height
+        {
+            get => FromSizeDeltaY(myTransform.sizeDelta.y);
+            set => myTransform.SetSizeDeltaY(ToSizeDeltaY(value));
+        }
+
         public Vector2 Size
+        {
+            get => new Vector2(Width, Height);
+            set
+            {
+                Width = value.x;
+                Height = value.y;
+            }
+        }
+
+        public float RawWidth
+        {
+            get => myTransform.sizeDelta.x;
+            set => myTransform.SetSizeDeltaX(value);
+        }
+
+        public float RawHeight
+        {
+            get => myTransform.sizeDelta.y;
+            set => myTransform.SetSizeDeltaY(value);
+        }
+
+        public Vector2 RawSize
         {
             get => myTransform.sizeDelta;
             set => myTransform.sizeDelta = value;
@@ -203,6 +225,46 @@ namespace PBFramework.Graphics
         public int CompareTo(IGraphicObject other)
         {
             return depth.CompareTo(other.Depth);
+        }
+
+        /// <summary>
+        /// Converts the specified size delta x value to absolute size.
+        /// </summary>
+        protected float FromSizeDeltaX(float value)
+        {
+            if(parent != null && ((anchor >= Anchors.TopStretch && anchor <= Anchors.BottomStretch) || anchor == Anchors.Fill))
+                return value + parent.Width;
+            return value;
+        }
+
+        /// <summary>
+        /// Converts the specified size delta y value to absolute size.
+        /// </summary>
+        protected float FromSizeDeltaY(float value)
+        {
+            if(parent != null && ((anchor >= Anchors.LeftStretch && anchor <= Anchors.RightStretch) || anchor == Anchors.Fill))
+                return value + parent.Height;
+            return value;
+        }
+
+        /// <summary>
+        /// Converts the spacified absolute size x value to size delta.
+        /// </summary>
+        protected float ToSizeDeltaX(float value)
+        {
+            if(parent != null && ((anchor >= Anchors.TopStretch && anchor <= Anchors.BottomStretch) || anchor == Anchors.Fill))
+                return value - parent.Width;
+            return value;
+        }
+
+        /// <summary>
+        /// Converts the specified absolute size y value to size delta.
+        /// </summary>
+        protected float ToSizeDeltaY(float value)
+        {
+            if(parent != null && ((anchor >= Anchors.LeftStretch && anchor <= Anchors.RightStretch) || anchor == Anchors.Fill))
+                return value - parent.Height;
+            return value;
         }
 
         /// <summary>
