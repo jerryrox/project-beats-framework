@@ -25,6 +25,7 @@ namespace PBFramework.Graphics.UI
         {
             sprite = CreateChild<UguiSprite>();
             label = CreateChild<UguiLabel>();
+            sprite.Depth = -1;
 
             button = myObject.AddComponent<Button>();
             button.targetGraphic = sprite.GetComponent<Image>();

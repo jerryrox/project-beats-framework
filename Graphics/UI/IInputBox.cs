@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace PBFramework.Graphics.UI
 {
-    public interface IInputBox : IGraphicObject, IHasTransition, IHasColor {
+    public interface IInputBox : IGraphicObject, IHasTransition, ILabel {
 
         /// <summary>
         /// Event called when the input value has been changed.
@@ -31,11 +31,6 @@ namespace PBFramework.Graphics.UI
         /// Returns the background sprite displayer.
         /// </summary>
         ISprite Background { get; }
-
-        /// <summary>
-        /// The text value currently entered on the input.
-        /// </summary>
-        string Text { get; set; }
 
         /// <summary>
         /// The default text to be displayed when the input text is empty.

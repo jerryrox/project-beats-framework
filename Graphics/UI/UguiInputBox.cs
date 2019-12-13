@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using PBFramework.Assets.Fonts;
 using PBFramework.Dependencies;
 
 namespace PBFramework.Graphics.UI
@@ -31,17 +32,53 @@ namespace PBFramework.Graphics.UI
             set => valueLabel.Color = placeholderLabel.Color = value;
         }
 
-        public ILabel PlaceholderLabel => placeholderLabel;
+        public IFont Font
+        {
+            get => valueLabel.Font;
+            set => valueLabel.Font = placeholderLabel.Font = value;
+        }
 
-        public ILabel ValueLabel => valueLabel;
+        public bool IsBold
+        {
+            get => valueLabel.IsBold;
+            set => valueLabel.IsBold = placeholderLabel.IsBold = value;
+        }
 
-        public ISprite Background => backgroundSprite;
+        public bool IsItalic
+        {
+            get => valueLabel.IsItalic;
+            set => valueLabel.IsItalic = placeholderLabel.IsItalic = value;
+        }
+
+        public bool WrapText
+        {
+            get => valueLabel.WrapText;
+            set => valueLabel.WrapText = placeholderLabel.WrapText = value;
+        }
+
+        public int FontSize
+        {
+            get => valueLabel.FontSize;
+            set => valueLabel.FontSize = placeholderLabel.FontSize = value;
+        }
+
+        public TextAnchor Alignment
+        {
+            get => valueLabel.Alignment;
+            set => valueLabel.Alignment = placeholderLabel.Alignment = value;
+        }
 
         public string Text
         {
             get => component.text;
             set => component.text = value;
         }
+
+        public ILabel PlaceholderLabel => placeholderLabel;
+
+        public ILabel ValueLabel => valueLabel;
+
+        public ISprite Background => backgroundSprite;
 
         public string Placeholder
         {
@@ -86,36 +123,23 @@ namespace PBFramework.Graphics.UI
         }
 
 
-
-
         protected override void Awake()
         {
             base.Awake();
 
             canvasGroup = myObject.AddComponent<CanvasGroup>();
+            backgroundSprite = myObject.AddComponent<UguiSprite>();
         }
 
         [InitWithDependency]
         private void Init()
         {
-            backgroundSprite = CreateChild<UguiSprite>("background");
             placeholderLabel = CreateChild<UguiLabel>("placeholder");
             valueLabel = CreateChild<UguiLabel>("value");
 
-            backgroundSprite.Anchor = Anchors.Fill;
-            backgroundSprite.Size = this.Size;
-
-            placeholderLabel.IsItalic = true;
-            placeholderLabel.WrapText = true;
-            placeholderLabel.Anchor = Anchors.Fill;
-            placeholderLabel.Width = this.Width - 20;
-            placeholderLabel.Height = this.Height - 14;
-            placeholderLabel.Alignment = TextAnchor.MiddleLeft;
-
-            valueLabel.WrapText = true;
-            valueLabel.Width = placeholderLabel.Width;
-            valueLabel.Height = placeholderLabel.Height;
-            valueLabel.Alignment = TextAnchor.MiddleLeft;
+            valueLabel.Anchor = placeholderLabel.Anchor = Anchors.Fill;
+            valueLabel.RawWidth = placeholderLabel.RawWidth = -20;
+            valueLabel.RawHeight = placeholderLabel.RawHeight = -14;
 
             component.targetGraphic = backgroundSprite.GetComponent<Image>();
             component.textComponent = valueLabel.GetComponent<Text>();
@@ -125,10 +149,14 @@ namespace PBFramework.Graphics.UI
             component.onValueChanged.AddListener((value) => OnChanged?.Invoke(value));
 
             Size = new Vector2(180, 36);
+            WrapText = true;
+            Alignment = TextAnchor.UpperLeft;
             LineType = InputField.LineType.SingleLine;
             InputType = InputField.InputType.Standard;
             KeyboardType = TouchScreenKeyboardType.Default;
             ValidationType = InputField.CharacterValidation.None;
+
+            SetNoTransition();
         }
 
         public void SetNoTransition() => component.SetNoTransition();
