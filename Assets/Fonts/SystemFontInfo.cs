@@ -16,6 +16,8 @@ namespace PBFramework.Assets.Fonts
         public string BoldItalicName { get; set; }
 
 
+        public IFont ToFont() => new SystemFont(this);
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

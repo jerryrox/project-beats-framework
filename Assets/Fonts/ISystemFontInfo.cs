@@ -21,5 +21,11 @@ namespace PBFramework.Assets.Fonts
         /// Returns the name of the bold italic font variant.
         /// </summary>
         string BoldItalicName { get; }
+
+
+        /// <summary>
+        /// Returns a new instance of IFont representing this info.
+        /// </summary>
+        IFont ToFont();
     }
 }
