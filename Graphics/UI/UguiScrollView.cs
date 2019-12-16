@@ -115,6 +115,7 @@ namespace PBFramework.Graphics.UI
             background.ImageType = Image.Type.Sliced;
 
             viewport.Anchor = Anchors.Fill;
+            viewport.Pivot = Pivots.TopLeft;
             viewport.RawSize = Vector2.zero;
 
             container.Anchor = Anchors.TopStretch;
