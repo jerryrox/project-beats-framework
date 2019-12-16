@@ -72,12 +72,12 @@ namespace PBFramework.Graphics
         /// <summary>
         /// Creates a new plain GraphicObject instance under this object and returns it.
         /// </summary>
-        IGraphicObject CreateChild(string name = "");
+        IGraphicObject CreateChild(string name = "", int depth = 0);
 
         /// <summary>
         /// Creates a new child with specified component T.
         /// </summary>
-        T CreateChild<T>(string name = "") where T : MonoBehaviour, IGraphicObject;
+        T CreateChild<T>(string name = "", int depth = 0) where T : MonoBehaviour, IGraphicObject;
 
         /// <summary>
         /// Adds the specified type of component while injecting dependencies.
