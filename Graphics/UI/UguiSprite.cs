@@ -10,7 +10,9 @@ namespace PBFramework.Graphics.UI
 {
     public class UguiSprite : UguiObject<Image>, ISprite {
 
-        private string lastSpriteName;
+        public event Action<Sprite> OnSpriteChange;
+
+        protected string lastSpriteName;
 
 
         public float Alpha
@@ -31,6 +33,7 @@ namespace PBFramework.Graphics.UI
             set
             {
                 component.sprite = value;
+                OnSpriteChange?.Invoke(value);
                 lastSpriteName = null;
             }
         }
@@ -41,6 +44,7 @@ namespace PBFramework.Graphics.UI
             set
             {
                 component.sprite = Atlas?.Get(value);
+                OnSpriteChange?.Invoke(component.sprite);
                 lastSpriteName = value;
             }
         }

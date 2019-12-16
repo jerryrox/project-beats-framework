@@ -1,11 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using PBFramework.Assets.Atlasing;
 
 namespace PBFramework.Graphics.UI
 {
     public interface ISprite : IGraphicObject, IHasColor, IHasMaterial, IHasFill {
-        
+
+        /// <summary>
+        /// Event called when the rendered sprite has changed.
+        /// </summary>
+        event Action<Sprite> OnSpriteChange;
+
+
         /// <summary>
         /// The atlas which the sprites are retrieved from.
         /// </summary>
