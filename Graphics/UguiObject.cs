@@ -29,6 +29,12 @@ namespace PBFramework.Graphics
 
         public IGraphicObject Parent => parent;
 
+        public bool Active
+        {
+            get => myObject.activeInHierarchy;
+            set => myObject.SetActive(value);
+        }
+
         public RectTransform RawTransform => myTransform;
 
         public float X
@@ -69,6 +75,30 @@ namespace PBFramework.Graphics
                 Width = value.x;
                 Height = value.y;
             }
+        }
+
+        public float OffsetLeft
+        {
+            get => myTransform.offsetMin.x;
+            set => myTransform.SetOffsetLeft(value);
+        }
+        
+        public float OffsetRight
+        {
+            get => myTransform.offsetMax.x;
+            set => myTransform.SetOffsetRight(value);
+        }
+        
+        public float OffsetTop
+        {
+            get => myTransform.offsetMax.y;
+            set => myTransform.SetOffsetTop(value);
+        }
+        
+        public float OffsetBottom
+        {
+            get => myTransform.offsetMin.y;
+            set => myTransform.SetOffsetBottom(value);
         }
 
         public float RawWidth
