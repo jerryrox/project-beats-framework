@@ -81,15 +81,6 @@ namespace PBFramework.Graphics.UI
             OnClick += Show;
         }
 
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                popupScrollbar.X = 0;
-                Debug.Log("Position: " + popupScrollbar.Position);
-            }
-        }
-
         public void Show()
         {
             CreateBlocker();
