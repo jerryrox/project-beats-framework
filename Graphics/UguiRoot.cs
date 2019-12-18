@@ -29,7 +29,11 @@ namespace PBFramework.Graphics
         public static UguiRoot Create(IDependencyContainer dependency)
         {
             var root = new GameObject("UguiRoot").AddComponent<UguiRoot>();
-            dependency?.Inject(root);
+            if (dependency != null)
+            {
+                dependency.CacheAs<IRoot>(root);
+                dependency.Inject(root);
+            }
             return root;
         }
 
