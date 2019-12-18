@@ -39,20 +39,26 @@ namespace PBFramework.Graphics
 
         public float X
         {
-            get => myTransform.localPosition.x;
-            set => myTransform.SetLocalPositionX(value);
+            get => myTransform.anchoredPosition3D.x;
+            set => myTransform.SetAnchoredPositionX(value);
         }
 
         public float Y
         {
-            get => myTransform.localPosition.y;
-            set => myTransform.SetLocalPositionY(value);
+            get => myTransform.anchoredPosition3D.y;
+            set => myTransform.SetAnchoredPositionY(value);
         }
 
-        public Vector2 Position
+        public float Z
         {
-            get => myTransform.localPosition;
-            set => myTransform.localPosition = value;
+            get => myTransform.anchoredPosition3D.z;
+            set => myTransform.SetAnchoredPositionZ(value);
+        }
+
+        public Vector3 Position
+        {
+            get => myTransform.anchoredPosition3D;
+            set => myTransform.anchoredPosition3D = value;
         }
 
         public float Width
@@ -190,6 +196,11 @@ namespace PBFramework.Graphics
 
         [ReceivesDependency]
         protected IDependencyContainer Dependency { get; private set; }
+
+        /// <summary>
+        /// Returns the root graphic object in the hierarchy.
+        /// </summary>
+        protected IRoot Root => Dependency?.Get<IRoot>();
 
 
         protected virtual void Awake()

@@ -7,6 +7,61 @@ namespace PBFramework.Graphics
 {
     public static class RectTransformExtensions
     {
+
+        public static void SetAnchoredPositionX(this RectTransform context, float x)
+        {
+            var pos = context.anchoredPosition3D;
+            pos.x = x;
+            context.anchoredPosition3D = pos;
+        }
+
+        public static void SetAnchoredPositionY(this RectTransform context, float y)
+        {
+            var pos = context.anchoredPosition3D;
+            pos.y = y;
+            context.anchoredPosition3D = pos;
+        }
+
+        public static void SetAnchoredPositionZ(this RectTransform context, float z)
+        {
+            var pos = context.anchoredPosition3D;
+            pos.z = z;
+            context.anchoredPosition3D = pos;
+        }
+
+        public static void SetAnchoredPositionXY(this RectTransform context, float x, float y)
+        {
+            var pos = context.anchoredPosition3D;
+            pos.x = x;
+            pos.y = y;
+            context.anchoredPosition3D = pos;
+        }
+
+        public static void SetAnchoredPositionXZ(this RectTransform context, float x, float z)
+        {
+            var pos = context.anchoredPosition3D;
+            pos.x = x;
+            pos.z = z;
+            context.anchoredPosition3D = pos;
+        }
+
+        public static void SetAnchoredPositionYZ(this RectTransform context, float y, float z)
+        {
+            var pos = context.anchoredPosition3D;
+            pos.y = y;
+            pos.z = z;
+            context.anchoredPosition3D = pos;
+        }
+
+        public static void SetAnchoredPositionXYZ(this RectTransform context, float x, float y, float z)
+        {
+            var pos = context.anchoredPosition3D;
+            pos.x = x;
+            pos.y = y;
+            pos.z = z;
+            context.anchoredPosition3D = pos;
+        }
+
         public static void SetOffsetLeft(this RectTransform context, float offset)
         {
             context.offsetMin = new Vector2(offset, context.offsetMin.y);
@@ -24,7 +79,7 @@ namespace PBFramework.Graphics
 
         public static void SetOffsetBottom(this RectTransform context, float offset)
         {
-            context.offsetMax = new Vector2(offset, context.offsetMax.y);
+            context.offsetMin = new Vector2(context.offsetMin.x, offset);
         }
 
         public static void SetSizeDeltaX(this RectTransform context, float x)

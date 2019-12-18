@@ -5,7 +5,7 @@ namespace PBFramework.Graphics
     /// <summary>
     /// Indicates that the object can be modified using transfomation.
     /// </summary>
-    public interface IHasTransform : IHasRect, IHasRotation, IHasScale {
+    public interface IHasTransform : IHasSize, IHasPosition, IHasRotation, IHasScale {
 
         /// <summary>
         /// Returns the raw transformation component under the hood.
