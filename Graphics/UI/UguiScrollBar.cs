@@ -53,7 +53,7 @@ namespace PBFramework.Graphics.UI
             foreground = slideArea.CreateChild<UguiSprite>("foreground");
 
             background.ImageType = Image.Type.Sliced;
-            background.Depth = -1;
+            background.Color = Color.black;
 
             slideArea.Anchor = Anchors.Fill;
             slideArea.RawSize = Vector2.zero;

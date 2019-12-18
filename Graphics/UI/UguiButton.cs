@@ -29,11 +29,14 @@ namespace PBFramework.Graphics.UI
         private void Init()
         {
             sprite = AddComponentInject<UguiSprite>();
-            label = CreateChild<UguiLabel>();
+            label = CreateChild<UguiLabel>("label");
 
             button = myObject.AddComponent<Button>();
             button.targetGraphic = sprite.GetComponent<Image>();
             button.onClick.AddListener(() => OnClick?.Invoke());
+
+            label.Anchor = Anchors.Fill;
+            label.RawSize = Vector2.zero;
 
             Size = new Vector2(200, 64);
 

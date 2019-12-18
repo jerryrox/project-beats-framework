@@ -2,7 +2,7 @@
 
 namespace PBFramework.Graphics.UI
 {
-    public interface IToggle : IGraphicObject, IHasAlpha {
+    public interface IToggle : IGraphicObject, IHasAlpha, IHasTransition {
 
         /// <summary>
         /// Event called when the toggle value has been changed.
@@ -30,5 +30,10 @@ namespace PBFramework.Graphics.UI
         /// Returns the sprite which displays the tick of the toggle.
         /// </summary>
         ISprite Tick { get; }
+
+        /// <summary>
+        /// Returns the label on the toggle.
+        /// </summary>
+        ILabel Label { get; }
     }
 }
