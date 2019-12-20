@@ -1,12 +1,13 @@
 ﻿using System;
 using UnityEngine;
+using PBFramework.Inputs;
 
 namespace PBFramework.Graphics
 {
     /// <summary>
     /// Abstraction of an object that resides in the UI space.
     /// </summary>
-    public interface IGraphicObject : IHasTransform, IComparable<IGraphicObject> {
+    public interface IGraphicObject : IHasTransform, IInputReceiver, IComparable<IGraphicObject> {
 
         /// <summary>
         /// Name of the object.
@@ -69,6 +70,11 @@ namespace PBFramework.Graphics
         Vector2 RawSize { get; set; }
 
 
+        /// <summary>
+        /// Sets whether this object should listen to inputs.
+        /// </summary>
+        void SetReceiveInputs(bool listen);
+        
         /// <summary>
         /// Creates a new plain GraphicObject instance under this object and returns it.
         /// </summary>

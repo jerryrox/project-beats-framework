@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Data;
+using PBFramework.Inputs;
 using PBFramework.Dependencies;
 
 namespace PBFramework.Graphics
@@ -13,6 +15,11 @@ namespace PBFramework.Graphics
 
         private UguiObject parent;
         private SortedList<UguiObject> children;
+
+        /// <summary>
+        /// Path which traverses through the ugui hierarchy this object to the root.
+        /// </summary>
+        private List<UguiObject> inputPath;
 
         private Pivots pivot = Pivots.Center;
         private Anchors anchor = Anchors.Center;
@@ -181,18 +188,30 @@ namespace PBFramework.Graphics
 
         public int Depth
         {
-            get => depth;
+            get => Canvas ? Canvas.sortingOrder : depth;
             set
             {
-                depth = value;
-                if (parent != null)
+                if (Canvas == null)
                 {
-                    parent.children.Remove(this);
-                    parent.children.Add(this);
-                    parent.ReorderChildren();
+                    depth = value;
+                    if (parent != null)
+                    {
+                        parent.children.Remove(this);
+                        parent.children.Add(this);
+                        parent.ReorderChildren();
+                    }
                 }
+                else
+                    Canvas.sortingOrder = value;
             }
         }
+
+        public int InputLayer => 0;
+
+        /// <summary>
+        /// A canvas component cached from this gameobject to detect depth overriding.
+        /// </summary>
+        public Canvas Canvas { get; set; }
 
         [ReceivesDependency]
         protected IDependencyContainer Dependency { get; private set; }
@@ -201,6 +220,11 @@ namespace PBFramework.Graphics
         /// Returns the root graphic object in the hierarchy.
         /// </summary>
         protected IRoot Root => Dependency?.Get<IRoot>();
+
+        /// <summary>
+        /// Returns the input manager instance.
+        /// </summary>
+        protected IInputManager InputManager => Dependency?.Get<IInputManager>();
 
 
         protected virtual void Awake()
@@ -277,7 +301,70 @@ namespace PBFramework.Graphics
 
         public int CompareTo(IGraphicObject other)
         {
-            return depth.CompareTo(other.Depth);
+            return Depth.CompareTo(other.Depth);
+        }
+
+        public void SetReceiveInputs(bool listen)
+        {
+            var inputManager = InputManager;
+            if(inputManager == null) return;
+
+            if(listen)
+                inputManager.AddReceiver(this);
+            else
+                inputManager.RemoveReceiver(this);
+        }
+
+        public virtual bool ProcessInput() => true;
+
+        void IInputReceiver.PrepareInputSort()
+        {
+            // Determine the path between this object and its closest canvas object.
+            if(inputPath == null)
+                inputPath = new List<UguiObject>();
+            else
+                inputPath.Clear();
+
+            var curNode = this;
+            do
+            {
+                // Add current node
+                inputPath.Add(curNode);
+
+                // Check whether current node has an overriding canvas
+                if (curNode.Canvas != null)
+                {
+                    // We should break the traversing here, since overridden canvas would most likely be displayed on a separate layer and thus,
+                    // that canvas's depth should be respected when propagating inputs.
+                    break;
+                }
+
+                // Set node to parent
+                curNode = curNode.parent;
+            }
+            while (curNode != null);
+        }
+
+        int IComparable<IInputReceiver>.CompareTo(IInputReceiver other)
+        {
+            // If not a ugui object, compare using input layer.
+            if (!(other is UguiObject uguiOther))
+                return other.InputLayer.CompareTo(InputLayer);
+
+            int myIndex = inputPath.Count - 1;
+            int otherIndex = uguiOther.inputPath.Count - 1;
+            while (myIndex >= 0 && otherIndex >= 0)
+            {
+                int myDepth = inputPath[myIndex].Depth;
+                int otherDepth = uguiOther.inputPath[otherIndex].Depth;
+                if(myDepth != otherDepth)
+                    return otherDepth.CompareTo(myDepth);
+
+                myIndex--;
+                otherIndex--;
+            }
+            // Prioritize whichever path with greater distance.
+            return otherIndex.CompareTo(myIndex);
         }
 
         /// <summary>

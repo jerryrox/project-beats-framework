@@ -46,17 +46,17 @@ namespace PBFramework.Graphics.UI
             property = new UguiDropdownProperty();
             options = new List<Dropdown.OptionData>();
 
-            popup = CreateChild<UguiScrollView>("popup");
+            popup = CreateChild<UguiScrollView>("popup", DepthPresets.DropdownPopup);
             popupGrid = popup.Container.RawObject.AddComponent<GridLayoutGroup>();
-            popupScrollbar = popup.CreateChild<UguiScrollBar>("scroll-bar", 1);
+            popupScrollbar = popup.CreateChild<UguiScrollBar>("scroll-bar", DepthPresets.DropdownPopup + 1);
 
             // Init property
             property.ScrollView = popup;
 
             // Init popup
-            var popupCanvas = popup.RawObject.AddComponent<Canvas>();
+            var popupCanvas = popup.Canvas = popup.RawObject.AddComponent<Canvas>();
             popupCanvas.overrideSorting = true;
-            popupCanvas.sortingOrder = 30000;
+            popupCanvas.sortingOrder = DepthPresets.DropdownPopup;
             var popupRaycaster = popup.RawObject.AddComponent<GraphicRaycaster>();
             popupRaycaster.ignoreReversedGraphics = true;
 
@@ -100,11 +100,11 @@ namespace PBFramework.Graphics.UI
         {
             if(blocker != null) return;
 
-            blocker = Root.CreateChild<UguiButton>("blocker", 29999);
+            blocker = Root.CreateChild<UguiButton>("blocker", DepthPresets.PopupBlocker);
 
-            var canvas = blocker.RawObject.AddComponent<Canvas>();
-            canvas.overrideSorting = true;
-            canvas.sortingOrder = 29999;
+            var blockerCanvas = blocker.Canvas = blocker.RawObject.AddComponent<Canvas>();
+            blockerCanvas.overrideSorting = true;
+            blockerCanvas.sortingOrder = DepthPresets.PopupBlocker;
 
             var raycaster = blocker.RawObject.AddComponent<GraphicRaycaster>();
             raycaster.ignoreReversedGraphics = true;

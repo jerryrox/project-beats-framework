@@ -10,7 +10,6 @@ namespace PBFramework.Graphics
 {
     public class UguiRoot : UguiObject, IRoot {
 
-        private Canvas canvas;
         private CanvasScaler scaler;
         private GraphicRaycaster raycaster;
 
@@ -43,11 +42,11 @@ namespace PBFramework.Graphics
 
             myObject.layer = 5;
 
-            canvas = myObject.AddComponent<Canvas>();
+            Canvas = myObject.AddComponent<Canvas>();
             scaler = myObject.AddComponent<CanvasScaler>();
             raycaster = myObject.AddComponent<GraphicRaycaster>();
 
-            canvas.planeDistance = 1f;
+            Canvas.planeDistance = 1f;
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
 
@@ -63,14 +62,14 @@ namespace PBFramework.Graphics
 
         public void SetOverlayRender(int sortOrder = 0)
         {
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = sortOrder;
+            Canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            Canvas.sortingOrder = sortOrder;
         }
 
         public void SetCameraRender(Camera camera)
         {
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
-            canvas.worldCamera = camera;
+            Canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            Canvas.worldCamera = camera;
         }
     }
 }
