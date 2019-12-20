@@ -26,31 +26,19 @@ namespace PBFramework.Inputs
         public bool UseMouse
         {
             get => useMouse;
-            set
-            {
-                useMouse = value;
-                UseInput(mouseCursors, value, ref useMouse);
-            }
+            set => UseInput(mouseCursors, value, ref useMouse);
         }
 
         public bool UseTouch
         {
             get => useTouch;
-            set
-            {
-                useTouch = value;
-                UseInput(touchCursors, value, ref useTouch);
-            }
+            set => UseInput(touchCursors, value, ref useTouch);
         }
 
         public bool UseKeyboard
         {
             get => useKeyboard;
-            set
-            {
-                useKeyboard = value;
-                UseInput(keyboardKeys, value, ref useKeyboard);
-            }
+            set => UseInput(keyboardKeys, value, ref useKeyboard);
         }
 
 
@@ -75,12 +63,15 @@ namespace PBFramework.Inputs
         public IKey AddKey(KeyCode keyCode)
         {
             var key = FindKey(keyCode);
-            if(key != null) return key;
+            if(key != null)
+            {
+                key.Listeners++;
+                return key;
+            }
             // If not already exist, register a new keycode
             var newKey = new KeyboardKey(keyCode);
             newKey.SetActive(useKeyboard);
             keyboardKeys.Add(newKey);
-            Debug.Log($"Added new key of code: {keyCode}. Count: {keyboardKeys.Count}");
             return newKey;
         }
 
@@ -88,9 +79,15 @@ namespace PBFramework.Inputs
         {
             var key = FindKey(keyCode);
             if(key == null) return;
+
             key.Release();
-            key.SetActive(false);
-            keyboardKeys.Remove(key as KeyboardKey);
+
+            key.Listeners--;
+            if (key.Listeners <= 0)
+            {
+                key.SetActive(false);
+                keyboardKeys.Remove(key);
+            }
         }
 
         public ICursor GetMouse(int index) => mouseCursors[index];
@@ -151,9 +148,9 @@ namespace PBFramework.Inputs
         }
 
         /// <summary>
-        /// Finds and returns the IKey instance associated with the specified keycode.
+        /// Finds and returns the KeyboardKey instance associated with the specified keycode.
         /// </summary>
-        private IKey FindKey(KeyCode keyCode) => keyboardKeys.Where(key => key.Key == keyCode).FirstOrDefault();
+        private KeyboardKey FindKey(KeyCode keyCode) => keyboardKeys.Where(key => key.Key == keyCode).FirstOrDefault();
 
         private void Update()
         {

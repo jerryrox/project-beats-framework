@@ -24,6 +24,11 @@ namespace PBFramework.Inputs
 
         public IReadOnlyBindable<bool> IsActive => isActive;
 
+        /// <summary>
+        /// The current number of objects listening to this key.
+        /// </summary>
+        public int Listeners { get; set; } = 1;
+
 
         public KeyboardKey(KeyCode keyCode)
         {
