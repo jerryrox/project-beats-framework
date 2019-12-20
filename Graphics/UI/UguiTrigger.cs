@@ -27,7 +27,6 @@ namespace PBFramework.Graphics.UI
             AddEntry(EventTriggerType.PointerClick, () => OnPointerClick?.Invoke());
         }   
         
-
         protected void AddEntry(EventTriggerType type, Action callback)
         {
             var entry = new EventTrigger.Entry()
