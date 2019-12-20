@@ -32,6 +32,16 @@ namespace PBFramework.Inputs
 
 
         /// <summary>
+        /// Adds the specified input receiver to layered input handling queue.
+        /// </summary>
+        void AddReceiver(IInputReceiver receiver);
+
+        /// <summary>
+        /// Removes the specified input receiver from layered input handling queue.
+        /// </summary>
+        void RemoveReceiver(IInputReceiver receiver);
+
+        /// <summary>
         /// Adds the specified keycode to be managed by this object.
         /// </summary>
         IKey AddKey(KeyCode keyCode);

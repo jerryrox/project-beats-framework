@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace PBFramework.Inputs
 {
+    using ReceiverList = PBFramework.Data.SortedList<IInputReceiver>;
+
     public class InputManager : MonoBehaviour, IInputManager {
 
         private bool useMouse;
@@ -17,6 +19,8 @@ namespace PBFramework.Inputs
         private List<KeyboardKey> keyboardKeys;
 
         private uint touchUpdateId = 0;
+
+        private ReceiverList receivers;
 
 
         public int MaxMouseCount { get; private set; }
@@ -58,6 +62,22 @@ namespace PBFramework.Inputs
             var manager = new GameObject("_InputManager").AddComponent<InputManager>();;
             manager.Initialize(resolution, maxMouseCursors, maxTouchCursors);
             return manager;
+        }
+
+        public void AddReceiver(IInputReceiver receiver)
+        {
+            // Prepare for input sorting due to receiver addition
+            for (int i = 0; i < receivers.Count; i++)
+                receivers[i].PrepareInputSort();
+            receiver.PrepareInputSort();
+
+            // Add the receiver.
+            receivers.Add(receiver);
+        }
+
+        public void RemoveReceiver(IInputReceiver receiver)
+        {
+            receivers.Remove(receiver);
         }
 
         public IKey AddKey(KeyCode keyCode)
@@ -121,6 +141,8 @@ namespace PBFramework.Inputs
 
             keyboardKeys = new List<KeyboardKey>(4);
 
+            receivers = new ReceiverList(8);
+
             // Use inputs by default.
             UseMouse = UseTouch = UseKeyboard = true;
         }
@@ -179,6 +201,13 @@ namespace PBFramework.Inputs
             {
                 for (int i = keyboardKeys.Count - 1; i >= 0; i--)
                     keyboardKeys[i].Process();
+            }
+
+            // Process input receivers.
+            for (int i = 0; i < receivers.Count; i++)
+            {
+                if(!receivers[i].ProcessInput())
+                    break;
             }
         }
     }
