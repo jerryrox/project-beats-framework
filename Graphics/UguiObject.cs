@@ -14,7 +14,7 @@ namespace PBFramework.Graphics
         protected RectTransform myTransform;
 
         private UguiObject parent;
-        private SortedList<UguiObject> children;
+        private SortedList<IGraphicObject> children = new SortedList<IGraphicObject>();
 
         /// <summary>
         /// Path which traverses through the ugui hierarchy this object to the root.
@@ -231,8 +231,6 @@ namespace PBFramework.Graphics
         {
             myObject = gameObject;
             myTransform = GetComponent<RectTransform>();
-
-            children = new SortedList<UguiObject>();
         }
 
         public virtual void ResetSize() {}
@@ -299,11 +297,6 @@ namespace PBFramework.Graphics
             GameObject.Destroy(myObject);
         }
 
-        public int CompareTo(IGraphicObject other)
-        {
-            return Depth.CompareTo(other.Depth);
-        }
-
         public void SetReceiveInputs(bool listen)
         {
             var inputManager = InputManager;
@@ -321,7 +314,7 @@ namespace PBFramework.Graphics
         {
             // Determine the path between this object and its closest canvas object.
             if(inputPath == null)
-                inputPath = new List<UguiObject>();
+                inputPath = new List<UguiObject>(4);
             else
                 inputPath.Clear();
 
@@ -365,6 +358,11 @@ namespace PBFramework.Graphics
             }
             // Prioritize whichever path with greater distance.
             return otherIndex.CompareTo(myIndex);
+        }
+
+        int IComparable<IGraphicObject>.CompareTo(IGraphicObject other)
+        {
+            return Depth.CompareTo(other.Depth);
         }
 
         /// <summary>
@@ -415,7 +413,7 @@ namespace PBFramework.Graphics
             // Apply the order in hierarchy tree.
             for (int i = 0; i < children.Count; i++)
             {
-                children[i].myTransform.SetSiblingIndex(i);
+                children[i].RawTransform.SetSiblingIndex(i);
             }
         }
     }
