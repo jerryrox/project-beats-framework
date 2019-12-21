@@ -13,6 +13,12 @@ namespace PBFramework.Dependencies
         private Dictionary<Type, object> dependencies = new Dictionary<Type, object>();
 
 
+        public DependencyContainer(bool cacheSelf = false)
+        {
+            if(cacheSelf)
+                CacheAs<IDependencyContainer>(this);
+        }
+
         public void Cache(object value, bool replace = false)
         {
             if(value == null)
