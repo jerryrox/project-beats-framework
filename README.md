@@ -11,12 +11,8 @@ Slowly making progress 🧩
 ## To-Dos
 #### Animations
 - Migration
-#### Assets/Fonts
-- Migration
 #### Graphics/UI
-- Migration & Some redesigning
-#### Inputs
-- Implemenet layer-based input propagation when GUI framework is established.
+- Change UguiDropdown's scrollview integration using UguiListView
 #### Services/Notifications
 - Develop from scratch
 #### Platform
