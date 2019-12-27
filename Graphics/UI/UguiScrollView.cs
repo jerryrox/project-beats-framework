@@ -131,6 +131,11 @@ namespace PBFramework.Graphics.UI
             InertiaRate = 0.1f;
         }
 
+        public virtual void ResetPosition()
+        {
+            container.Position = Vector2.zero;
+        }
+
         public void ScrollTo(Vector2 position)
         {
             // TODO: Use anime

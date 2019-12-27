@@ -61,6 +61,11 @@ namespace PBFramework.Graphics.UI
 
 
         /// <summary>
+        /// Resets the scrollview's position to its origin point.
+        /// </summary>
+        void ResetPosition();
+
+        /// <summary>
         /// Positions the container to specified position.
         /// </summary>
         void ScrollTo(Vector2 position);
