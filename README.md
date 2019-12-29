@@ -9,10 +9,14 @@ Slowly making progress 🧩
 - Newtonsoft.Json (Tested with net45 version)
 
 ## To-Dos
-#### Animations
-- Migration
 #### Graphics/UI
 - Change UguiDropdown's scrollview integration using UguiListView
+#### Graphics/UI/Navigations
+- Migrate
+#### Graphics/UI/Navigations/Overlays
+- Migrate
+#### Graphics/UI/Navigations/Screens
+- Migrate
 #### Services/Notifications
 - Develop from scratch
 #### Platform
