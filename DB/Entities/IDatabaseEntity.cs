@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using PBFramework.Data;
 using Newtonsoft.Json.Linq;
 
 namespace PBFramework.DB.Entities
@@ -7,13 +7,7 @@ namespace PBFramework.DB.Entities
     /// <summary>
     /// Interface of an entity as viewed by the database.
     /// </summary>
-    public interface IDatabaseEntity {
-
-        /// <summary>
-        /// The primary identifier of the entity instance.
-        /// </summary>
-        Guid Id { get; set; }
-
+    public interface IDatabaseEntity : IHasIdentifier {
 
         /// <summary>
         /// Serializes this entity instance into a JSON object.
