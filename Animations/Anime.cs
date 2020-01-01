@@ -42,15 +42,15 @@ namespace PBFramework.Animations
             (this as IAnimeEditor).OnBuildSection(new EventSection(time, action));
         }
 
-        public ISection<float> AnimateFloat(AnimateHandler<float> handler)
-        {
-            return new Section<float>(this, handler);
-        }
+        public ISection<float> AnimateFloat(AnimateHandler<float> handler) => new Section<float>(this, handler);
 
-        public ISection<int> AnimateInt(AnimateHandler<int> handler)
-        {
-            return new Section<int>(this, handler);
-        }
+        public ISection<int> AnimateInt(AnimateHandler<int> handler) => new Section<int>(this, handler);
+
+        public ISection<Vector2> AnimateVector2(AnimateHandler<Vector2> handler) => new Section<Vector2>(this, handler);
+        
+        public ISection<Vector3> AnimateVector3(AnimateHandler<Vector3> handler) => new Section<Vector3>(this, handler);
+        
+        public ISection<Color> AnimateColor(AnimateHandler<Color> handler) => new Section<Color>(this, handler);
 
         public void Play()
         {

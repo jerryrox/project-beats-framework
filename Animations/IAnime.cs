@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using PBFramework.Animations.Sections;
 
 namespace PBFramework.Animations
@@ -48,6 +49,21 @@ namespace PBFramework.Animations
         /// Creates a new event at specified time.
         /// </summary>
         void AddEvent(float time, Action action);
+
+        /// <summary>
+        /// Creates a new section which animates Vector2 value.
+        /// </summary>
+        ISection<Vector2> AnimateVector2(AnimateHandler<Vector2> handler);
+        
+        /// <summary>
+        /// Creates a new section which animates Vector3 value.
+        /// </summary>
+        ISection<Vector3> AnimateVector3(AnimateHandler<Vector3> handler);
+        
+        /// <summary>
+        /// Creates a new section which animates Color value.
+        /// </summary>
+        ISection<Color> AnimateColor(AnimateHandler<Color> handler);
 
         /// <summary>
         /// Creates a new section which animates float value.
