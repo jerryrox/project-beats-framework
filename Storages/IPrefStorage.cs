@@ -29,6 +29,11 @@ namespace PBFramework.Storages
         T GetObject<T>(string key);
 
         /// <summary>
+        /// Returns the enum value mapped to specified key.
+        /// </summary>
+        T GetEnum<T>(string key, T defaultValue = default) where T : struct;
+
+        /// <summary>
         /// Sets the string value to specified key.
         /// </summary>
         void SetString(string key, string value);
@@ -52,6 +57,11 @@ namespace PBFramework.Storages
         /// Sets the object to specified key.
         /// </summary>
         void SetObject<T>(string key, T value);
+
+        /// <summary>
+        /// Sets the enum value to specified key.
+        /// </summary>
+        void SetEnum<T>(string key, T value) where T : struct;
 
         /// <summary>
         /// Saves current data to PlayerPrefs.

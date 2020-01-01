@@ -69,6 +69,16 @@ namespace PBFramework.Storages
             return json[key].ToObject<T>();
         }
 
+        public T GetEnum<T>(string key, T defaultValue = default)
+            where T : struct
+        {
+            if(!json.ContainsKey(key))
+                return defaultValue;
+            if(Enum.TryParse<T>(json[key].ToString(), true, out T result))
+                return result;
+            return defaultValue;
+        }
+
         public void SetString(string key, string value) => json[key] = value;
 
         public void SetInt(string key, int value) => json[key] = value;
@@ -77,10 +87,9 @@ namespace PBFramework.Storages
 
         public void SetBool(string key, bool value) => json[key] = value;
 
-        public void SetObject<T>(string key, T value)
-        {
-            json[key] = (JObject)JToken.FromObject(value);
-        }
+        public void SetObject<T>(string key, T value) => json[key] = (JObject)JToken.FromObject(value);
+
+        public void SetEnum<T>(string key, T value) where T : struct => json[key] = value.ToString();
 
         public void Delete(string name) => json.Remove(name);
 
