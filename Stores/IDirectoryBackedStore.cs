@@ -30,7 +30,7 @@ namespace PBFramework.Stores
         /// <summary>
         /// Reloads the store from the file system.
         /// </summary>
-        Task Reload(IEventProgress progress = null);
+        Task Reload(ISimpleProgress progress = null);
 
         /// <summary>
         /// Tries importing the specified zip archive as a a new data.

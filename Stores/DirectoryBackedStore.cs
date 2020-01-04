@@ -39,7 +39,7 @@ namespace PBFramework.Stores
             tempStorage = new TempDirectoryStorage(GetType().Name);
         }
 
-        public Task Reload(IEventProgress progress = null)
+        public virtual Task Reload(ISimpleProgress progress = null)
         {
             return Task.Run(() =>
             {
@@ -47,7 +47,6 @@ namespace PBFramework.Stores
                 LoadModules();
                 LoadOrphanedData(progress);
                 progress?.Report(1f);
-                progress?.InvokeFinished();
             });
         }
 
@@ -188,6 +187,9 @@ namespace PBFramework.Stores
         /// </summary>
         private void LoadModules()
         {
+            if(database != null)
+                database.Dispose();
+                
             // Load database and storage.
             database = CreateDatabase();
             storage = CreateStorage();
@@ -201,7 +203,7 @@ namespace PBFramework.Stores
         /// <summary>
         /// Tries loading all orphaned data which exist in the directory storage but somehow not indexed in the database.
         /// </summary>
-        private void LoadOrphanedData(IEventProgress progress)
+        private void LoadOrphanedData(ISimpleProgress progress)
         {
             var directoryList = new List<DirectoryInfo>(storage.GetAll());
             for (int i = 0; i < directoryList.Count; i++)
