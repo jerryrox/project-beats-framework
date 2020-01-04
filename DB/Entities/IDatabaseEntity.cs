@@ -10,6 +10,11 @@ namespace PBFramework.DB.Entities
     public interface IDatabaseEntity : IHasIdentifier {
 
         /// <summary>
+        /// Initializes the entity as a new entry to the database.
+        /// </summary>
+        void InitializeAsNew();
+
+        /// <summary>
         /// Serializes this entity instance into a JSON object.
         /// </summary>
         JObject Serialize();

@@ -17,6 +17,12 @@ namespace PBFramework.DB.Entities
         public Guid Id { get; set; }
 
 
+
+        public virtual void InitializeAsNew()
+        {
+            Id = Guid.NewGuid();
+        }
+
         public JObject Serialize()
         {
             JObject json = (JObject)JToken.FromObject(this);
