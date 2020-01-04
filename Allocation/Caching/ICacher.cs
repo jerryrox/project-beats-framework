@@ -1,7 +1,7 @@
 using System;
 using PBFramework.Threading;
 
-namespace PBFramework.Allocation
+namespace PBFramework.Allocation.Caching
 {
     /// <summary>
     /// Indicates that the object provides cached data allocation service using a customized key.
