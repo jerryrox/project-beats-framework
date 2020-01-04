@@ -28,10 +28,9 @@ namespace PBFramework.Data.Bindables
             {
                 T oldValue = this.value;
                 // If triggers only when different, but the values are the same, just return.
-                if (TriggerWhenDifferent && EqualityComparer<T>.Default.Equals(this.value, value))
+                if (TriggerWhenDifferent && EqualityComparer<T>.Default.Equals(oldValue, value))
                     return;
-                this.value = value;
-                TriggerInternal(this.value, oldValue);
+                TriggerInternal(this.value = value, oldValue);
             }
         }
 
@@ -77,9 +76,9 @@ namespace PBFramework.Data.Bindables
 
         public override string ToString()
         {
-            if(isNullableT && value == null)
+            if(isNullableT && Value == null)
                 return "null";
-            return value.ToString();
+            return Value.ToString();
         }
 
         /// <summary>
