@@ -113,17 +113,6 @@ namespace PBFramework
         }
         #endregion
 
-        #region UITexture
-        /// <summary>
-        /// Sets the maintexture property of this UITexture and makes it pixel perfect.
-        /// </summary>
-        public static void SetMainTexture(this UITexture context, Texture2D texture)
-        {
-            context.mainTexture = texture;
-            context.MakePixelPerfect();
-        }
-        #endregion
-
         #region DirectoryInfo
         /// <summary>
         /// Copies this directory to specified directory.
@@ -138,6 +127,16 @@ namespace PBFramework
         public static string GetNameWithoutExtension(this FileInfo context)
         {
             return Path.GetFileNameWithoutExtension(context.Name);
+        }
+        #endregion
+
+        #region DirectoryInfo
+        /// <summary>
+        /// Returns a new directory within this directory using the specified relative path.
+        /// </summary>
+        public static DirectoryInfo GetSubdirectory(this DirectoryInfo context, string innerPath)
+        {
+            return new DirectoryInfo(Path.Combine(context.FullName, innerPath));
         }
         #endregion
     }
