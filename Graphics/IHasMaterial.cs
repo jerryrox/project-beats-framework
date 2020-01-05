@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PBFramework.Graphics.UI
+namespace PBFramework.Graphics
 {
     public interface IHasMaterial {
     

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PBFramework.Graphics.UI
+namespace PBFramework.Graphics
 {
     public static class SelectableExtensions {
 
