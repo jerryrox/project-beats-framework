@@ -32,11 +32,6 @@ namespace PBFramework.Allocation.Caching
         /// Returns whether 
         /// </summary>
         bool IsCached(TKey key);
-
-        /// <summary>
-        /// Converts the specified TKey value to a unique string key.
-        /// </summary>
-        string StringifyKey(TKey key);
     }
 
     /// <summary>

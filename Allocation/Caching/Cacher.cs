@@ -70,8 +70,6 @@ namespace PBFramework.Allocation.Caching
 
         public bool IsCached(TKey key) => caches.ContainsKey(key);
 
-        public virtual string StringifyKey(TKey key) => key.ToString();
-
         /// <summary>
         /// Creates a new promise which represents the requesting process.
         /// </summary>
@@ -163,5 +161,11 @@ namespace PBFramework.Allocation.Caching
 				});
 			}
 		}
+    }
+
+    public abstract class Cacher<TValue> : Cacher<string, TValue>, ICacher<TValue>
+        where TValue : class
+    {
+
     }
 }

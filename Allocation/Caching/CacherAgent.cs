@@ -72,7 +72,7 @@ namespace PBFramework.Allocation.Caching
     public class CacherAgent<T> : CacherAgent<string, T>
         where T : class
     {
-        public CacherAgent(Cacher<string, T> cacher) : base(cacher)
+        public CacherAgent(ICacher<string, T> cacher) : base(cacher)
         {
         }
     }
