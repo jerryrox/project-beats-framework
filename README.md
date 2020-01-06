@@ -11,12 +11,6 @@ Slowly making progress 🧩
 ## To-Dos
 #### Graphics/UI
 - Change UguiDropdown's scrollview integration using UguiListView
-#### Graphics/UI/Navigations
-- Migrate
-#### Graphics/UI/Navigations/Overlays
-- Migrate
-#### Graphics/UI/Navigations/Screens
-- Migrate
 #### Services/Notifications
 - Develop from scratch
 #### Platform
