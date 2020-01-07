@@ -35,7 +35,8 @@ namespace PBFramework
         /// </summary>
         public void SetProgress(float progress)
         {
-            OnProgress?.Invoke(Progress = progress);
+            this.Progress = progress;
+            OnProgress?.Invoke(progress);
         }
 
         /// <summary>
