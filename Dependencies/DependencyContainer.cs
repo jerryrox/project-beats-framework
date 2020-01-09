@@ -50,6 +50,8 @@ namespace PBFramework.Dependencies
         {
             var container = new DependencyContainer();
             container.CacheFrom(this);
+            if(container.Get<IDependencyContainer>() != null)
+                container.CacheAs<IDependencyContainer>(container, true);
             return container;
         }
         

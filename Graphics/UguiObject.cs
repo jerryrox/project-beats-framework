@@ -214,17 +214,17 @@ namespace PBFramework.Graphics
         public Canvas Canvas { get; set; }
 
         [ReceivesDependency]
-        protected IDependencyContainer Dependency { get; private set; }
+        public IDependencyContainer Dependencies { get; set; }
 
         /// <summary>
         /// Returns the root graphic object in the hierarchy.
         /// </summary>
-        protected IRoot Root => Dependency?.Get<IRoot>();
+        protected IRoot Root => Dependencies?.Get<IRoot>();
 
         /// <summary>
         /// Returns the input manager instance.
         /// </summary>
-        protected IInputManager InputManager => Dependency?.Get<IInputManager>();
+        protected IInputManager InputManager => Dependencies?.Get<IInputManager>();
 
 
         protected virtual void Awake()
@@ -235,12 +235,12 @@ namespace PBFramework.Graphics
 
         public virtual void ResetSize() {}
 
-        public IGraphicObject CreateChild(string name = "", int depth = 0)
+        public IGraphicObject CreateChild(string name = "", int depth = 0, IDependencyContainer dependencies = null)
         {
-            return CreateChild<UguiObject>(name, depth);
+            return CreateChild<UguiObject>(name, depth, dependencies);
         }
 
-        public virtual T CreateChild<T>(string name = "", int depth = 0) where T : MonoBehaviour, IGraphicObject
+        public virtual T CreateChild<T>(string name = "", int depth = 0, IDependencyContainer dependencies = null) where T : MonoBehaviour, IGraphicObject
         {
             var child = new GameObject(name).AddComponent<T>();
             // Assign parent
@@ -251,8 +251,9 @@ namespace PBFramework.Graphics
             child.gameObject.layer = myObject.layer;
             child.transform.ResetTransform();
 
-            // Inject dependencies
-            Dependency?.Inject(child);
+            // Inject dependencies.
+            // Prioritize the dependency given as argument.
+            (dependencies ?? Dependencies)?.Inject(child);
             return child;
         }
 
@@ -263,7 +264,7 @@ namespace PBFramework.Graphics
             {
                 uguiComponent.parent = this.parent;
             }
-            Dependency?.Inject(component);
+            Dependencies?.Inject(component);
             return component;
         }
 

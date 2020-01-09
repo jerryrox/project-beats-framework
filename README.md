@@ -11,6 +11,7 @@ Slowly making progress 🧩
 ## To-Dos
 #### Graphics/UI
 - Change UguiDropdown's scrollview integration using UguiListView
+- Implement progress bar
 #### Services/Notifications
 - Develop from scratch
 #### Platform

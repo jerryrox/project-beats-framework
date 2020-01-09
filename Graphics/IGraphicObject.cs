@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using PBFramework.Inputs;
+using PBFramework.Dependencies;
 
 namespace PBFramework.Graphics
 {
@@ -23,6 +24,11 @@ namespace PBFramework.Graphics
         /// Returns the parent object.
         /// </summary>
         IGraphicObject Parent { get; }
+
+        /// <summary>
+        /// The dependency container used by this graphic object to use and pass down the hierarchy.
+        /// </summary>
+        IDependencyContainer Dependencies { get; set; }
 
         /// <summary>
         /// Whether the host object is currently active.
@@ -78,12 +84,12 @@ namespace PBFramework.Graphics
         /// <summary>
         /// Creates a new plain GraphicObject instance under this object and returns it.
         /// </summary>
-        IGraphicObject CreateChild(string name = "", int depth = 0);
+        IGraphicObject CreateChild(string name = "", int depth = 0, IDependencyContainer dependencies = null);
 
         /// <summary>
         /// Creates a new child with specified component T.
         /// </summary>
-        T CreateChild<T>(string name = "", int depth = 0) where T : MonoBehaviour, IGraphicObject;
+        T CreateChild<T>(string name = "", int depth = 0, IDependencyContainer dependencies = null) where T : MonoBehaviour, IGraphicObject;
 
         /// <summary>
         /// Adds the specified type of component while injecting dependencies.
