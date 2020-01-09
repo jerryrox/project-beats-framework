@@ -161,8 +161,9 @@ namespace PBFramework.Stores
 
         /// <summary>
         /// Tries parsing data T out of specified directory.
+        /// data may be null if new or orphaned data.
         /// </summary>
-        protected abstract T ParseData(DirectoryInfo directory);
+        protected abstract T ParseData(DirectoryInfo directory, T data = null);
 
         /// <summary>
         /// Post-processes the data after parsing from directory or loading from database.
@@ -198,6 +199,25 @@ namespace PBFramework.Stores
 
             // Initialize the database.
             database.Initialize();
+        }
+
+        /// <summary>
+        /// Fully loads the specified data from the database and the directory.
+        /// </summary>
+        private T LoadStoredData(T rawData)
+        {
+            // Find the directory with the data's id.
+            var dir = storage.Get(rawData.Id.ToString());
+            if (dir == null)
+            {
+                Logger.LogError($"DirectoryBackedStore.LoadStoredData - Failed to load data at directory: {dir.FullName}");
+                return null;
+            }
+
+            // Parse and process data
+            rawData = ParseData(dir, rawData);
+            PostProcessData(rawData);
+            return rawData;
         }
 
         /// <summary>
