@@ -21,8 +21,7 @@ namespace PBFramework.Networking.API
         {
             get
             {
-                if(queryParams.Count == 0)
-                    return Endpoint;
+                if(queryParams.Count == 0) return string.Empty;
 
                 StringBuilder sb = new StringBuilder();
                 foreach (var param in queryParams)
@@ -31,13 +30,17 @@ namespace PBFramework.Networking.API
                         sb.Append('&');
                     sb.Append(UnityWebRequest.EscapeURL(param.Key)).Append('=').Append(UnityWebRequest.EscapeURL(param.Value));
                 }
-                return $"{Endpoint}?{sb.ToString()}";
+                return sb.ToString();
             }
         }
+
+        public override string Url => $"{Endpoint}{(queryParams.Count == 0 ? string.Empty : "?")}{QueryString}";
 
 
         protected HttpRequest(string url, int timeout = 60, int retryCount = 1) : base("", timeout, retryCount)
         {
+            url = url.Trim();
+            
             ExtractEndpoint(url);
             ExtractQueryParams(url);
         }
@@ -86,7 +89,11 @@ namespace PBFramework.Networking.API
         private void ExtractEndpoint(string url)
         {
             int delimiter = url.IndexOf('?');
-            if(delimiter < 0) return;
+            if (delimiter < 0)
+            {
+                Endpoint = url;
+                return;
+            }
 
             Endpoint = url.Substring(0, delimiter);
         }
