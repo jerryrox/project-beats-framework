@@ -26,7 +26,11 @@ namespace PBFramework.Networking.API
         public void ApplyData(UnityWebRequest request)
         {
             request.uploadHandler = new UploadHandlerRaw(form.data);
-            request.SetRequestHeader("Content-Type", "multipart/form-data");
+            foreach (var header in form.headers)
+            {
+                Debug.Log($"Setting header: ({header.Key}, {header.Value})");
+                request.SetRequestHeader(header.Key, header.Value);
+            }
         }
     }
 }

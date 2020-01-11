@@ -14,7 +14,7 @@ namespace PBFramework.Networking.API
         /// <summary>
         /// Sets the data for the post request.
         /// </summary>
-        public void SetPostParam(IPostData postData) => this.postData = postData;
+        public void SetPostData(IPostData postData) => this.postData = postData;
 
         protected override UnityWebRequest CreateWebRequester(string url)
         {
