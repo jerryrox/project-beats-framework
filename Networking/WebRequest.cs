@@ -59,7 +59,7 @@ namespace PBFramework.Networking
             }            
         }
 
-        public string Url => url;
+        public virtual string Url => url;
 
         public IWebResponse Response => response;
 
@@ -94,7 +94,7 @@ namespace PBFramework.Networking
             DisposeSoft();
 
             // Prepare request
-            request = CreateRequest(url);
+            request = CreateRequest(Url);
             request.timeout = timeout;
 
             // Start polling request completion on coroutine.
