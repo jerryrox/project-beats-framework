@@ -40,9 +40,9 @@ namespace PBFramework.Networking
         }
 
         /// <summary>
-        /// Sets headers based on the specified Set-Header value.
+        /// Sets headers based on the specified Set-Cookie value.
         /// </summary>
-        public void SetHeader(string header)
+        public void SetCookie(string header)
         {
             foreach (var entry in ParseEntries(header))
             {
