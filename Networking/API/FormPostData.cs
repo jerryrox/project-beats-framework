@@ -28,7 +28,6 @@ namespace PBFramework.Networking.API
             request.uploadHandler = new UploadHandlerRaw(form.data);
             foreach (var header in form.headers)
             {
-                Debug.Log($"Setting header: ({header.Key}, {header.Value})");
                 request.SetRequestHeader(header.Key, header.Value);
             }
         }

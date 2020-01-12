@@ -12,8 +12,6 @@ Slowly making progress 🧩
 #### Graphics/UI
 - Change UguiDropdown's scrollview integration using UguiListView
 - Implement progress bar
-#### Networking
-- Implement requests specialized for API calls using GET or POST.
 #### Services/Notifications
 - Develop from scratch
 #### Platform
