@@ -26,6 +26,11 @@ namespace PBFramework.Networking.API
         void SetHeader(string key, string value);
 
         /// <summary>
+        /// Sets the specified cookies to the request.
+        /// </summary>
+        void SetCookies(string cookieString);
+
+        /// <summary>
         /// Adds a query parameter of specified key and value.
         /// </summary>
         void AddQueryParam(string key, string value);

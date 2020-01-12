@@ -53,6 +53,8 @@ namespace PBFramework.Networking.API
             headers[key] = value;
         }
 
+        public void SetCookies(string cookieString) => SetHeader("Cookie", cookieString);
+
         public void AddQueryParam(string key, string value)
         {
             if(key == null) key = string.Empty;
