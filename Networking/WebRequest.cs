@@ -71,6 +71,9 @@ namespace PBFramework.Networking
             this.url = url.GetUriEscaped();
             this.timeout = timeout;
 
+            // Create response data
+            this.response = new WebResponse(this);
+
             // Setup default event actions.
             OnFinished += () => progressListener?.InvokeFinished(this);
             OnProgress += (p) => progressListener?.Report(p);
@@ -96,6 +99,9 @@ namespace PBFramework.Networking
             // Prepare request
             request = CreateRequest(Url);
             request.timeout = timeout;
+
+            // Assign requester object on response.
+            response.Request = request;
 
             // Start polling request completion on coroutine.
             requestRoutine = UnityThreadService.StartCoroutine(RequestRoutine());
@@ -146,10 +152,10 @@ namespace PBFramework.Networking
                 request.Dispose();
                 request = null;
             }
+            // Dispose the response, but do not remove the reference to it.
             if (response != null)
             {
                 response.Dispose();
-                response = null;
             }
         }
 
@@ -161,6 +167,12 @@ namespace PBFramework.Networking
             if(isDisposed) return;
             isDisposed = true;
             DisposeSoft();
+
+            if (response != null)
+            {
+                response.Dispose();
+                response = null;
+            }
         }
 
         /// <summary>
@@ -170,9 +182,6 @@ namespace PBFramework.Networking
         {
             // Send request
             request.SendWebRequest();
-
-            // Create response data
-            response = new WebResponse(this, request);
 
             // Polling till finished.
             while (request != null && !request.isDone && !request.isNetworkError)

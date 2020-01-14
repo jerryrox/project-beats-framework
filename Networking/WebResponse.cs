@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,30 +9,31 @@ namespace PBFramework.Networking
     public class WebResponse : IWebResponse {
 
         private WebRequest parent;
-        private UnityWebRequest request;
 
 
-        public long Code => request.responseCode == 0 ? request.GetResponseHeaders().GetResponseCode() : request.responseCode;
+        public UnityWebRequest Request { get; set; }
+
+        public long Code => Request == null ? 0 : (Request.responseCode == 0 ? Request.GetResponseHeaders().GetResponseCode() : Request.responseCode);
 
         public bool IsSuccess 
         {
-            get => parent.IsDone && !request.isNetworkError &&
-                !request.isHttpError && string.IsNullOrEmpty(request.error);
+            get => Request != null && parent.IsDone && !Request.isNetworkError &&
+                !Request.isHttpError && string.IsNullOrEmpty(Request.error);
         }
 
-        public string ErrorMessage => request.error;
+        public string ErrorMessage => Request?.error;
 
-        public string TextData => request.downloadHandler.text;
+        public string TextData => Request?.downloadHandler.text;
 
-        public byte[] ByteData => request.downloadHandler.data;
+        public byte[] ByteData => Request?.downloadHandler.data;
 
-        public AudioClip AudioData => ((DownloadHandlerAudioClip)request.downloadHandler).audioClip;
+        public AudioClip AudioData => Request == null ? null : ((DownloadHandlerAudioClip)Request.downloadHandler).audioClip;
 
-        public AssetBundle AssetBundleData => DownloadHandlerAssetBundle.GetContent(request);
+        public AssetBundle AssetBundleData => Request == null ? null : DownloadHandlerAssetBundle.GetContent(Request);
 
-        public Texture2D TextureData => DownloadHandlerTexture.GetContent(request);
+        public Texture2D TextureData => Request == null ? null : DownloadHandlerTexture.GetContent(Request);
 
-        public Dictionary<string, string> Headers => request.GetResponseHeaders();
+        public Dictionary<string, string> Headers => Request?.GetResponseHeaders();
 
         public string ContentType
         {
@@ -61,18 +61,17 @@ namespace PBFramework.Networking
             }
         }
 
-        public ulong BytesLoaded => request.downloadedBytes;
+        public ulong BytesLoaded => Request == null ? 0 : Request.downloadedBytes;
 
 
-        public WebResponse(WebRequest parent, UnityWebRequest request)
+        public WebResponse(WebRequest parent)
         {
             this.parent = parent;
-            this.request = request;
         }
 
         public void Dispose()
         {
-            request = null;
+            Request = null;
         }
     }
 }
