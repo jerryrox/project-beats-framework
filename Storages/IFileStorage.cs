@@ -1,4 +1,5 @@
 using System.IO;
+using System.Collections.Generic;
 
 namespace PBFramework.Storages
 {
@@ -12,6 +13,11 @@ namespace PBFramework.Storages
         /// </summary>
         DirectoryInfo Container { get; }
 
+
+        /// <summary>
+        /// Returns all files in the storage.
+        /// </summary>
+        IEnumerable<FileInfo> GetAllFiles();
 
         /// <summary>
         /// Returns the information of the file with specified name.

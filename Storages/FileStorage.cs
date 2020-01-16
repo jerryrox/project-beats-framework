@@ -23,6 +23,8 @@ namespace PBFramework.Storages
 
         public bool Exists(string name) => File.Exists(GetFullPath(name));
 
+        public IEnumerable<FileInfo> GetAllFiles() => directory.GetFiles();
+
         public FileInfo GetFile(string name) => new FileInfo(GetFullPath(name));
 
         public string GetText(string name)
