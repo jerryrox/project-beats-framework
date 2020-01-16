@@ -58,30 +58,35 @@ namespace PBFramework.UI
         private void Init()
         {
             background = CreateChild<UguiSprite>("background");
+            {
+                background.ImageType = Image.Type.Sliced;
+                background.Anchor = Anchors.Fill;
+                background.RawSize = Vector2.zero;
+                background.Depth = -2;
+            }
             foregroundArea = CreateChild<UguiObject>("foreground-area");
+            {
+                foregroundArea.Anchor = Anchors.Fill;
+                foregroundArea.Position = Vector2.zero;
+                foregroundArea.RawSize = Vector2.zero;
+                foregroundArea.Depth = -1;
+            }
             foreground = foregroundArea.CreateChild<UguiSprite>("foreground");
+            {
+                foreground.ImageType = Image.Type.Sliced;
+                foreground.Anchor = Anchors.LeftStretch;
+                foreground.RawSize = Vector2.zero;
+            }
             thumbArea = CreateChild<UguiObject>("thumb-area");
+            {
+                thumbArea.Anchor = Anchors.Fill;
+                thumbArea.Position = Vector2.zero;
+                thumbArea.RawSize = Vector2.zero;
+            }
             thumb = thumbArea.CreateChild<UguiSprite>("thumb");
-
-            background.ImageType = Image.Type.Sliced;
-            background.Anchor = Anchors.Fill;
-            background.RawSize = Vector2.zero;
-            background.Depth = -2;
-
-            foregroundArea.Anchor = Anchors.Fill;
-            foregroundArea.Position = Vector2.zero;
-            foregroundArea.RawSize = Vector2.zero;
-            foregroundArea.Depth = -1;
-
-            foreground.ImageType = Image.Type.Sliced;
-            foreground.Anchor = Anchors.LeftStretch;
-            foreground.RawSize = Vector2.zero;
-
-            thumbArea.Anchor = Anchors.Fill;
-            thumbArea.Position = Vector2.zero;
-            thumbArea.RawSize = Vector2.zero;
-
-            thumb.Anchor = Anchors.LeftStretch;
+            {
+                thumb.Anchor = Anchors.LeftStretch;
+            }
 
             component.targetGraphic = thumb.GetComponent<Image>();
             component.fillRect = foreground.RawTransform;
