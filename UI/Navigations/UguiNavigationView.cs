@@ -1,5 +1,7 @@
+using PBFramework.Graphics;
 using PBFramework.Animations;
 using PBFramework.Dependencies;
+using UnityEngine;
 
 namespace PBFramework.UI.Navigations
 {
@@ -15,6 +17,9 @@ namespace PBFramework.UI.Navigations
         [InitWithDependency]
         private void Init()
         {
+            Anchor = Anchors.Fill;
+            RawSize = Vector2.zero;
+
             // Create animations.
             ShowAnime = CreateShowAnime();
             HideAnime = CreateHideAnime();
