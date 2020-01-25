@@ -1,46 +1,57 @@
+using PBFramework.Animations;
+using PBFramework.Dependencies;
+
 namespace PBFramework.UI.Navigations
 {
-    public abstract class UguiNavigationView : UguiPanel {
+    public abstract class UguiNavigationView : UguiPanel, INavigationView {
 
         public virtual HideActions HideAction => HideActions.Destroy;
 
+        public IAnime ShowAnime { get; private set; }
 
-        public virtual void ShowView()
-        {
-            if (OnPreShowView())
-                OnPostShowView();
-        }
+        public IAnime HideAnime { get; private set; }
 
-        public virtual void HideView()
-        {
-            if(OnPreHideView())
-                OnPostHideView();
-        }
 
-        /// <summary>
-        /// Event called before this view is about to process view showing.
-        /// Returns whether OnPostShowView can be called automatically after this method.
-        /// </summary>
-        protected virtual bool OnPreShowView()
+        [InitWithDependency]
+        private void Init()
         {
-            Active = true;
-            return true;
+            // Create animations.
+            ShowAnime = CreateShowAnime();
+            HideAnime = CreateHideAnime();
         }
 
         /// <summary>
-        /// Event called after this view has finished showing the view.
+        /// Returns a new instance of the view show animation.
         /// </summary>
-        protected virtual void OnPostShowView() { }
+        protected virtual IAnime CreateShowAnime() => null;
 
         /// <summary>
-        /// Event called before this view is about to process view hiding.
-        /// Returns whether OnPostHideView can be called automatically after this method.
+        /// Returns a new instance of the view hide animation.
         /// </summary>
-        protected virtual bool OnPreHideView() => true;
+        protected virtual IAnime CreateHideAnime() => null;
 
         /// <summary>
-        /// Event called after this view has finished hiding the view.
+        /// Handles pre-show event called from the navigator.
         /// </summary>
-        protected virtual void OnPostHideView() => Active = false;
+        protected virtual void OnPreShow() {}
+        void INavigationEvent.OnPreShow() => OnPreShow();
+
+        /// <summary>
+        /// Handles post-show event called from the navigator.
+        /// </summary>
+        protected virtual void OnPostShow() { }
+        void INavigationEvent.OnPostShow() => OnPostShow();
+
+        /// <summary>
+        /// Handles pre-hide event called from the navigator.
+        /// </summary>
+        protected virtual void OnPreHide() { }
+        void INavigationEvent.OnPreHide() => OnPreHide();
+
+        /// <summary>
+        /// Handles post-hide event called from the navigator.
+        /// </summary>
+        protected virtual void OnPostHide() { }
+        void INavigationEvent.OnPostHide() => OnPostHide();
     }
 }

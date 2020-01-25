@@ -7,6 +7,7 @@ Slowly making progress 🧩
 
 ## Dependencies
 - Newtonsoft.Json (Tested with net45 version)
+- ICSharpCode.SharpZipLib
 
 ## To-Dos
 #### Graphics/UI

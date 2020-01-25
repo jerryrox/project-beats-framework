@@ -1,6 +1,6 @@
 namespace PBFramework.UI.Navigations
 {
-    public interface IScreenNavigator : INavigator<IScreenView> {
+    public interface IScreenNavigator : INavigator {
     
     }
 }

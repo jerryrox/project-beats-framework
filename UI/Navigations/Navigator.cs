@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Graphics;
 
+using Logger = PBFramework.Debugging.Logger;
+
 namespace PBFramework.UI.Navigations
 {
-    public abstract class Navigator<T> : INavigator<T>
-        where T : INavigationView
+    public class Navigator : INavigator
     {
         /// <summary>
         /// List of views currently showing or being cached.
         /// </summary>
-        protected List<T> views = new List<T>();
+        protected List<INavigationView> views = new List<INavigationView>();
 
         /// <summary>
         /// The container object which holds all the view objects.
@@ -27,115 +28,119 @@ namespace PBFramework.UI.Navigations
             this.root = root;
         }
 
-        public TView Get<TView>()
-            where TView : T => views.OfType<TView>().FirstOrDefault();
+        public T Get<T>()
+            where T : INavigationView => views.OfType<T>().FirstOrDefault();
 
-        public IEnumerable<TView> GetAll<TView>()
-            where TView : T => views.OfType<TView>();
+        public IEnumerable<T> GetAll<T>()
+            where T : INavigationView => views.OfType<T>();
 
-        public TView Show<TView>()
-            where TView : MonoBehaviour, T
+        public T Show<T>()
+            where T : MonoBehaviour, INavigationView
         {
-            var view = Get<TView>();
-            if (view != null)
+            var view = Get<T>();
+            if (view == null)
             {
-                ShowInternal(view);
-                return view;
+                view = CreateInternal<T>();
+                views.Add(view);
             }
 
-            view = root.CreateChild<TView>();
-            OnViewCreated(view);
             ShowInternal(view);
-            views.Add(view);
             return view;
         }
 
-        public void Hide<TView>()
-            where TView : T
+        public void Hide<T>()
+            where T : INavigationView
         {
-            for (int i = views.Count - 1; i >= 0; i--)
+            var view = Get<T>();
+            if(view == null) return;
+
+            HideInternal(view);
+        }
+
+        public void Hide<T>(T view)
+            where T : INavigationView
+        {
+            if(view == null) return;
+
+            HideInternal(view);
+        }
+
+        /// <summary>
+        /// Internally handles view creation process.
+        /// </summary>
+        protected virtual T CreateInternal<T>()
+            where T : MonoBehaviour, INavigationView
+        {
+            var view = root.CreateChild<T>();
+            var viewEvent = view as INavigationEvent;
+
+            // Hook events to animations.
+            var showAni = view.ShowAnime;
+            var hideAni = view.HideAnime;
+            if (showAni != null)
             {
-                if (views[i] is TView)
+                showAni.AddEvent(showAni.Duration, () =>
                 {
-                    if (views[i].HideAction == HideActions.Destroy)
-                    {
-                        OnViewDestroying(views[i]);
-                        HideInternal(views[i]);
-                        views.RemoveAt(i);
-                    }
-                    else
-                    {
-                        HideInternal(views[i]);
-                    }
-                }
+                    if (viewEvent != null)
+                        viewEvent.OnPostShow();
+                });
             }
+            if (hideAni != null)
+            {
+                hideAni.AddEvent(hideAni.Duration, () =>
+                {
+                    if (view != null)
+                        DisposeInternal(view);
+                });
+            }
+            return view;
         }
 
-        public void Hide<TView>(TView view)
-            where TView : T
+        /// <summary>
+        /// Internally handles view showing process.
+        /// </summary>
+        protected virtual void ShowInternal(INavigationView view)
         {
-            if (view == null) return;
-
-            if (view.HideAction == HideActions.Destroy)
-            {
-                OnViewDestroying(view);
-                HideInternal(view);
-                views.Remove(view);
-            }
+            view.Active = true;
+            view.OnPreShow();
+            if (view.ShowAnime != null)
+                view.ShowAnime.PlayFromStart();
             else
+                view.OnPostShow();
+        }
+
+        /// <summary>
+        /// Internally handles view hiding process.
+        /// </summary>
+        protected virtual void HideInternal(INavigationView view)
+        {
+            view.OnPreHide();
+            if (view.HideAnime != null)
+                view.HideAnime.PlayFromStart();
+            else
+                DisposeInternal(view);
+        }
+
+        /// <summary>
+        /// Disposes the view based on its hide action type.
+        /// </summary>
+        protected virtual void DisposeInternal(INavigationView view)
+        {
+            view.OnPostHide();
+
+            switch (view.HideAction)
             {
-                HideInternal(view);
+                case HideActions.Recycle:
+                    view.Active = false;
+                    break;
+                case HideActions.Destroy:
+                    views.Remove(view);
+                    GameObject.Destroy(view.RawObject);
+                    break;
+                default:
+                    Logger.LogWarning($"Navigator.DisposeInternal - Unsupported hide action type: {view.HideAction}");
+                    break;
             }
-        }
-
-        /// <summary>
-        /// Event called when the specified view is newly instantiated.
-        /// </summary>
-        protected virtual void OnViewCreated(T view) {}
-
-        /// <summary>
-        /// Event called when the specified view is about to be destroyed.
-        /// </summary>
-        protected virtual void OnViewDestroying(T view) {}
-
-        /// <summary>
-        /// Event called when the specified view is about to show.
-        /// </summary>
-        protected virtual void OnPreShowView(T view) {}
-
-        /// <summary>
-        /// Event called when the specified view has been shown.
-        /// </summary>
-        protected virtual void OnPostShowView(T view) {}
-
-        /// <summary>
-        /// Event called when the specified view is about to hide.
-        /// </summary>
-        protected virtual void OnPreHideView(T view) {}
-
-        /// <summary>
-        /// Event called when the specified view has been hidden.
-        /// </summary>
-        protected virtual void OnPostHideView(T view) {}
-
-        /// <summary>
-        /// Handles showing of the specified view with events.
-        /// </summary>
-        protected void ShowInternal(T view)
-        {
-            OnPreShowView(view);
-            view.ShowView();
-            OnPostShowView(view);
-        }
-
-        /// <summary>
-        /// Handles hiding of the specified view with events.
-        /// </summary>
-        protected void HideInternal(T view)
-        {
-            OnPreHideView(view);
-            view.HideView();
-            OnPostHideView(view);
         }
     }
 }

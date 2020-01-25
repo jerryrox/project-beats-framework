@@ -1,6 +1,6 @@
 namespace PBFramework.UI.Navigations
 {
-    public interface IOverlayNavigator : INavigator<IOverlayView> {
+    public interface IOverlayNavigator : INavigator {
     
     }
 }

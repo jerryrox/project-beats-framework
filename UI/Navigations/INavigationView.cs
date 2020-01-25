@@ -1,21 +1,22 @@
+using PBFramework.Animations;
+
 namespace PBFramework.UI.Navigations
 {
-    public interface INavigationView : IPanel {
+    public interface INavigationView : IPanel, INavigationEvent {
 
         /// <summary>
         /// Returns the type of action performed on hiding.
         /// </summary>
         HideActions HideAction { get; }
 
-
         /// <summary>
-        /// Performs showing process of the view.
+        /// Returns the animation played on view show.
         /// </summary>
-        void ShowView();
-
+        IAnime ShowAnime { get; }
+        
         /// <summary>
-        /// Performs hiding process of the view.
+        /// Returns the animation played on view hide.
         /// </summary>
-        void HideView();
+        IAnime HideAnime { get; }
     }
 }
