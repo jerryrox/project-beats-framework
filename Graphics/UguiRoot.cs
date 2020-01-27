@@ -50,14 +50,21 @@ namespace PBFramework.Graphics
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
 
-            var eventSystem = new GameObject("EventSystem");
-            var es = eventSystem.AddComponent<EventSystem>();
-            var standaloneModule = eventSystem.AddComponent<StandaloneInputModule>();
+            var es = GameObject.FindObjectOfType<EventSystem>();
+            if (es == null)
+            {
+                es = new GameObject("EventSystem").AddComponent<EventSystem>();
 
-            es.sendNavigationEvents = false;
-            es.pixelDragThreshold = 10;
-            standaloneModule.inputActionsPerSecond = 10;
-            standaloneModule.repeatDelay = 0.5f;
+                var standaloneModule = es.GetComponent<StandaloneInputModule>();
+                if (standaloneModule == null)
+                {
+                    standaloneModule = es.gameObject.AddComponent<StandaloneInputModule>();
+                    es.sendNavigationEvents = false;
+                    es.pixelDragThreshold = 10;
+                    standaloneModule.inputActionsPerSecond = 10;
+                    standaloneModule.repeatDelay = 0.5f;
+                }
+            }
         }
 
         public void SetOverlayRender(int sortOrder = 0)
