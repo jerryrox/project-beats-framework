@@ -2,7 +2,7 @@ using PBFramework.Dependencies;
 
 namespace PBFramework.UI
 {
-    public class UguiProgressBar : UguiSlider {
+    public class UguiProgressBar : UguiSlider, IProgressBar {
 
         [InitWithDependency]
         private void Init()
