@@ -9,9 +9,16 @@ namespace PBFramework.Threading
     /// </summary>
     public class SimpleProgress : ISimpleProgress {
 
+        public event Action<float> OnProgress;
+
+
         public float Progress { get; set; }
 
 
-        public void Report(float progress) => Progress = progress;
+        public void Report(float progress)
+        {
+            Progress = progress;
+            OnProgress?.Invoke(progress);
+        }
     }
 }

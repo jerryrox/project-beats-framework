@@ -15,7 +15,5 @@ Slowly making progress 🧩
 - Implement progress bar
 #### Services/Notifications
 - Develop from scratch
-#### Threading
-- Add progress change event.
 #### Platform
 - Develop from scratch
