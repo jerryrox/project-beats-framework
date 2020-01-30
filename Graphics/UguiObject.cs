@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Data;
 using PBFramework.Inputs;
 using PBFramework.Graphics.Effects;
 using PBFramework.Dependencies;
+
+using Logger = PBFramework.Debugging.Logger;
 
 namespace PBFramework.Graphics
 {
@@ -23,9 +26,9 @@ namespace PBFramework.Graphics
         private List<UguiObject> inputPath;
 
         /// <summary>
-        /// The current effect being used.
+        /// The table of effects currently applied.
         /// </summary>
-        private IEffect curEffect;
+        private Lazy<Dictionary<Type, IEffect>> effects;
 
         private Pivots pivot = Pivots.Center;
         private Anchors anchor = Anchors.Center;
@@ -219,24 +222,6 @@ namespace PBFramework.Graphics
         /// </summary>
         public Canvas Canvas { get; set; }
 
-        /// <summary>
-        /// Hidden implementation for IHasEffect interface.
-        /// </summary>
-        public IEffect Effect
-        {
-            get => curEffect;
-            set
-            {
-                if (curEffect != null)
-                    curEffect.Revert(this);
-
-                if(value != null && value.Apply(this))
-                    this.curEffect = value;
-                else
-                    this.curEffect = null;
-            }
-        }
-
         [ReceivesDependency]
         public IDependencyContainer Dependencies { get; set; }
 
@@ -320,6 +305,48 @@ namespace PBFramework.Graphics
             parent?.children.Remove(this);
             // Destroy the actual gameobject.
             GameObject.Destroy(myObject);
+        }
+
+        public bool AddEffect<T>(T effect) where T : class, IEffect
+        {
+            if(effect == null) throw new ArgumentNullException(nameof(effect));
+
+            var effects = this.effects.Value;
+            // Multiple materials are not supported due to limitations.
+            if (effect.UsesMaterial)
+            {
+                if (effects.Values.Any(e => e.UsesMaterial))
+                {
+                    Logger.LogWarning($"UguiObject.AddEffect - Failed to add effect ({nameof(T)}). An existing effect is utilizing the object's material.");
+                    return false;
+                }
+            }
+            // Try applying the effect.
+            if(!effect.Apply(this)) return false;
+            // Inject dependencies.
+            Dependencies?.Inject(effect);
+            // Add the effect.
+            effects.Add(typeof(T), effect);
+            return true;
+        }
+
+        public void RemoveEffect<T>() where T : class, IEffect
+        {
+            var effects = this.effects.Value;
+            // Find the effect of specified type and revert its effects first.
+            if (effects.TryGetValue(typeof(T), out IEffect effect))
+            {
+                effect.Revert(this);
+                effects.Remove(typeof(T));
+            }
+        }
+
+        public T GetEffect<T>() where T : class, IEffect
+        {
+            var effects = this.effects.Value;
+            if(effects.TryGetValue(typeof(T), out IEffect effect))
+                return (T)effect;
+            return null;
         }
 
         public void SetReceiveInputs(bool listen)

@@ -12,6 +12,8 @@ namespace PBFramework.Graphics.Effects.Shaders
     {
         public abstract Shader Shader { get; }
 
+        public virtual bool UsesMaterial => true;
+
         /// <summary>
         /// Returns the shared material used for this particular shader.
         /// </summary>
@@ -31,7 +33,6 @@ namespace PBFramework.Graphics.Effects.Shaders
         {
             var graphic = GetGraphic(obj);
             if (graphic == null) return;
-            if (graphic.material != Material) return;
 
             graphic.material = null;
         }
@@ -44,7 +45,7 @@ namespace PBFramework.Graphics.Effects.Shaders
             var graphic = obj.RawObject.GetComponent<Graphic>();
             if (graphic == null)
             {
-                Logger.LogWarning("AdditiveShaderEffect - Graphic component not found for object: " + obj.Name);
+                Logger.LogWarning("BaseShaderEffect.GetGraphic - Graphic component not found for object: " + obj.Name);
             }
             return graphic;
         }

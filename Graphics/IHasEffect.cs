@@ -8,8 +8,19 @@ namespace PBFramework.Graphics
     public interface IHasEffect {
 
         /// <summary>
-        /// Returns the current effect set to this object.
+        /// Adds the specified effect to this object.
+        /// Returns whether addition was successful.
         /// </summary>
-        IEffect Effect { get; set; }
+        bool AddEffect<T>(T effect) where T : class, IEffect;
+
+        /// <summary>
+        /// Removes the effect of specified type.
+        /// </summary>
+        void RemoveEffect<T>() where T : class, IEffect;
+
+        /// <summary>
+        /// Returns the effect of specified type, if added to this object.
+        /// </summary>
+        T GetEffect<T>() where T : class, IEffect;
     }
 }
