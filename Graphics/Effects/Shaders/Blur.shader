@@ -1,4 +1,6 @@
-﻿Shader "Unlit/BlurShader"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Effects/Blur"
 {
     Properties
     {
@@ -150,3 +152,4 @@
         }
     }
 }
+ 

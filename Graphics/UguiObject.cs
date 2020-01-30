@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Data;
 using PBFramework.Inputs;
+using PBFramework.Graphics.Effects;
 using PBFramework.Dependencies;
 
 namespace PBFramework.Graphics
 {
     [RequireComponent(typeof(RectTransform))]
-    public class UguiObject : MonoBehaviour, IGraphicObject {
+    public class UguiObject : MonoBehaviour, IGraphicObject, IHasEffect {
 
         protected GameObject myObject;
         protected RectTransform myTransform;
@@ -20,6 +21,11 @@ namespace PBFramework.Graphics
         /// Path which traverses through the ugui hierarchy this object to the root.
         /// </summary>
         private List<UguiObject> inputPath;
+
+        /// <summary>
+        /// The current effect being used.
+        /// </summary>
+        private IEffect curEffect;
 
         private Pivots pivot = Pivots.Center;
         private Anchors anchor = Anchors.Center;
@@ -212,6 +218,24 @@ namespace PBFramework.Graphics
         /// A canvas component cached from this gameobject to detect depth overriding.
         /// </summary>
         public Canvas Canvas { get; set; }
+
+        /// <summary>
+        /// Hidden implementation for IHasEffect interface.
+        /// </summary>
+        public IEffect Effect
+        {
+            get => curEffect;
+            set
+            {
+                if (curEffect != null)
+                    curEffect.Revert(this);
+
+                if(value != null && value.Apply(this))
+                    this.curEffect = value;
+                else
+                    this.curEffect = null;
+            }
+        }
 
         [ReceivesDependency]
         public IDependencyContainer Dependencies { get; set; }
