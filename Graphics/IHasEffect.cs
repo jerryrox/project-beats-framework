@@ -9,9 +9,9 @@ namespace PBFramework.Graphics
 
         /// <summary>
         /// Adds the specified effect to this object.
-        /// Returns whether addition was successful.
+        /// Returns a valid effect instance if successful.
         /// </summary>
-        bool AddEffect<T>(T effect) where T : class, IEffect;
+        T AddEffect<T>(T effect) where T : class, IEffect;
 
         /// <summary>
         /// Removes the effect of specified type.

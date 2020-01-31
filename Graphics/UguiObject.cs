@@ -307,7 +307,7 @@ namespace PBFramework.Graphics
             GameObject.Destroy(myObject);
         }
 
-        public bool AddEffect<T>(T effect) where T : class, IEffect
+        public T AddEffect<T>(T effect) where T : class, IEffect
         {
             if(effect == null) throw new ArgumentNullException(nameof(effect));
 
@@ -318,16 +318,16 @@ namespace PBFramework.Graphics
                 if (effects.Values.Any(e => e.UsesMaterial))
                 {
                     Logger.LogWarning($"UguiObject.AddEffect - Failed to add effect ({nameof(T)}). An existing effect is utilizing the object's material.");
-                    return false;
+                    return null;
                 }
             }
             // Try applying the effect.
-            if(!effect.Apply(this)) return false;
+            if(!effect.Apply(this)) return null;
             // Inject dependencies.
             Dependencies?.Inject(effect);
             // Add the effect.
             effects.Add(typeof(T), effect);
-            return true;
+            return effect;
         }
 
         public void RemoveEffect<T>() where T : class, IEffect
