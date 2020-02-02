@@ -32,6 +32,7 @@ namespace PBFramework.Graphics
 
         private Pivots pivot = Pivots.Center;
         private Anchors anchor = Anchors.Center;
+        private bool isInited = false;
         private int depth = 0;
 
 
@@ -456,6 +457,28 @@ namespace PBFramework.Graphics
                 return value - parent.Height;
             return value;
         }
+
+        /// <summary>
+        /// Unity object lifecycle method called on object enable.
+        /// </summary>
+        protected virtual void OnEnable()
+        {
+            // Support for OnEnable 
+            if (isInited)
+                OnEnableInited();
+            isInited = true;
+        }
+
+        /// <summary>
+        /// Additional method triggered during OnEnable.
+        /// Is NOT called in the first invocation.
+        /// </summary>
+        protected virtual void OnEnableInited() {}
+
+        /// <summary>
+        /// Unity object lifecycle method called on object disable.
+        /// </summary>
+        protected virtual void OnDisable() {}
 
         /// <summary>
         /// Re-orders children based on their depth.
