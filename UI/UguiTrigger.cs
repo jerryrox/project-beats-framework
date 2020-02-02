@@ -22,7 +22,17 @@ namespace PBFramework.UI
             AddEntry(EventTriggerType.PointerDown, () => OnPointerDown?.Invoke());
             AddEntry(EventTriggerType.PointerUp, () => OnPointerUp?.Invoke());
             AddEntry(EventTriggerType.PointerClick, () => OnPointerClick?.Invoke());
-        }   
+        }
+
+        public void InvokeEnter() => OnPointerEnter?.Invoke();
+
+        public void InvokeExit() => OnPointerExit?.Invoke();
+
+        public void InvokeDown() => OnPointerDown?.Invoke();
+
+        public void InvokeUp() => OnPointerUp?.Invoke();
+
+        public void InvokeClick() => OnPointerClick?.Invoke();
         
         protected void AddEntry(EventTriggerType type, Action callback)
         {
