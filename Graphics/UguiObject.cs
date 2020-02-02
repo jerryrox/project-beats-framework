@@ -12,7 +12,7 @@ using Logger = PBFramework.Debugging.Logger;
 namespace PBFramework.Graphics
 {
     [RequireComponent(typeof(RectTransform))]
-    public class UguiObject : MonoBehaviour, IGraphicObject, IHasEffect {
+    public class UguiObject : MonoBehaviour, IGraphicObject {
 
         protected GameObject myObject;
         protected RectTransform myTransform;

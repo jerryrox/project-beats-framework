@@ -8,7 +8,7 @@ namespace PBFramework.Graphics
     /// <summary>
     /// Abstraction of an object that resides in the UI space.
     /// </summary>
-    public interface IGraphicObject : IHasTransform, IInputReceiver, IComparable<IGraphicObject> {
+    public interface IGraphicObject : IHasTransform, IHasEffect, IInputReceiver, IComparable<IGraphicObject> {
 
         /// <summary>
         /// Name of the object.
