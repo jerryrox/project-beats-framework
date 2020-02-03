@@ -34,7 +34,7 @@ namespace PBFramework.Services
         /// <summary>
         /// Returns the instance of this class.
         /// </summary>
-        private static UnityThreadService Instance => I == null ? I = new GameObject().AddComponent<UnityThreadService>() : I;
+        private static UnityThreadService Instance => I == null ? I = new GameObject("_UnityThreadService").AddComponent<UnityThreadService>() : I;
 
         /// <summary>
         /// Returns the instance of this class as MonoBehaviour type.

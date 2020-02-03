@@ -71,7 +71,7 @@ namespace PBFramework.UI.Navigations
         protected virtual T CreateInternal<T>()
             where T : MonoBehaviour, INavigationView
         {
-            var view = root.CreateChild<T>();
+            var view = root.CreateChild<T>(typeof(T).Name);
             var viewEvent = view as INavigationEvent;
 
             // Hook events to animations.

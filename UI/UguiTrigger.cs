@@ -1,11 +1,14 @@
 using System;
 using PBFramework.Graphics;
+using PBFramework.Dependencies;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace PBFramework.UI
 {
-    public class UguiTrigger : UguiObject<EventTrigger>, ITrigger {
-
+    public class UguiTrigger : UguiObject<Image>, ITrigger,
+        IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
+    {
         public event Action OnPointerEnter;
         public event Action OnPointerExit;
         public event Action OnPointerDown;
@@ -13,15 +16,10 @@ namespace PBFramework.UI
         public event Action OnPointerClick;
 
 
-        protected override void Awake()
+        [InitWithDependency]
+        private void Init()
         {
-            base.Awake();
-
-            AddEntry(EventTriggerType.PointerEnter, () => OnPointerEnter?.Invoke());
-            AddEntry(EventTriggerType.PointerExit, () => OnPointerEnter?.Invoke());
-            AddEntry(EventTriggerType.PointerDown, () => OnPointerDown?.Invoke());
-            AddEntry(EventTriggerType.PointerUp, () => OnPointerUp?.Invoke());
-            AddEntry(EventTriggerType.PointerClick, () => OnPointerClick?.Invoke());
+            component.SetAlpha(0f);
         }
 
         public void InvokeEnter() => OnPointerEnter?.Invoke();
@@ -33,16 +31,76 @@ namespace PBFramework.UI
         public void InvokeUp() => OnPointerUp?.Invoke();
 
         public void InvokeClick() => OnPointerClick?.Invoke();
-        
-        protected void AddEntry(EventTriggerType type, Action callback)
+
+        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
-            var entry = new EventTrigger.Entry()
-            {
-                eventID = type,
-                callback = new EventTrigger.TriggerEvent()
-            };
-            entry.callback.AddListener(delegate { callback(); });
-            component.triggers.Add(entry);
+            UnityEngine.Debug.Log("OnPointerClick");
+            InvokeClick();
+        }
+
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+        {
+            UnityEngine.Debug.Log("OnPointerDown");
+            InvokeDown();
+        }
+
+        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
+        {
+            UnityEngine.Debug.Log("OnPointerUp");
+            InvokeUp();
+        }
+
+        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+        {
+            UnityEngine.Debug.Log("OnPointerEnter");
+            InvokeEnter();
+        }
+
+        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+        {
+            UnityEngine.Debug.Log("OnPointerExit");
+            InvokeExit();
         }
     }
+    // public class UguiTrigger : UguiObject<EventTrigger>, ITrigger {
+
+    //     public event Action OnPointerEnter;
+    //     public event Action OnPointerExit;
+    //     public event Action OnPointerDown;
+    //     public event Action OnPointerUp;
+    //     public event Action OnPointerClick;
+
+
+    //     protected override void Awake()
+    //     {
+    //         base.Awake();
+
+    //         AddEntry(EventTriggerType.PointerEnter, () => OnPointerEnter?.Invoke());
+    //         AddEntry(EventTriggerType.PointerExit, () => OnPointerEnter?.Invoke());
+    //         AddEntry(EventTriggerType.PointerDown, () => OnPointerDown?.Invoke());
+    //         AddEntry(EventTriggerType.PointerUp, () => OnPointerUp?.Invoke());
+    //         AddEntry(EventTriggerType.PointerClick, () => OnPointerClick?.Invoke());
+    //     }
+
+    //     public void InvokeEnter() => OnPointerEnter?.Invoke();
+
+    //     public void InvokeExit() => OnPointerExit?.Invoke();
+
+    //     public void InvokeDown() => OnPointerDown?.Invoke();
+
+    //     public void InvokeUp() => OnPointerUp?.Invoke();
+
+    //     public void InvokeClick() => OnPointerClick?.Invoke();
+
+    //     protected void AddEntry(EventTriggerType type, Action callback)
+    //     {
+    //         var entry = new EventTrigger.Entry()
+    //         {
+    //             eventID = type,
+    //             callback = new EventTrigger.TriggerEvent()
+    //         };
+    //         entry.callback.AddListener(delegate { callback(); });
+    //         component.triggers.Add(entry);
+    //     }
+    // }
 }

@@ -28,7 +28,7 @@ namespace PBFramework.Graphics
         /// <summary>
         /// The table of effects currently applied.
         /// </summary>
-        private Lazy<Dictionary<Type, IEffect>> effects;
+        private Dictionary<Type, IEffect> effects;
 
         private Pivots pivot = Pivots.Center;
         private Anchors anchor = Anchors.Center;
@@ -312,18 +312,22 @@ namespace PBFramework.Graphics
         {
             if(effect == null) throw new ArgumentNullException(nameof(effect));
 
-            var effects = this.effects.Value;
+            var effects = (this.effects ?? (this.effects = new Dictionary<Type, IEffect>()));
             // Multiple materials are not supported due to limitations.
             if (effect.UsesMaterial)
             {
                 if (effects.Values.Any(e => e.UsesMaterial))
                 {
-                    Logger.LogWarning($"UguiObject.AddEffect - Failed to add effect ({nameof(T)}). An existing effect is utilizing the object's material.");
+                    Logger.LogWarning($"UguiObject.AddEffect - Failed to add effect ({typeof(T).Name}). An existing effect is utilizing the object's material.");
                     return null;
                 }
             }
             // Try applying the effect.
-            if(!effect.Apply(this)) return null;
+            if (!effect.Apply(this))
+            {
+                Logger.LogWarning($"UguiObject.AddEffect - Could not apply effect: {typeof(T).Name}");
+                return null;
+            }
             // Inject dependencies.
             Dependencies?.Inject(effect);
             // Add the effect.
@@ -333,7 +337,7 @@ namespace PBFramework.Graphics
 
         public void RemoveEffect<T>() where T : class, IEffect
         {
-            var effects = this.effects.Value;
+            var effects = (this.effects ?? (this.effects = new Dictionary<Type, IEffect>()));
             // Find the effect of specified type and revert its effects first.
             if (effects.TryGetValue(typeof(T), out IEffect effect))
             {
@@ -344,7 +348,7 @@ namespace PBFramework.Graphics
 
         public T GetEffect<T>() where T : class, IEffect
         {
-            var effects = this.effects.Value;
+            var effects = (this.effects ?? (this.effects = new Dictionary<Type, IEffect>()));
             if(effects.TryGetValue(typeof(T), out IEffect effect))
                 return (T)effect;
             return null;
