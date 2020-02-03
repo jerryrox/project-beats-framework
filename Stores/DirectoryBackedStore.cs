@@ -149,6 +149,22 @@ namespace PBFramework.Stores
             }
         }
 
+        public T LoadData(T rawData)
+        {
+            // Find the directory with the data's id.
+            var dir = storage.Get(rawData.Id.ToString());
+            if (dir == null)
+            {
+                Logger.LogError($"DirectoryBackedStore.LoadStoredData - Failed to load data at directory: {dir.FullName}");
+                return null;
+            }
+
+            // Parse and process data
+            rawData = ParseData(dir, rawData);
+            PostProcessData(rawData);
+            return rawData;
+        }
+
         /// <summary>
         /// Returns a new instance of the database for the store.
         /// </summary>
@@ -202,25 +218,6 @@ namespace PBFramework.Stores
         }
 
         /// <summary>
-        /// Fully loads the specified data from the database and the directory.
-        /// </summary>
-        private T LoadStoredData(T rawData)
-        {
-            // Find the directory with the data's id.
-            var dir = storage.Get(rawData.Id.ToString());
-            if (dir == null)
-            {
-                Logger.LogError($"DirectoryBackedStore.LoadStoredData - Failed to load data at directory: {dir.FullName}");
-                return null;
-            }
-
-            // Parse and process data
-            rawData = ParseData(dir, rawData);
-            PostProcessData(rawData);
-            return rawData;
-        }
-
-        /// <summary>
         /// Tries loading all orphaned data which exist in the directory storage but somehow not indexed in the database.
         /// </summary>
         private void LoadOrphanedData(ISimpleProgress progress)
@@ -254,10 +251,14 @@ namespace PBFramework.Stores
 
                     // Allocate a new id for data.
                     PostProcessData(data, Guid.NewGuid());
+
+                    // Move the old directory to new directory name.
+                    dir.MoveTo(Path.Combine(dir.Parent.FullName, data.Id.ToString()));
+
                     // Register this data as a new entry.
                     database.Edit().Write(data).Commit();
                     OnNewData?.Invoke(data);
-                    Logger.Log($"DirectoryBackedStore.LoadOrphanedData - Successfully adopted orphaned data at: ${dir.FullName}");
+                    Logger.Log($"DirectoryBackedStore.LoadOrphanedData - Successfully adopted orphaned data at: {dir.FullName}");
                 }
             }
         }

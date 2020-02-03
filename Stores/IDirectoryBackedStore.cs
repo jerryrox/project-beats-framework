@@ -58,5 +58,10 @@ namespace PBFramework.Stores
         /// Returns all data matching the specified query.
         /// </summary>
         IEnumerable<T> Get(Func<IDatabaseQuery<T>, IDatabaseQuery<T>> query);
+
+        /// <summary>
+        /// Fully loads the specified data from the database and the directory.
+        /// </summary>
+        T LoadData(T rawData);
     }
 }
