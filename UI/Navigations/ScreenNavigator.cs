@@ -3,7 +3,10 @@ using PBFramework.Graphics;
 namespace PBFramework.UI.Navigations
 {
     public class ScreenNavigator : Navigator, IScreenNavigator {
-    
+
+        public INavigationView CurrentScreen { get; private set; }
+
+
         public ScreenNavigator(IGraphicObject root) : base(root) {}
 
         protected override void ShowInternal(INavigationView view)
@@ -14,7 +17,17 @@ namespace PBFramework.UI.Navigations
                 if(views[i] != view)
                     HideInternal(views[i]);
             }
+
+            CurrentScreen = view;
             base.ShowInternal(view);
+        }
+
+        protected override void HideInternal(INavigationView view)
+        {
+            if(view == CurrentScreen)
+                CurrentScreen = null;
+                
+            base.HideInternal(view);
         }
     }
 }

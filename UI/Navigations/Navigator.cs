@@ -10,6 +10,10 @@ namespace PBFramework.UI.Navigations
 {
     public class Navigator : INavigator
     {
+        public event Action<INavigationView> OnShowView;
+
+        public event Action<INavigationView> OnHideView;
+
         /// <summary>
         /// List of views currently showing or being cached.
         /// </summary>
@@ -102,6 +106,9 @@ namespace PBFramework.UI.Navigations
         protected virtual void ShowInternal(INavigationView view)
         {
             view.Active = true;
+
+            OnShowView?.Invoke(view);
+
             view.OnPreShow();
             if (view.ShowAnime != null)
                 view.ShowAnime.PlayFromStart();
@@ -116,6 +123,8 @@ namespace PBFramework.UI.Navigations
         {
             if(!view.Active)
                 return;
+
+            OnHideView?.Invoke(view);
 
             view.OnPreHide();
             if (view.HideAnime != null)

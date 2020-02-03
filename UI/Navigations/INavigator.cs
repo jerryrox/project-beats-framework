@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,17 @@ namespace PBFramework.UI.Navigations
     /// </summary>
     public interface INavigator
     {
+        /// <summary>
+        /// Event called on view show.
+        /// </summary>
+        event Action<INavigationView> OnShowView;
+
+        /// <summary>
+        /// Event called on view hide.
+        /// </summary>
+        event Action<INavigationView> OnHideView;
+
+
         /// <summary>
         /// Returns the view of specified type, if it has been cached.
         /// </summary>
