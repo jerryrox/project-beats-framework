@@ -34,31 +34,26 @@ namespace PBFramework.UI
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
-            UnityEngine.Debug.Log("OnPointerClick");
             InvokeClick();
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            UnityEngine.Debug.Log("OnPointerDown");
             InvokeDown();
         }
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            UnityEngine.Debug.Log("OnPointerUp");
             InvokeUp();
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            UnityEngine.Debug.Log("OnPointerEnter");
             InvokeEnter();
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            UnityEngine.Debug.Log("OnPointerExit");
             InvokeExit();
         }
     }

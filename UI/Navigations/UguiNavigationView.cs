@@ -21,19 +21,21 @@ namespace PBFramework.UI.Navigations
             RawSize = Vector2.zero;
 
             // Create animations.
-            ShowAnime = CreateShowAnime();
-            HideAnime = CreateHideAnime();
+            ShowAnime = CreateShowAnime(Dependencies);
+            HideAnime = CreateHideAnime(Dependencies);
         }
 
         /// <summary>
         /// Returns a new instance of the view show animation.
+        /// A dependency container is passed since the super type wouldn't be initialized by this time.
         /// </summary>
-        protected virtual IAnime CreateShowAnime() => null;
+        protected virtual IAnime CreateShowAnime(IDependencyContainer dependencies) => null;
 
         /// <summary>
         /// Returns a new instance of the view hide animation.
+        /// A dependency container is passed since the super type wouldn't be initialized by this time.
         /// </summary>
-        protected virtual IAnime CreateHideAnime() => null;
+        protected virtual IAnime CreateHideAnime(IDependencyContainer dependencies) => null;
 
         /// <summary>
         /// Handles pre-show event called from the navigator.

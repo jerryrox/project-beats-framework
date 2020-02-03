@@ -114,6 +114,9 @@ namespace PBFramework.UI.Navigations
         /// </summary>
         protected virtual void HideInternal(INavigationView view)
         {
+            if(!view.Active)
+                return;
+
             view.OnPreHide();
             if (view.HideAnime != null)
                 view.HideAnime.PlayFromStart();

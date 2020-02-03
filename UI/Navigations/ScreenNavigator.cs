@@ -11,7 +11,8 @@ namespace PBFramework.UI.Navigations
             // Hide all other views.
             for (int i = views.Count - 1; i >= 0; i--)
             {
-                HideInternal(views[i]);
+                if(views[i] != view)
+                    HideInternal(views[i]);
             }
             base.ShowInternal(view);
         }
