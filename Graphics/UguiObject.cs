@@ -108,13 +108,13 @@ namespace PBFramework.Graphics
         
         public float OffsetRight
         {
-            get => myTransform.offsetMax.x;
+            get => -myTransform.offsetMax.x;
             set => myTransform.SetOffsetRight(value);
         }
         
         public float OffsetTop
         {
-            get => myTransform.offsetMax.y;
+            get => -myTransform.offsetMax.y;
             set => myTransform.SetOffsetTop(value);
         }
         

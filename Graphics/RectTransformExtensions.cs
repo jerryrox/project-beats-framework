@@ -69,12 +69,12 @@ namespace PBFramework.Graphics
 
         public static void SetOffsetRight(this RectTransform context, float offset)
         {
-            context.offsetMax = new Vector2(offset, context.offsetMax.y);
+            context.offsetMax = new Vector2(-offset, context.offsetMax.y);
         }
 
         public static void SetOffsetTop(this RectTransform context, float offset)
         {
-            context.offsetMax = new Vector2(context.offsetMax.x, offset);
+            context.offsetMax = new Vector2(context.offsetMax.x, -offset);
         }
 
         public static void SetOffsetBottom(this RectTransform context, float offset)

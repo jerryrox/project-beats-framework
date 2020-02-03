@@ -24,7 +24,7 @@ namespace PBFramework.Graphics.Effects.Shaders
         {
             CachedShader = UnityEngine.Shader.Find("Effects/Blur");
             ShaderMaterial = new Material(CachedShader);
-            ShaderMaterial.SetInt("Radius", 3);
+            ShaderMaterial.SetInt("_Radius", 3);
         }
     }
 }
