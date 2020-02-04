@@ -70,10 +70,18 @@ namespace PBFramework.Audio
         public void MountAudio(IAudio audio)
         {
             if(isDisposed) throw new ObjectDisposedException(GetType().Name);
+            
+            // Unmount audio.
+            if (audio == null)
+            {
+                this.audio = null;
+                source.clip = null;
+                return;
+            }
 
             // Check if compatible type with this controller.
             if (!(audio is UnityAudio newAudio))
-                throw new ArgumentException($"Specified audio is not a type of ({nameof(UnityAudio)})");
+                throw new ArgumentException($"Specified audio is not a type of ({nameof(UnityAudio)}). Given type: {audio.GetType().Name}");
 
             // Mount the audio.
             this.audio = newAudio;
