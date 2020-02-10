@@ -40,7 +40,8 @@ namespace PBFramework.UI
         public void FillTexture()
         {
             var texture = component.texture;
-            if(texture == null) return;
+            if (texture == null)
+                return;
 
             float textureRatio = (float)texture.width / (float)texture.height;
             float widgetRatio = Width / Height;

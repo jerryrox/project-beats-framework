@@ -28,6 +28,11 @@ namespace PBFramework.Threading
         private Coroutine timerCoroutine;
 
 
+        /// <summary>
+        /// Whether the timer should wait a frame before starting to wait.
+        /// </summary>
+        public bool WaitFrameOnStart { get; set; } = false;
+
         public float Limit { get; set; } = float.MaxValue;
 
         public float Current { get; set; }
@@ -75,6 +80,9 @@ namespace PBFramework.Threading
         /// </summary>
         IEnumerator TimerRoutine()
         {
+            if(WaitFrameOnStart)
+                yield return null;
+                
             while (true)
             {
                 // Increase current time.
