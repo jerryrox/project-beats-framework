@@ -52,7 +52,11 @@ namespace PBFramework.UI
         public GridLayoutGroup.Axis Axis
         {
             get => component.startAxis;
-            set => component.startAxis = value;
+            set
+            {
+                component.startAxis = value;
+                RefreshConstraint();
+            }
         }
 
         public TextAnchor Alignment
@@ -67,14 +71,7 @@ namespace PBFramework.UI
             set
             {
                 component.constraintCount = Mathf.Clamp(value, 0, int.MaxValue);
-                if(component.constraintCount == 0)
-                    component.constraint = GridLayoutGroup.Constraint.Flexible;
-                else
-                {
-                    component.constraint = component.startAxis == GridLayoutGroup.Axis.Vertical ?
-                        GridLayoutGroup.Constraint.FixedRowCount :
-                        GridLayoutGroup.Constraint.FixedColumnCount;
-                }
+                RefreshConstraint();
             }
         }
 
@@ -86,5 +83,19 @@ namespace PBFramework.UI
             Limit = 0;
         }
 
+        /// <summary>
+        /// Re-evaluates the grid's constraint value.
+        /// </summary>
+        private void RefreshConstraint()
+        {
+            if (component.constraintCount == 0)
+                component.constraint = GridLayoutGroup.Constraint.Flexible;
+            else
+            {
+                component.constraint = component.startAxis == GridLayoutGroup.Axis.Vertical ?
+                    GridLayoutGroup.Constraint.FixedColumnCount :
+                    GridLayoutGroup.Constraint.FixedRowCount;
+            }
+        }
     }
 }
