@@ -4,7 +4,7 @@ namespace PBFramework.Audio
 {
     public class UnityAudio : IEffectAudio, IMusicAudio {
 
-        public float Duration => ToMs(Clip.length);
+        public int Duration => (int)ToMs(Clip.length);
 
         public int Frequency => Clip.frequency;
 

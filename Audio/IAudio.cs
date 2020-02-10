@@ -10,7 +10,7 @@ namespace PBFramework.Audio
         /// <summary>
         /// Returns the duration of the audio in milliseconds.
         /// </summary>
-        float Duration { get; }
+        int Duration { get; }
 
         /// <summary>
         /// Returns the frequency of the audio.

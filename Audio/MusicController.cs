@@ -83,9 +83,9 @@ namespace PBFramework.Audio
 			source.Stop();
 			// Seek to specified time.
 			source.timeSamples = (int)(Audio.Frequency * FromMs(time));
-			// Play music again if it was playing before seek.
-			if(wasPlaying)
-				source.PlayScheduled(AudioSettings.dspTime + SeekPlayDelay);
+            // Play music again if it was playing before seek.
+            if (wasPlaying)
+                source.PlayScheduled(AudioSettings.dspTime + FromMs(SeekPlayDelay));
             // Invoke event
             InvokeSeek(time - SeekPlayDelay);
         }
