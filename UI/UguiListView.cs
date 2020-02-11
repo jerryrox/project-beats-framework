@@ -218,6 +218,18 @@ namespace PBFramework.UI
             ResetPosition();
         }
 
+        public IListItem FindItem(Func<IListItem, bool> predicate)
+        {
+            if(predicate == null) return null;
+            
+            for (int i = 0; i < cells.Count; i++)
+            {
+                if(predicate.Invoke(cells[i]))
+                    return cells[i];
+            }
+            return null;
+        }
+
         public override void ResetPosition()
         {
             if(!isInitialized) return;

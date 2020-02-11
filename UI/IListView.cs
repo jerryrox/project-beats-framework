@@ -28,5 +28,10 @@ namespace PBFramework.UI
         /// Re-calculates the number of cells to be pooled for the current rect transform size.
         /// </summary>
         void Recalibrate();
+
+        /// <summary>
+        /// Returns the first list item matching the specified predicate.
+        /// </summary>
+        IListItem FindItem(Func<IListItem, bool> predicate);
     }
 }
