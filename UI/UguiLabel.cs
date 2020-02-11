@@ -105,7 +105,14 @@ namespace PBFramework.UI
             if (isBold && isItalic)
             {
                 component.font = font.BoldItalic;
-                component.fontStyle = font.HasBoldItalic ? FontStyle.Normal : FontStyle.BoldAndItalic;
+                if(font.HasBoldItalic)
+                    component.fontStyle = FontStyle.Normal;
+                else if(font.HasBold)
+                    component.fontStyle = FontStyle.Italic;
+                else if (font.HasItalic)
+                    component.fontStyle = FontStyle.Bold;
+                else
+                    component.fontStyle = FontStyle.BoldAndItalic;
             }
             else if (isBold)
             {
