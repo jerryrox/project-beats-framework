@@ -12,11 +12,11 @@ namespace PBFramework.UI
         public event Action<string> OnChanged;
         public event Action<string> OnSubmitted;
 
-        private UguiLabel placeholderLabel;
-        private UguiLabel valueLabel;
-        private UguiSprite backgroundSprite;
+        protected UguiLabel placeholderLabel;
+        protected UguiLabel valueLabel;
+        protected UguiSprite backgroundSprite;
 
-        private CanvasGroup canvasGroup;
+        protected CanvasGroup canvasGroup;
 
 
         public float Alpha
@@ -133,8 +133,8 @@ namespace PBFramework.UI
         private void Init()
         {
             backgroundSprite = AddComponentInject<UguiSprite>();
-            placeholderLabel = CreateChild<UguiLabel>("placeholder");
-            valueLabel = CreateChild<UguiLabel>("value");
+            placeholderLabel = CreateChild<UguiLabel>("placeholder", 1);
+            valueLabel = CreateChild<UguiLabel>("value", 2);
 
             valueLabel.Anchor = placeholderLabel.Anchor = Anchors.Fill;
             valueLabel.RawWidth = placeholderLabel.RawWidth = -20;
