@@ -11,6 +11,16 @@ namespace PBFramework.UI
         /// </summary>
         event Action<float> OnChange;
 
+        /// <summary>
+        /// Event called when the pointer was pressed down on the slider.
+        /// </summary>
+        event Action OnPointerDown;
+
+        /// <summary>
+        /// Event called when the pointer was pressed up from the slider.
+        /// </summary>
+        event Action OnPointerUp;
+
 
         /// <summary>
         /// Returns the background sprite of the slider.

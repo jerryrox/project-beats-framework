@@ -4,7 +4,7 @@ using PBFramework.Graphics;
 
 namespace PBFramework.UI
 {
-    public class UguiTexture : UguiObject<RawImage>, ITexture {
+    public class UguiTexture : UguiObject<RawImage>, ITexture, IRaycastable {
 
         public Material Material
         {
@@ -34,6 +34,12 @@ namespace PBFramework.UI
         {
             get => component.uvRect;
             set => component.uvRect = value;
+        }
+
+        public bool IsRaycastTarget
+        {
+            get => component.raycastTarget;
+            set => component.raycastTarget = value;
         }
 
 

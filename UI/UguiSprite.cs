@@ -7,7 +7,7 @@ using PBFramework.Assets.Atlasing;
 
 namespace PBFramework.UI
 {
-    public class UguiSprite : UguiObject<Image>, ISprite {
+    public class UguiSprite : UguiObject<Image>, ISprite, IRaycastable {
 
         public event Action<Sprite> OnSpriteChange;
 
@@ -70,6 +70,12 @@ namespace PBFramework.UI
         {
             get => !component.fillClockwise;
             set => component.fillClockwise = !value;
+        }
+
+        public bool IsRaycastTarget
+        {
+            get => component.raycastTarget;
+            set => component.raycastTarget = value;
         }
 
         [ReceivesDependency]

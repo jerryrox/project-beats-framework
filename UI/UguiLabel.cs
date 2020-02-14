@@ -5,7 +5,7 @@ using PBFramework.Graphics;
 
 namespace PBFramework.UI
 {
-    public class UguiLabel : UguiObject<Text>, ILabel {
+    public class UguiLabel : UguiObject<Text>, ILabel, IRaycastable {
 
         private bool isBold;
         private bool isItalic;
@@ -82,6 +82,12 @@ namespace PBFramework.UI
         {
             get => component.text;
             set => component.text = value;
+        }
+
+        public bool IsRaycastTarget
+        {
+            get => component.raycastTarget;
+            set => component.raycastTarget = value;
         }
 
 

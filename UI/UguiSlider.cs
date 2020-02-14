@@ -1,14 +1,19 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using PBFramework.Graphics;
 using PBFramework.Dependencies;
 
 namespace PBFramework.UI
 {
-    public class UguiSlider : UguiObject<Slider>, ISlider {
+    public class UguiSlider : UguiObject<Slider>, ISlider, IPointerDownHandler, IPointerUpHandler {
 
         public event Action<float> OnChange;
+
+        public event Action OnPointerDown;
+
+        public event Action OnPointerUp;
 
         protected UguiSprite background;
         protected UguiObject foregroundArea;
@@ -91,6 +96,7 @@ namespace PBFramework.UI
             component.targetGraphic = thumb.GetComponent<Image>();
             component.fillRect = foreground.RawTransform;
             component.handleRect = thumb.RawTransform;
+            component.onValueChanged.AddListener((value) => OnChange?.Invoke(value));
 
             Size = new Vector2(200, 36);
         }
@@ -103,5 +109,8 @@ namespace PBFramework.UI
 
         public void SetColorTintTransition(Color normal, float duration) => component.SetColorTintTransition(normal, duration);
 
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData) => OnPointerDown?.Invoke();
+
+        void IPointerUpHandler.OnPointerUp(PointerEventData eventData) => OnPointerUp?.Invoke();
     }
 }
