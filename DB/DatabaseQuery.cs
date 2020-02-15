@@ -153,13 +153,13 @@ namespace PBFramework.DB
         /// </summary>
         private IEnumerator<T> GetLoadingData(List<JObject> source)
         {
-            // If not fully loaded, load the data and convert to type T.
+            // If fully loaded, simply convert the Json object to type T.
             if (fullLoaded)
             {
                 foreach(var s in source)
                     yield return processor.ConvertToData(s);
             }
-            // If fully loaded, simply convert the Json object to type T.
+            // If not fully loaded, load the data and convert to type T.
             else
             {
                 foreach (var s in source)
