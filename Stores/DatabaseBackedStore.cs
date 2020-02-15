@@ -9,17 +9,23 @@ namespace PBFramework.Stores
     /// <summary>
     /// Store backed with database.
     /// </summary>
-    public abstract class DatabaseBackedStore<T>
+    public abstract class DatabaseBackedStore<T> : IDatabaseBackedStore<T>
         where T : class, IDatabaseEntity, new()
     {
-        protected readonly IDatabase<T> database;
+        public IDatabase<T> Database { get; private set; }
 
 
-        protected DatabaseBackedStore(IDatabase<T> database)
+        public void Reload()
         {
-            if(database == null) throw new ArgumentNullException(nameof(database));
-
-            this.database = database;
+            // Reload the db.
+            if(Database != null)
+                Database.Dispose();
+            Database = CreateDatabase();
         }
+
+        /// <summary>
+        /// Creates a new instance of the database.
+        /// </summary>
+        protected abstract IDatabase<T> CreateDatabase();
     }
 }
