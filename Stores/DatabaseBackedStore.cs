@@ -21,6 +21,7 @@ namespace PBFramework.Stores
             if(Database != null)
                 Database.Dispose();
             Database = CreateDatabase();
+            Database.Initialize();
         }
 
         /// <summary>
