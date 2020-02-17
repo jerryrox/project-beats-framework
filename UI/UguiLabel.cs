@@ -26,6 +26,12 @@ namespace PBFramework.UI
             set => component.color = value;
         }
 
+        public float PreferredWidth => component.preferredWidth;
+
+        public float PreferredHeight => component.preferredHeight;
+
+        public Vector2 PreferredSize => new Vector2(component.preferredWidth, component.preferredHeight);
+
         public IFont Font
         {
             get => font;

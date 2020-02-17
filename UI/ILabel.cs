@@ -5,7 +5,22 @@ using PBFramework.Graphics;
 namespace PBFramework.UI
 {
     public interface ILabel : IGraphicObject, IHasColor {
-        
+
+        /// <summary>
+        /// The preferred width of the label for current text and the label settings.
+        /// </summary>
+        float PreferredWidth { get; }
+
+        /// <summary>
+        /// The preferred height of the label for current text and the label settings.
+        /// </summary>
+        float PreferredHeight { get; }
+
+        /// <summary>
+        /// The preferred size of the label for current text and label settings.
+        /// </summary>
+        Vector2 PreferredSize { get; }
+
         /// <summary>
         /// The font this label will use for rendering the text.
         /// </summary>
