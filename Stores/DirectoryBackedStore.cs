@@ -44,7 +44,7 @@ namespace PBFramework.Stores
             return Task.Run(() =>
             {
                 progress?.Report(0f);
-                LoadModules();
+                InitModules(true);
                 LoadOrphanedData(progress);
                 progress?.Report(1f);
             });
@@ -192,29 +192,33 @@ namespace PBFramework.Stores
         }
 
         /// <summary>
+        /// Prepares the necessary modules for the store to function.
+        /// If shouldReload, the modules will be loaded again even if they are already initialized.
+        /// </summary>
+        protected void InitModules(bool shouldReload)
+        {
+            if (!shouldReload && database != null && storage != null)
+                return;
+
+            if (database != null)
+                database.Dispose();
+
+            // Load database and storage.
+            database = CreateDatabase();
+            storage = CreateStorage();
+            if (database == null) throw new NullReferenceException("DirectoryBackedStore.LoadModules - Database is null!");
+            if (storage == null) throw new NullReferenceException("DirectoryBackedStore.LoadModules - Storage is null!");
+
+            // Initialize the database.
+            database.Initialize();
+        }
+
+        /// <summary>
         /// Returns the temporary extraction directory for specified archive.
         /// </summary>
         private DirectoryInfo GetTempExtractDir(FileInfo file)
         {
             return new DirectoryInfo(Path.Combine(tempStorage.Container.FullName, file.GetNameWithoutExtension()));
-        }
-
-        /// <summary>
-        /// Prepares the necessary modules for the store to function.
-        /// </summary>
-        private void LoadModules()
-        {
-            if(database != null)
-                database.Dispose();
-                
-            // Load database and storage.
-            database = CreateDatabase();
-            storage = CreateStorage();
-            if(database == null) throw new NullReferenceException("DirectoryBackedStore.LoadModules - Database is null!");
-            if(storage == null) throw new NullReferenceException("DirectoryBackedStore.LoadModules - Storage is null!");
-
-            // Initialize the database.
-            database.Initialize();
         }
 
         /// <summary>

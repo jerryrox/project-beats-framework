@@ -18,6 +18,8 @@ namespace PBFramework.UI
         protected UguiScrollBar horizontalScrollbar;
         protected UguiScrollBar verticalScrollbar;
 
+        private Image viewportImage;
+
 
         public float Alpha
         {
@@ -28,7 +30,7 @@ namespace PBFramework.UI
         public bool UseMask
         {
             get => viewportMask.enabled;
-            set => viewportMask.enabled = value;
+            set => viewportMask.enabled = viewportImage.enabled = value;
         }
 
         public bool ShowMaskingSprite
@@ -108,8 +110,11 @@ namespace PBFramework.UI
             canvasGroup = myObject.AddComponent<CanvasGroup>();
             background = AddComponentInject<UguiSprite>();
             viewport = CreateChild<UguiSprite>("viewport");
-            viewportMask = viewport.RawObject.AddComponent<Mask>();
-            container = viewport.CreateChild<UguiObject>("container");
+            {
+                viewportImage = viewport.GetComponent<Image>();
+                viewportMask = viewport.RawObject.AddComponent<Mask>();
+                container = viewport.CreateChild<UguiObject>("container");
+            }
 
             background.ImageType = Image.Type.Sliced;
 

@@ -42,8 +42,9 @@ namespace PBFramework.Dependencies
 
             // Get base type's injector
             TypeInjector baseInjector = null;
-            if(type.BaseType != typeof(object))
-                baseInjector = GetInjector(type.BaseType);
+            Type baseType = type.BaseType;
+            if(baseType != null && baseType != typeof(object))
+                baseInjector = GetInjector(baseType);
 
             // Create new and cache
             value = new TypeInjector(type, baseInjector);

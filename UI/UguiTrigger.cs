@@ -22,15 +22,15 @@ namespace PBFramework.UI
             component.SetAlpha(0f);
         }
 
-        public void InvokeEnter() => OnPointerEnter?.Invoke();
+        public virtual void InvokeEnter() => OnPointerEnter?.Invoke();
 
-        public void InvokeExit() => OnPointerExit?.Invoke();
+        public virtual void InvokeExit() => OnPointerExit?.Invoke();
 
-        public void InvokeDown() => OnPointerDown?.Invoke();
+        public virtual void InvokeDown() => OnPointerDown?.Invoke();
 
-        public void InvokeUp() => OnPointerUp?.Invoke();
+        public virtual void InvokeUp() => OnPointerUp?.Invoke();
 
-        public void InvokeClick() => OnPointerClick?.Invoke();
+        public virtual void InvokeClick() => OnPointerClick?.Invoke();
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
