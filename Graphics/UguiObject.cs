@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Data;
@@ -300,6 +301,8 @@ namespace PBFramework.Graphics
             this.parent.ReorderChildren();
         }
 
+        public void InvokeAfterFrames(int frames, Action action) => StartCoroutine(InvokeAfterFramesInternal(frames, action));
+
         public virtual void Destroy()
         {
             // Remove the child from parent's children list.
@@ -494,6 +497,16 @@ namespace PBFramework.Graphics
             {
                 children[i].RawTransform.SetSiblingIndex(i);
             }
+        }
+
+        /// <summary>
+        /// Handles the yield & call process for InvokeAfterFrames method.
+        /// </summary>
+        private IEnumerator InvokeAfterFramesInternal(int frames, Action action)
+        {
+            for (int i = 0; i < frames; i++)
+                yield return null;
+            action.Invoke();
         }
     }
 

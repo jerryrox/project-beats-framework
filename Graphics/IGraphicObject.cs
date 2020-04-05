@@ -102,6 +102,11 @@ namespace PBFramework.Graphics
         void SetParent(IGraphicObject parent);
 
         /// <summary>
+        /// Invokes the specified action after specified number of frames.
+        /// </summary>
+        void InvokeAfterFrames(int frames, Action action);
+
+        /// <summary>
         /// Destroys this object.
         /// </summary>
         void Destroy();
