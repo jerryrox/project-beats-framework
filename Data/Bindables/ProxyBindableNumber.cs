@@ -1,11 +1,13 @@
-﻿using System;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace PBFramework.Data.Bindables
 {
     /// <summary>
-    /// Bindable implementation for numbers.
+    /// ProxyBindable implementation for numbers.
     /// </summary>
-    public abstract class BindableNumber<T> : Bindable<T>, IBindableNumber<T>
+    public abstract class ProxyBindableNumber<T> : ProxyBindable<T>, IBindableNumber<T>
         where T : struct
     {
         private T min;
@@ -18,13 +20,13 @@ namespace PBFramework.Data.Bindables
             set
             {
                 // Set min
-                if(GreaterThan(value, max))
+                if (GreaterThan(value, max))
                     min = max;
                 else
                     min = value;
 
                 // Adjust value
-                if(GreaterThan(min, this.value))
+                if (GreaterThan(min, this.Value))
                     Value = min;
             }
         }
@@ -35,13 +37,13 @@ namespace PBFramework.Data.Bindables
             set
             {
                 // Set max
-                if(LessThan(value, min))
+                if (LessThan(value, min))
                     max = min;
                 else
                     max = value;
 
                 // Adjust value
-                if(LessThan(max, this.value))
+                if (LessThan(max, this.Value))
                     Value = max;
             }
         }
@@ -51,9 +53,9 @@ namespace PBFramework.Data.Bindables
             get => base.Value;
             set
             {
-                if(LessThan(value, min))
+                if (LessThan(value, min))
                     base.Value = min;
-                else if(GreaterThan(value, max))
+                else if (GreaterThan(value, max))
                     base.Value = max;
                 else
                     base.Value = value;
@@ -61,9 +63,9 @@ namespace PBFramework.Data.Bindables
         }
 
 
-        public BindableNumber(T value, T min, T max) : base(value)
+        public ProxyBindableNumber(Func<T> getter, Action<T> setter, T min, T max) : base(getter, setter)
         {
-            // Set min and max bounds.
+            // Set min/max bounds
             this.min = min;
             this.max = max;
             MinValue = min;
