@@ -31,6 +31,12 @@ namespace PBFramework.UI
             set => valueLabel.Color = placeholderLabel.Color = value;
         }
 
+        public Color Tint
+        {
+            get => valueLabel.Color;
+            set => valueLabel.Tint = placeholderLabel.Tint = value;
+        }
+
         public float PreferredWidth => valueLabel.PreferredWidth;
 
         public float PreferredHeight => valueLabel.PreferredHeight;

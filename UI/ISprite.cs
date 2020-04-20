@@ -6,7 +6,7 @@ using PBFramework.Graphics;
 
 namespace PBFramework.UI
 {
-    public interface ISprite : IGraphicObject, IHasColor, IHasMaterial, IHasFill {
+    public interface ISprite : IGraphicObject, IHasColor, IHasTint, IHasMaterial, IHasFill {
 
         /// <summary>
         /// Event called when the rendered sprite has changed.
