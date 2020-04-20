@@ -62,26 +62,6 @@ namespace PBFramework.Graphics
             context.anchoredPosition3D = pos;
         }
 
-        public static void SetOffsetLeft(this RectTransform context, float offset)
-        {
-            context.offsetMin = new Vector2(offset, context.offsetMin.y);
-        }
-
-        public static void SetOffsetRight(this RectTransform context, float offset)
-        {
-            context.offsetMax = new Vector2(-offset, context.offsetMax.y);
-        }
-
-        public static void SetOffsetTop(this RectTransform context, float offset)
-        {
-            context.offsetMax = new Vector2(context.offsetMax.x, -offset);
-        }
-
-        public static void SetOffsetBottom(this RectTransform context, float offset)
-        {
-            context.offsetMin = new Vector2(context.offsetMin.x, offset);
-        }
-
         public static void SetSizeDeltaX(this RectTransform context, float x)
         {
             var size = context.sizeDelta;

@@ -101,28 +101,14 @@ namespace PBFramework.Graphics
             }
         }
 
-        public float OffsetLeft
+        public Offset Offset
         {
-            get => myTransform.offsetMin.x;
-            set => myTransform.SetOffsetLeft(value);
-        }
-        
-        public float OffsetRight
-        {
-            get => -myTransform.offsetMax.x;
-            set => myTransform.SetOffsetRight(value);
-        }
-        
-        public float OffsetTop
-        {
-            get => -myTransform.offsetMax.y;
-            set => myTransform.SetOffsetTop(value);
-        }
-        
-        public float OffsetBottom
-        {
-            get => myTransform.offsetMin.y;
-            set => myTransform.SetOffsetBottom(value);
+            get => new Offset(myTransform.offsetMin, myTransform.offsetMax);
+            set
+            {
+                myTransform.offsetMin = value.OffsetMin;
+                myTransform.offsetMax = value.OffsetMax;
+            }
         }
 
         public float RawWidth
