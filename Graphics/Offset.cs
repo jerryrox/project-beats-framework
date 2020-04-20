@@ -16,6 +16,11 @@ namespace PBFramework.Graphics
         private float bottom;
 
 
+        /// <summary>
+        /// Returns a new offset instance with 0 offset.
+        /// </summary>
+        public static Offset Zero => new Offset(0f);
+
         public float Left
         {
             get => left;
@@ -72,6 +77,23 @@ namespace PBFramework.Graphics
             }
         }
 
+
+        /// <summary>
+        /// Creates an offset with the same offset for all sides.
+        /// </summary>
+        public Offset(float offset)
+        {
+            this.left = this.right = this.top = this.bottom = offset;
+        }
+
+        /// <summary>
+        /// Creates an offset with specified horizontal and vertical values.
+        /// </summary>
+        public Offset(float horizontal, float vertical)
+        {
+            this.left = this.right = horizontal;
+            this.top = this.bottom = vertical;
+        }
 
         /// <summary>
         /// Creates an offset with specified values for each side.
