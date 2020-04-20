@@ -50,10 +50,26 @@ namespace PBFramework.Graphics
             offset.Offset = o;
         }
 
+        public static void SetOffsetVertical(this IHasOffset offset, float top, float bottom)
+        {
+            var o = offset.Offset;
+            o.Top = top;
+            o.Bottom = bottom;
+            offset.Offset = o;
+        }
+
         public static void SetOffsetHorizontal(this IHasOffset offset, float horizontal)
         {
             var o = offset.Offset;
             o.Horizontal = horizontal;
+            offset.Offset = o;
+        }
+
+        public static void SetOffsetHorizontal(this IHasOffset offset, float left, float right)
+        {
+            var o = offset.Offset;
+            o.Left = left;
+            o.Right = right;
             offset.Offset = o;
         }
     }
