@@ -84,15 +84,8 @@ namespace PBFramework.UI
         protected virtual void OnForegroundSpriteChange(Sprite sprite)
         {
             var border = sprite == null ? Vector4.zero : sprite.border;
-            slideArea.OffsetLeft = border.x;
-            slideArea.OffsetTop = border.y;
-            slideArea.OffsetRight = border.z;
-            slideArea.OffsetBottom = border.w;
-
-            foreground.OffsetLeft = -border.x;
-            foreground.OffsetTop = -border.y;
-            foreground.OffsetRight = -border.z;
-            foreground.OffsetBottom = -border.w;
+            slideArea.Offset = new Offset(border.x, border.y, border.z, border.w);
+            foreground.Offset = new Offset(-border.x, -border.y, -border.z, -border.w);
         }
     }
 }

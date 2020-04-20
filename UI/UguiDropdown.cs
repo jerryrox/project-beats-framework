@@ -70,8 +70,7 @@ namespace PBFramework.UI
             // Init popup scrollbar
             popupScrollbar.Anchor = Anchors.RightStretch;
             popupScrollbar.Pivot = Pivots.TopRight;
-            popupScrollbar.OffsetTop = 0f;
-            popupScrollbar.OffsetBottom = 0f;
+            popupScrollbar.SetOffsetVertical(0f);
             popupScrollbar.Width = 4f;
             popupScrollbar.X = 0;
             popupScrollbar.Direction = Scrollbar.Direction.BottomToTop;

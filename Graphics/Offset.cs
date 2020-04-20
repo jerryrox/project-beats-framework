@@ -40,6 +40,18 @@ namespace PBFramework.Graphics
             set => bottom = value;
         }
 
+        public float Horizontal
+        {
+            get => left + right;
+            set => left = right = value;
+        }
+
+        public float Vertical
+        {
+            get => bottom + top;
+            set => bottom = top = value;
+        }
+
         public Vector2 OffsetMin
         {
             get => new Vector2(left, bottom);
