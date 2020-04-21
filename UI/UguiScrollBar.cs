@@ -67,7 +67,6 @@ namespace PBFramework.UI
             component.handleRect = foreground.RawTransform;
             
             Direction = Scrollbar.Direction.LeftToRight;
-            Size = new Vector2(200, 36);
         }
 
         public void SetNoTransition() => component.SetNoTransition();
