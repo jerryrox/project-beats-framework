@@ -25,16 +25,16 @@ namespace PBFramework.UI
             set => canvasGroup.alpha = value;
         }
 
-        public Color Color
+        public virtual Color Color
         {
-            get => valueLabel.Color;
-            set => valueLabel.Color = placeholderLabel.Color = value;
+            get => backgroundSprite.Color;
+            set => backgroundSprite.Color = value;
         }
 
-        public Color Tint
+        public virtual Color Tint
         {
-            get => valueLabel.Color;
-            set => valueLabel.Tint = placeholderLabel.Tint = value;
+            get => backgroundSprite.Color;
+            set => backgroundSprite.Tint = value;
         }
 
         public float PreferredWidth => valueLabel.PreferredWidth;

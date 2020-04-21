@@ -62,35 +62,35 @@ namespace PBFramework.UI
         [InitWithDependency]
         private void Init()
         {
-            background = CreateChild<UguiSprite>("background");
+            background = CreateChild<UguiSprite>("background", 0);
             {
                 background.ImageType = Image.Type.Sliced;
                 background.Anchor = Anchors.Fill;
                 background.RawSize = Vector2.zero;
-                background.Depth = -2;
             }
-            foregroundArea = CreateChild<UguiObject>("foreground-area");
+            foregroundArea = CreateChild<UguiObject>("foreground-area", 1);
             {
                 foregroundArea.Anchor = Anchors.Fill;
                 foregroundArea.Position = Vector2.zero;
                 foregroundArea.RawSize = Vector2.zero;
-                foregroundArea.Depth = -1;
+
+                foreground = foregroundArea.CreateChild<UguiSprite>("foreground", 0);
+                {
+                    foreground.ImageType = Image.Type.Sliced;
+                    foreground.Anchor = Anchors.LeftStretch;
+                    foreground.RawSize = Vector2.zero;
+                }
             }
-            foreground = foregroundArea.CreateChild<UguiSprite>("foreground");
-            {
-                foreground.ImageType = Image.Type.Sliced;
-                foreground.Anchor = Anchors.LeftStretch;
-                foreground.RawSize = Vector2.zero;
-            }
-            thumbArea = CreateChild<UguiObject>("thumb-area");
+            thumbArea = CreateChild<UguiObject>("thumb-area", 2);
             {
                 thumbArea.Anchor = Anchors.Fill;
                 thumbArea.Position = Vector2.zero;
                 thumbArea.RawSize = Vector2.zero;
-            }
-            thumb = thumbArea.CreateChild<UguiSprite>("thumb");
-            {
-                thumb.Anchor = Anchors.LeftStretch;
+
+                thumb = thumbArea.CreateChild<UguiSprite>("thumb", 0);
+                {
+                    thumb.Anchor = Anchors.LeftStretch;
+                }
             }
 
             component.targetGraphic = thumb.GetComponent<Image>();

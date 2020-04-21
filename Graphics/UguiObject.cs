@@ -214,11 +214,6 @@ namespace PBFramework.Graphics
         public IDependencyContainer Dependencies { get; set; }
 
         /// <summary>
-        /// Returns the root graphic object in the hierarchy.
-        /// </summary>
-        protected IRoot Root => Dependencies?.Get<IRoot>();
-
-        /// <summary>
         /// Returns the input manager instance.
         /// </summary>
         protected IInputManager InputManager => Dependencies?.Get<IInputManager>();

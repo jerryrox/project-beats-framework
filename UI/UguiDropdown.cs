@@ -99,7 +99,11 @@ namespace PBFramework.UI
         {
             if(blocker != null) return;
 
-            blocker = Root.CreateChild<UguiButton>("blocker", DepthPresets.PopupBlocker);
+            var root = Dependencies.Get<IRoot>();
+            if(root == null)
+                throw new Exception("IRoot dependency not found. Make sure IRoot has been cached in the dependency container.");
+
+            blocker = root.CreateChild<UguiButton>("blocker", DepthPresets.PopupBlocker);
 
             var blockerCanvas = blocker.Canvas = blocker.RawObject.AddComponent<Canvas>();
             blockerCanvas.overrideSorting = true;
