@@ -66,7 +66,7 @@ namespace PBFramework.Data.Bindables
             isNullableT = !typeof(T).IsValueType;
         }
 
-        public void Trigger() => TriggerInternal(value, value);
+        public void Trigger() => TriggerInternal(Value, Value);
 
         public void BindAndTrigger(Action<T, T> callback)
         {
