@@ -49,7 +49,7 @@ namespace PBFramework.Graphics
         /// <summary>
         /// Returns a new vector translated by the specified delta.
         /// </summary>
-        public static Vector2 Translated(this Vector2 context, float x, float y)
+        public static Vector2 GetTranslated(this Vector2 context, float x, float y)
         {
             return new Vector2(context.x + x, context.y + y);
         }
