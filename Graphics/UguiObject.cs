@@ -203,6 +203,8 @@ namespace PBFramework.Graphics
             }
         }
 
+        public int ChildCount => myTransform.childCount;
+
         public int InputLayer => 0;
 
         /// <summary>

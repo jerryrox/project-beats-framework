@@ -41,6 +41,11 @@ namespace PBFramework.Graphics
         int Depth { get; set; }
 
         /// <summary>
+        /// Returns the number of direct children in this object.
+        /// </summary>
+        int ChildCount { get; }
+
+        /// <summary>
         /// If implementation supports it, access the unprocessed, raw width value of the transform.
         /// </summary>
         float RawWidth { get; set; }
