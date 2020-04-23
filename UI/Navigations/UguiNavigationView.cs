@@ -1,3 +1,4 @@
+using System;
 using PBFramework.Graphics;
 using PBFramework.Animations;
 using PBFramework.Dependencies;
@@ -6,6 +7,11 @@ using UnityEngine;
 namespace PBFramework.UI.Navigations
 {
     public abstract class UguiNavigationView : UguiPanel, INavigationView {
+
+        public event Action OnShow;
+
+        public event Action OnHide;
+
 
         public virtual HideActions HideAction => HideActions.Destroy;
 
@@ -40,7 +46,7 @@ namespace PBFramework.UI.Navigations
         /// <summary>
         /// Handles pre-show event called from the navigator.
         /// </summary>
-        protected virtual void OnPreShow() {}
+        protected virtual void OnPreShow() { OnShow?.Invoke(); }
         void INavigationEvent.OnPreShow() => OnPreShow();
 
         /// <summary>
@@ -52,7 +58,7 @@ namespace PBFramework.UI.Navigations
         /// <summary>
         /// Handles pre-hide event called from the navigator.
         /// </summary>
-        protected virtual void OnPreHide() { }
+        protected virtual void OnPreHide() { OnHide?.Invoke(); }
         void INavigationEvent.OnPreHide() => OnPreHide();
 
         /// <summary>
