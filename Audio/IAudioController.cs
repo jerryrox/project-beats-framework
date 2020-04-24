@@ -87,6 +87,11 @@ namespace PBFramework.Audio
         float CurrentTime { get; }
 
         /// <summary>
+        /// Returns the current playback progress.
+        /// </summary>
+        float Progress { get; }
+
+        /// <summary>
         /// Whether the controller should loop the audio playback on reaching the end.
         /// </summary>
         bool IsLoop { get; set; }
