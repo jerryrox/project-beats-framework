@@ -257,6 +257,8 @@ namespace PBFramework.UI
             if(!isInitialized) return;
             // Cell shifting only occurs when there are more number of items compared to the number of pooled cells.
             if (boundIndexLimit <= 0) return;
+            
+            if(cells.Count == 0) return;
 
             var curPos = axis == GridLayoutGroup.Axis.Horizontal ? container.Position.x : container.Position.y;
 

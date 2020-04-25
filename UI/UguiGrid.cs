@@ -6,6 +6,8 @@ namespace PBFramework.UI
 {
     public class UguiGrid : UguiObject<GridLayoutGroup>, IGrid {
 
+        private int limit;
+
 
         public float CellWidth
         {
@@ -67,10 +69,10 @@ namespace PBFramework.UI
 
         public int Limit
         {
-            get => component.constraintCount;
+            get => limit;
             set
             {
-                component.constraintCount = Mathf.Clamp(value, 0, int.MaxValue);
+                component.constraintCount = limit = Mathf.Clamp(value, 0, int.MaxValue);
                 RefreshConstraint();
             }
         }
@@ -80,7 +82,7 @@ namespace PBFramework.UI
         {
             base.Awake();
 
-            Limit = 0;
+            Limit = 1;
         }
 
         /// <summary>
@@ -88,7 +90,7 @@ namespace PBFramework.UI
         /// </summary>
         private void RefreshConstraint()
         {
-            if (component.constraintCount == 0)
+            if (limit == 0)
                 component.constraint = GridLayoutGroup.Constraint.Flexible;
             else
             {
