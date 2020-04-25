@@ -286,6 +286,8 @@ namespace PBFramework.Graphics
 
         public void InvokeAfterFrames(int frames, Action action) => StartCoroutine(InvokeAfterFramesInternal(frames, action));
 
+        public void InvokeAfterTransformed(int maxFrames, Action action) => StartCoroutine(InvokeAfterTransformedInternal(maxFrames, action));
+
         public virtual void Destroy()
         {
             // Remove the child from parent's children list.
@@ -489,6 +491,24 @@ namespace PBFramework.Graphics
         {
             for (int i = 0; i < frames; i++)
                 yield return null;
+            action.Invoke();
+        }
+
+        /// <summary>
+        /// Handles the yield & call process for InvokeAfterTransformed method.
+        /// </summary>
+        private IEnumerator InvokeAfterTransformedInternal(int maxFrames, Action action)
+        {
+            var prevSize = this.Size;
+            for (int i = 0; i < maxFrames; i++)
+            {
+                yield return null;
+                if (prevSize != this.Size)
+                {
+                    action.Invoke();
+                    yield break;
+                }
+            }
             action.Invoke();
         }
     }

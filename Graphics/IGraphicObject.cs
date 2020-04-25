@@ -92,6 +92,14 @@ namespace PBFramework.Graphics
         void InvokeAfterFrames(int frames, Action action);
 
         /// <summary>
+        /// Invokes the specified action after a transformation has been applied.
+        /// This method should be used in cases where the object's rect depends on anchor to adjust to parent object first,
+        /// but is unknown exactly when this will be applied.
+        /// You can specify how many frames to wait at most before expecting invocation.
+        /// </summary>
+        void InvokeAfterTransformed(int maxFrames, Action action);
+
+        /// <summary>
         /// Destroys this object.
         /// </summary>
         void Destroy();
