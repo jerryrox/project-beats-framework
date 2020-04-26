@@ -10,9 +10,6 @@ Slowly making progress 🧩
 - ICSharpCode.SharpZipLib
 
 ## To-Dos
-#### Graphics/UI
-- Change UguiDropdown's scrollview integration using UguiListView
-- Implement progress bar
 #### Services/Notifications
 - Develop from scratch
 #### Platform
@@ -20,4 +17,5 @@ Slowly making progress 🧩
 
 ## Versions
 ### 1.0.0
-Started adding versions
+- Started adding versions.
+- Initial release via Gitflow.
