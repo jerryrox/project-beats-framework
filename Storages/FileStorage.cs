@@ -7,6 +7,10 @@ namespace PBFramework.Storages
 {
     public class FileStorage : IFileStorage {
 
+        public event Action<string> OnAdded;
+
+        public event Action<string> OnRemoved;
+
         protected readonly DirectoryInfo directory;
 
 
@@ -43,15 +47,26 @@ namespace PBFramework.Storages
             return null;
         }
 
-        public virtual void Write(string name, string text) => File.WriteAllText(GetFullPath(name), text);
+        public virtual void Write(string name, string text)
+        {
+            File.WriteAllText(GetFullPath(name), text);
+            OnAdded?.Invoke(name);
+        }
 
-        public virtual void Write(string name, byte[] data) => File.WriteAllBytes(GetFullPath(name), data);
+        public virtual void Write(string name, byte[] data)
+        {
+            File.WriteAllBytes(GetFullPath(name), data);
+            OnAdded?.Invoke(name);
+        }
 
         public void Delete(string name)
         {
             string path = GetFullPath(name);
-            if(File.Exists(path))
+            if (File.Exists(path))
+            {
                 File.Delete(path);
+                OnRemoved?.Invoke(name);
+            }
         }
 
         public void DeleteAll()
@@ -59,6 +74,10 @@ namespace PBFramework.Storages
             directory.Refresh();
             if (directory.Exists)
             {
+                // Call removed event for all files first.
+                foreach(var file in directory.GetFiles())
+                    OnRemoved?.Invoke(file.FullName);
+
                 directory.Delete(true);
                 directory.Refresh();
             }

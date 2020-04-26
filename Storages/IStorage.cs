@@ -1,9 +1,22 @@
+using System;
+
 namespace PBFramework.Storages
 {
     /// <summary>
     /// Provides the minimal, shared interface across different storage implementations.
     /// </summary>
     public interface IStorage {
+
+        /// <summary>
+        /// Event called on addition of a new data in the storage.
+        /// </summary>
+        event Action<string> OnAdded;
+
+        /// <summary>
+        /// Event called on removal of a data in the storage.
+        /// </summary>
+        event Action<string> OnRemoved;
+
 
         /// <summary>
         /// Returns the number of data stored.

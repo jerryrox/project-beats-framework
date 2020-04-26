@@ -9,6 +9,10 @@ namespace PBFramework.Storages
 {
     public class DirectoryStorage : IDirectoryStorage {
 
+        public event Action<string> OnAdded;
+
+        public event Action<string> OnRemoved;
+
         protected readonly DirectoryInfo directory;
 
 
@@ -87,6 +91,7 @@ namespace PBFramework.Storages
             SafeWriteDirectory(name, (targetPath) =>
             {
                 source.MoveTo(targetPath);
+                OnAdded?.Invoke(targetPath);
             });
         }
 
@@ -98,6 +103,7 @@ namespace PBFramework.Storages
             SafeWriteDirectory(name, (targetPath) =>
             {
                 source.Copy(new DirectoryInfo(targetPath), true);
+                OnAdded?.Invoke(targetPath);
             });
         }
 
@@ -109,11 +115,16 @@ namespace PBFramework.Storages
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);
+                OnRemoved?.Invoke(path);
             }
         }
 
         public void DeleteAll()
         {
+            // Invoke removed event for all subdirectories.
+            foreach (var dir in directory.GetDirectories())
+                OnRemoved?.Invoke(dir.FullName);
+
             // Delete the managing directory itself
             directory.Delete(true);
             directory.Refresh();
