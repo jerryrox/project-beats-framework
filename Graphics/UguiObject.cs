@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Data;
@@ -100,28 +101,14 @@ namespace PBFramework.Graphics
             }
         }
 
-        public float OffsetLeft
+        public Offset Offset
         {
-            get => myTransform.offsetMin.x;
-            set => myTransform.SetOffsetLeft(value);
-        }
-        
-        public float OffsetRight
-        {
-            get => -myTransform.offsetMax.x;
-            set => myTransform.SetOffsetRight(value);
-        }
-        
-        public float OffsetTop
-        {
-            get => -myTransform.offsetMax.y;
-            set => myTransform.SetOffsetTop(value);
-        }
-        
-        public float OffsetBottom
-        {
-            get => myTransform.offsetMin.y;
-            set => myTransform.SetOffsetBottom(value);
+            get => new Offset(myTransform.offsetMin, myTransform.offsetMax);
+            set
+            {
+                myTransform.offsetMin = value.OffsetMin;
+                myTransform.offsetMax = value.OffsetMax;
+            }
         }
 
         public float RawWidth
@@ -216,6 +203,8 @@ namespace PBFramework.Graphics
             }
         }
 
+        public int ChildCount => myTransform.childCount;
+
         public int InputLayer => 0;
 
         /// <summary>
@@ -225,11 +214,6 @@ namespace PBFramework.Graphics
 
         [ReceivesDependency]
         public IDependencyContainer Dependencies { get; set; }
-
-        /// <summary>
-        /// Returns the root graphic object in the hierarchy.
-        /// </summary>
-        protected IRoot Root => Dependencies?.Get<IRoot>();
 
         /// <summary>
         /// Returns the input manager instance.
@@ -299,6 +283,10 @@ namespace PBFramework.Graphics
             // Re-order the siblings in the parent object.
             this.parent.ReorderChildren();
         }
+
+        public void InvokeAfterFrames(int frames, Action action) => StartCoroutine(InvokeAfterFramesInternal(frames, action));
+
+        public void InvokeAfterTransformed(int maxFrames, Action action) => StartCoroutine(InvokeAfterTransformedInternal(maxFrames, action));
 
         public virtual void Destroy()
         {
@@ -494,6 +482,34 @@ namespace PBFramework.Graphics
             {
                 children[i].RawTransform.SetSiblingIndex(i);
             }
+        }
+
+        /// <summary>
+        /// Handles the yield & call process for InvokeAfterFrames method.
+        /// </summary>
+        private IEnumerator InvokeAfterFramesInternal(int frames, Action action)
+        {
+            for (int i = 0; i < frames; i++)
+                yield return null;
+            action.Invoke();
+        }
+
+        /// <summary>
+        /// Handles the yield & call process for InvokeAfterTransformed method.
+        /// </summary>
+        private IEnumerator InvokeAfterTransformedInternal(int maxFrames, Action action)
+        {
+            var prevSize = this.Size;
+            for (int i = 0; i < maxFrames; i++)
+            {
+                yield return null;
+                if (prevSize != this.Size)
+                {
+                    action.Invoke();
+                    yield break;
+                }
+            }
+            action.Invoke();
         }
     }
 

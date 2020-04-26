@@ -55,7 +55,7 @@ namespace PBFramework.UI
         /// Max number of cells aligned per line in direction.
         /// This may be affected by the grid's rect.
         /// If limit is 0, the constraint is set to Flexible mode.
-        /// Default: 0
+        /// Default: 1
         /// </summary>
         int Limit { get; set; }
     }

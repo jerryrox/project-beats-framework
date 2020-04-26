@@ -38,6 +38,8 @@ namespace PBFramework.UI.Navigations
         public IEnumerable<T> GetAll<T>()
             where T : INavigationView => views.OfType<T>();
 
+        public bool IsActive(Type type) => views.Any(v => v.Active && type.IsAssignableFrom(v.GetType()));
+
         public T Show<T>()
             where T : MonoBehaviour, INavigationView
         {

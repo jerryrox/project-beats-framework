@@ -32,6 +32,11 @@ namespace PBFramework.Data.Bindables
         /// Parses the specified string value into the type that matches the bound type.
         /// </summary>
         void Parse(string value);
+
+        /// <summary>
+        /// Binds the specified value changed event listener and triggers for the listener immediately.
+        /// </summary>
+        void BindAndTrigger(Action<object, object> callback);
     }
 
     public interface IBindable<T> : IBindable
@@ -46,5 +51,11 @@ namespace PBFramework.Data.Bindables
         /// The inner value stored.
         /// </summary>
         T Value { get; set; }
+
+
+        /// <summary>
+        /// Binds the specified value changed event listener and triggers for the listener immediately.
+        /// </summary>
+        void BindAndTrigger(Action<T, T> callback);
     }
 }

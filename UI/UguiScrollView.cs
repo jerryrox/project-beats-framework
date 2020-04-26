@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using PBFramework.Graphics;
+using PBFramework.Animations;
 using PBFramework.Dependencies;
 
 namespace PBFramework.UI
@@ -17,6 +18,9 @@ namespace PBFramework.UI
 
         protected UguiScrollBar horizontalScrollbar;
         protected UguiScrollBar verticalScrollbar;
+
+        private IAnime scrollAni;
+        private Vector2 scrollTarget;
 
         private Image viewportImage;
 
@@ -133,6 +137,13 @@ namespace PBFramework.UI
             ShowMaskingSprite = false;
             UseInertia = true;
             InertiaRate = 0.1f;
+
+            scrollAni = new Anime();
+            scrollAni.AnimateVector2(pos => container.Position = pos)
+                .AddTime(0f, () => container.Position)
+                .AddTime(0.5f, () => scrollTarget)
+                .Build();
+            scrollAni.AddEvent(scrollAni.Duration, () => component.StopMovement());
         }
 
         public virtual void ResetPosition()
@@ -142,8 +153,8 @@ namespace PBFramework.UI
 
         public void ScrollTo(Vector2 position)
         {
-            // TODO: Use anime
-            container.Position = position;
+            scrollTarget = position;
+            scrollAni.PlayFromStart();
         }
     }
 }

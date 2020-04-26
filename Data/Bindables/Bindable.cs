@@ -66,7 +66,15 @@ namespace PBFramework.Data.Bindables
             isNullableT = !typeof(T).IsValueType;
         }
 
-        public void Trigger() => TriggerInternal(value, value);
+        public void Trigger() => TriggerInternal(Value, Value);
+
+        public void BindAndTrigger(Action<T, T> callback)
+        {
+            if(callback == null)
+                throw new ArgumentNullException(nameof(callback));
+            OnValueChanged += callback;
+            callback.Invoke(Value, Value);
+        }
 
         public virtual void Parse(string value)
         {
@@ -88,6 +96,14 @@ namespace PBFramework.Data.Bindables
         {
             OnValueChanged?.Invoke(newValue, oldValue);
             OnRawValueChanged?.Invoke(newValue, oldValue);
+        }
+
+        void IBindable.BindAndTrigger(Action<object, object> callback)
+        {
+            if(callback == null)
+                throw new ArgumentNullException(nameof(callback));
+            OnRawValueChanged += callback;
+            callback.Invoke(RawValue, RawValue);
         }
     }
 }

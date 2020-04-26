@@ -8,7 +8,7 @@ namespace PBFramework.Graphics
     /// <summary>
     /// Abstraction of an object that resides in the UI space.
     /// </summary>
-    public interface IGraphicObject : IHasTransform, IHasEffect, IInputReceiver, IComparable<IGraphicObject> {
+    public interface IGraphicObject : IHasTransform, IHasOffset, IHasEffect, IInputReceiver, IComparable<IGraphicObject> {
 
         /// <summary>
         /// Name of the object.
@@ -41,24 +41,9 @@ namespace PBFramework.Graphics
         int Depth { get; set; }
 
         /// <summary>
-        /// If implementation supports it, access the positional offset from parent's left side.
+        /// Returns the number of direct children in this object.
         /// </summary>
-        float OffsetLeft { get; set; }
-
-        /// <summary>
-        /// If implementation supports it, access the positional offset from parent's right side.
-        /// </summary>
-        float OffsetRight { get; set; }
-
-        /// <summary>
-        /// If implementation supports it, access the positional offset from parent's top side.
-        /// </summary>
-        float OffsetTop { get; set; }
-
-        /// <summary>
-        /// If implementation supports it, access the positional offset from parent's bottom side.
-        /// </summary>
-        float OffsetBottom { get; set; }
+        int ChildCount { get; }
 
         /// <summary>
         /// If implementation supports it, access the unprocessed, raw width value of the transform.
@@ -100,6 +85,19 @@ namespace PBFramework.Graphics
         /// Sets the parent of this object to the specified object.
         /// </summary>
         void SetParent(IGraphicObject parent);
+
+        /// <summary>
+        /// Invokes the specified action after specified number of frames.
+        /// </summary>
+        void InvokeAfterFrames(int frames, Action action);
+
+        /// <summary>
+        /// Invokes the specified action after a transformation has been applied.
+        /// This method should be used in cases where the object's rect depends on anchor to adjust to parent object first,
+        /// but is unknown exactly when this will be applied.
+        /// You can specify how many frames to wait at most before expecting invocation.
+        /// </summary>
+        void InvokeAfterTransformed(int maxFrames, Action action);
 
         /// <summary>
         /// Destroys this object.

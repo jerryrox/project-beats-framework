@@ -57,6 +57,8 @@ namespace PBFramework.Audio
 
         public virtual float CurrentTime => ToMs(source.time);
 
+        public virtual float Progress => audio == null ? 0f : CurrentTime / audio.Duration;
+
         public bool IsLoop { get; set; } = false;
 
 

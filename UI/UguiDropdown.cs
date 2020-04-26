@@ -70,8 +70,7 @@ namespace PBFramework.UI
             // Init popup scrollbar
             popupScrollbar.Anchor = Anchors.RightStretch;
             popupScrollbar.Pivot = Pivots.TopRight;
-            popupScrollbar.OffsetTop = 0f;
-            popupScrollbar.OffsetBottom = 0f;
+            popupScrollbar.SetOffsetVertical(0f);
             popupScrollbar.Width = 4f;
             popupScrollbar.X = 0;
             popupScrollbar.Direction = Scrollbar.Direction.BottomToTop;
@@ -100,7 +99,11 @@ namespace PBFramework.UI
         {
             if(blocker != null) return;
 
-            blocker = Root.CreateChild<UguiButton>("blocker", DepthPresets.PopupBlocker);
+            var root = Dependencies.Get<IRoot>();
+            if(root == null)
+                throw new Exception("IRoot dependency not found. Make sure IRoot has been cached in the dependency container.");
+
+            blocker = root.CreateChild<UguiButton>("blocker", DepthPresets.PopupBlocker);
 
             var blockerCanvas = blocker.Canvas = blocker.RawObject.AddComponent<Canvas>();
             blockerCanvas.overrideSorting = true;

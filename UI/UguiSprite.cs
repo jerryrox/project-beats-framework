@@ -26,6 +26,16 @@ namespace PBFramework.UI
             set => component.color = value;
         }
 
+        public Color Tint
+        {
+            get => component.color;
+            set
+            {
+                value.a = component.color.a;
+                component.color = value;
+            }
+        }
+
         public Sprite Sprite
         {
             get => component.sprite;

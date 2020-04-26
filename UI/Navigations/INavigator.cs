@@ -31,6 +31,11 @@ namespace PBFramework.UI.Navigations
         IEnumerable<T> GetAll<T>() where T : INavigationView;
 
         /// <summary>
+        /// Returns whether the view of specified type is active.
+        /// </summary>
+        bool IsActive(Type type);
+
+        /// <summary>
         /// Shows the view of specified type.
         /// </summary>
         T Show<T>() where T : MonoBehaviour, INavigationView;

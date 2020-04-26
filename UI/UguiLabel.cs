@@ -26,6 +26,16 @@ namespace PBFramework.UI
             set => component.color = value;
         }
 
+        public Color Tint
+        {
+            get => component.color;
+            set
+            {
+                value.a = component.color.a;
+                component.color = value;
+            }
+        }
+
         public float PreferredWidth => component.preferredWidth;
 
         public float PreferredHeight => component.preferredHeight;

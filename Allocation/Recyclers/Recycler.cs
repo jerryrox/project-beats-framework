@@ -45,19 +45,22 @@ namespace PBFramework.Allocation.Recyclers
             }
         }
 
-        public T GetNext()
+        public virtual T GetNext()
         {
             T obj = GetAvailable();
             obj.OnRecycleNew();
             return obj;
         }
 
-        public void Return(T obj)
+        public virtual void Return(T obj)
         {
             obj.OnRecycleDestroy();
             unusedObjects.Add(obj);
         }
 
+        /// <summary>
+        /// Returns the next available item in the pool, or creates a new one.
+        /// </summary>
         private T GetAvailable()
         {
             // Create one if not available.
@@ -73,6 +76,9 @@ namespace PBFramework.Allocation.Recyclers
             return next;
         }
 
+        /// <summary>
+        /// Creates a new item using the instantiator delegate.
+        /// </summary>
         private T CreateObject()
         {
             TotalCount++;

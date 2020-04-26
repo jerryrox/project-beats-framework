@@ -143,6 +143,23 @@ namespace PBFramework.UI
             }
         }
 
+        public Vector2 ContainerStartPos => GetContainerPosAtCorner(this.corner);
+
+        public Vector2 ContainerEndPos
+        {
+            get
+            {
+                switch (this.corner)
+                {
+                    case GridLayoutGroup.Corner.UpperLeft: return GetContainerPosAtCorner(GridLayoutGroup.Corner.LowerRight);
+                    case GridLayoutGroup.Corner.UpperRight: return GetContainerPosAtCorner(GridLayoutGroup.Corner.LowerLeft);
+                    case GridLayoutGroup.Corner.LowerLeft: return GetContainerPosAtCorner(GridLayoutGroup.Corner.UpperRight);
+                    case GridLayoutGroup.Corner.LowerRight: return GetContainerPosAtCorner(GridLayoutGroup.Corner.UpperLeft);
+                }
+                throw new Exception("Unsupported corner type: " + this.corner);
+            }
+        }
+
         /// <summary>
         /// Unsupported property.
         /// </summary>
@@ -162,6 +179,23 @@ namespace PBFramework.UI
         /// Unsupported property.
         /// </summary>
         public TextAnchor Alignment { get; set; }
+
+        /// <summary>
+        /// Returns whether listview process should be updated.
+        /// </summary>
+        protected bool ShouldUpdate
+        {
+            get
+            {
+                // Requires initialization.
+                if (!isInitialized) return false;
+                // Cell shifting only occurs when there are more number of items compared to the number of pooled cells.
+                if (boundIndexLimit <= 0) return false;
+                // Having no cell shouldn't process anything.
+                if (cells.Count == 0) return false;
+                return true;
+            }
+        }
 
 
 
@@ -242,7 +276,7 @@ namespace PBFramework.UI
             }
 
             // Reset the container position.
-            container.Position = GetContainerPosAtCorner();
+            container.Position = GetContainerPosAtCorner(this.corner);
 
             // Reset the shifting bound.
             CalculateShiftBounds();
@@ -251,12 +285,10 @@ namespace PBFramework.UI
             ForceUpdate();
         }
 
-        private void Update()
+        protected virtual void Update()
         {
-            // Requires initialization.
-            if(!isInitialized) return;
-            // Cell shifting only occurs when there are more number of items compared to the number of pooled cells.
-            if (boundIndexLimit <= 0) return;
+            if(!ShouldUpdate)
+                return;
 
             var curPos = axis == GridLayoutGroup.Axis.Horizontal ? container.Position.x : container.Position.y;
 
@@ -454,7 +486,7 @@ namespace PBFramework.UI
             float positiveSortOffset = (isSortedToPositive ? -1f : 1f);
 
             // Reset the shifting bounds.
-            var posAtCorner = GetContainerPosAtCorner();
+            var posAtCorner = GetContainerPosAtCorner(this.corner);
             if (axis == GridLayoutGroup.Axis.Horizontal)
             {
                 shiftBounds[0] = posAtCorner.x + cellSize.x * (-0.5f + positiveSortOffset);
@@ -564,7 +596,7 @@ namespace PBFramework.UI
         /// <summary>
         /// Returns the position of the container at the beginning corner.
         /// </summary>
-        private Vector2 GetContainerPosAtCorner()
+        private Vector2 GetContainerPosAtCorner(GridLayoutGroup.Corner corner)
         {
             var viewportSize = viewport.Size;
             var containerSize = container.Size;
