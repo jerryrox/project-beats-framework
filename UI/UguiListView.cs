@@ -180,6 +180,23 @@ namespace PBFramework.UI
         /// </summary>
         public TextAnchor Alignment { get; set; }
 
+        /// <summary>
+        /// Returns whether listview process should be updated.
+        /// </summary>
+        protected bool ShouldUpdate
+        {
+            get
+            {
+                // Requires initialization.
+                if (!isInitialized) return false;
+                // Cell shifting only occurs when there are more number of items compared to the number of pooled cells.
+                if (boundIndexLimit <= 0) return false;
+                // Having no cell shouldn't process anything.
+                if (cells.Count == 0) return false;
+                return true;
+            }
+        }
+
 
 
         [InitWithDependency]
@@ -268,14 +285,10 @@ namespace PBFramework.UI
             ForceUpdate();
         }
 
-        private void Update()
+        protected virtual void Update()
         {
-            // Requires initialization.
-            if(!isInitialized) return;
-            // Cell shifting only occurs when there are more number of items compared to the number of pooled cells.
-            if (boundIndexLimit <= 0) return;
-            
-            if(cells.Count == 0) return;
+            if(!ShouldUpdate)
+                return;
 
             var curPos = axis == GridLayoutGroup.Axis.Horizontal ? container.Position.x : container.Position.y;
 
