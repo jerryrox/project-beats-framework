@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using PBFramework.IO;
 using PBFramework.IO.Compressed;
 using PBFramework.DB;
 using PBFramework.Data;
@@ -96,8 +97,6 @@ namespace PBFramework.Stores
             // Replace or add the data to database.
             database.Edit().Write(data).Commit();
 
-            // Refresh data's directory in case it's a new data.
-            data.Directory.Refresh();
             // Delete archive
             if (deleteOnImport)
                 archive.Delete();
@@ -125,13 +124,20 @@ namespace PBFramework.Stores
 
         public IEnumerable<T> GetAll()
         {
-            using (var result = database.Query().Preload().GetResult())
+            using (var edit = database.Edit())
             {
-                foreach (var r in result)
+                using (var result = database.Query().Preload().GetResult())
                 {
-                    PostProcessData(r);
-                    yield return r;
+                    foreach (var r in result)
+                    {
+                        PostProcessData(r);
+                        if (!r.Directory.Exists)
+                            edit.Remove(r);
+                        else
+                            yield return r;
+                    }
                 }
+                edit.Commit();
             }
         }
 
@@ -139,13 +145,20 @@ namespace PBFramework.Stores
         {
             if(query == null) throw new ArgumentNullException(nameof(query));
 
-            using (var result = query.Invoke(database.Query()).GetResult())
+            using (var edit = database.Edit())
             {
-                foreach (var r in result)
+                using (var result = query.Invoke(database.Query()).GetResult())
                 {
-                    PostProcessData(r);
-                    yield return r;
+                    foreach (var r in result)
+                    {
+                        PostProcessData(r);
+                        if(!r.Directory.Exists)
+                            edit.Remove(r);
+                        else
+                            yield return r;
+                    }
                 }
+                edit.Commit();
             }
         }
 
@@ -186,6 +199,9 @@ namespace PBFramework.Stores
         /// </summary>
         protected virtual void PostProcessData(T data, Guid? id = null)
         {
+            if(data == null)
+                return;
+
             if(id.HasValue)
                 data.Id = id.Value;
             data.Directory = new DirectoryInfo(Path.Combine(storage.Container.FullName, data.Id.ToString()));
