@@ -285,6 +285,21 @@ namespace PBFramework.UI
             ForceUpdate();
         }
 
+        public override void ScrollTo(Vector2 position)
+        {
+            var startPos = ContainerStartPos;
+            var endPos = ContainerEndPos;
+            if(startPos.x < endPos.x)
+                position.x = Mathf.Clamp(position.x, startPos.x, endPos.x);
+            else
+                position.x = Mathf.Clamp(position.x, endPos.x, startPos.x);
+            if (startPos.y < endPos.y)
+                position.y = Mathf.Clamp(position.y, startPos.y, endPos.y);
+            else
+                position.y = Mathf.Clamp(position.y, endPos.y, startPos.y);
+            base.ScrollTo(position);
+        }
+
         protected virtual void Update()
         {
             if(!ShouldUpdate)

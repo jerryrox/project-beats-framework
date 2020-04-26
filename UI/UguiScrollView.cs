@@ -151,7 +151,7 @@ namespace PBFramework.UI
             container.Position = Vector2.zero;
         }
 
-        public void ScrollTo(Vector2 position)
+        public virtual void ScrollTo(Vector2 position)
         {
             scrollTarget = position;
             scrollAni.PlayFromStart();
