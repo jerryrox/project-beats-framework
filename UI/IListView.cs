@@ -13,6 +13,16 @@ namespace PBFramework.UI
         /// </summary>
         int TotalItems { get; set; }
 
+        /// <summary>
+        /// Returns the position of the container at the starting point.
+        /// </summary>
+        Vector2 ContainerStartPos { get; }
+
+        /// <summary>
+        /// Returns the position of the container at the opposite of the starting point.
+        /// </summary>
+        Vector2 ContainerEndPos { get; }
+
 
         /// <summary>
         /// Initializes the listview with the specified event handlers.
