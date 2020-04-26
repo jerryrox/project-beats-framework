@@ -17,3 +17,7 @@ Slowly making progress 🧩
 - Develop from scratch
 #### Platform
 - Develop from scratch
+
+## Versions
+### 1.0.0
+Started adding versions
