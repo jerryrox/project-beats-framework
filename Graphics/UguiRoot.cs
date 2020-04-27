@@ -14,7 +14,9 @@ namespace PBFramework.Graphics
         private GraphicRaycaster raycaster;
 
 
-        public Vector2 Resolution
+        public Vector2 Resolution => this.Size;
+
+        public Vector2 BaseResolution
         {
             get => scaler.referenceResolution;
             set => scaler.referenceResolution = value;

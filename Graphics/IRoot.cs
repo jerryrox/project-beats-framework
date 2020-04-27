@@ -9,9 +9,14 @@ namespace PBFramework.Graphics
     public interface IRoot : IGraphicObject {
 
         /// <summary>
-        /// Resolution of the UI canvas.
+        /// Returns the actual resolution of the root.
         /// </summary>
-        Vector2 Resolution { get; set; }
+        Vector2 Resolution { get; }
+
+        /// <summary>
+        /// The base resolution of the root.
+        /// </summary>
+        Vector2 BaseResolution { get; set; }
 
 
         /// <summary>
