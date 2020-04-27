@@ -13,10 +13,12 @@ namespace PBFramework.Inputs
         private bool useMouse;
         private bool useTouch;
         private bool useKeyboard;
+        private bool useAcceleration;
 
         private MouseCursor[] mouseCursors;
         private TouchCursor[] touchCursors;
         private List<KeyboardKey> keyboardKeys;
+        private IAccelerator accelerator;
 
         private uint touchUpdateId = 0;
 
@@ -26,6 +28,12 @@ namespace PBFramework.Inputs
         public int MaxMouseCount { get; private set; }
 
         public int MaxTouchCount { get; private set; }
+
+        public IAccelerator Accelerator
+        {
+            get => accelerator;
+            set => accelerator = value;
+        }
 
         public bool UseMouse
         {
@@ -43,6 +51,12 @@ namespace PBFramework.Inputs
         {
             get => useKeyboard;
             set => UseInput(keyboardKeys, value, ref useKeyboard);
+        }
+
+        public bool UseAcceleration
+        {
+            get => useAcceleration;
+            set => useAcceleration = value;
         }
 
 
@@ -196,7 +210,12 @@ namespace PBFramework.Inputs
                 for (int i = 0; i < touchCursors.Length; i++)
                     touchCursors[i].VerifyTouch(touchUpdateId);
             }
-            
+
+            if (useAcceleration && accelerator != null)
+            {
+                accelerator.Update();
+            }
+
             if (useKeyboard)
             {
                 for (int i = keyboardKeys.Count - 1; i >= 0; i--)
