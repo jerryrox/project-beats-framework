@@ -65,5 +65,13 @@ namespace PBFramework.Graphics
             color.b = Mathf.Lerp(color.b, color.b > 0.5f ? 1f : 0f, factor);
             return color;
         }
+
+        /// <summary>
+        /// By default, the color palette can be converted directly to the base color impliticly.
+        /// </summary>
+        public static implicit operator Color(ColorPalette palette)
+        {
+            return palette.Base;
+        }
     }
 }
