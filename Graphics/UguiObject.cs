@@ -284,6 +284,20 @@ namespace PBFramework.Graphics
             this.parent.ReorderChildren();
         }
 
+        public Vector2 GetPositionAtCorner(Pivots corner, Space space = Space.Self)
+        {
+            Vector2 curCorner = GraphicHelper.GetPivot(this.pivot);
+            Vector2 cornerAnchor = GraphicHelper.GetPivot(corner);
+            Vector2 size = this.Size;
+            Vector2 position = new Vector2(
+                (cornerAnchor.x - curCorner.x) * size.x,
+                (cornerAnchor.y - curCorner.y) * size.y
+            );
+            if(space == Space.World)
+                return myTransform.TransformPoint(position);
+            return position;
+        }
+
         public void InvokeAfterFrames(int frames, Action action) => StartCoroutine(InvokeAfterFramesInternal(frames, action));
 
         public void InvokeAfterTransformed(int maxFrames, Action action) => StartCoroutine(InvokeAfterTransformedInternal(maxFrames, action));

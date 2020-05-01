@@ -87,6 +87,11 @@ namespace PBFramework.Graphics
         void SetParent(IGraphicObject parent);
 
         /// <summary>
+        /// Returns the position relative to this object at specified corner.
+        /// </summary>
+        Vector2 GetPositionAtCorner(Pivots corner, Space space = Space.Self);
+
+        /// <summary>
         /// Invokes the specified action after specified number of frames.
         /// </summary>
         void InvokeAfterFrames(int frames, Action action);
