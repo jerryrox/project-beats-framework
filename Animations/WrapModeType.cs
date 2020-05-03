@@ -3,7 +3,7 @@ namespace PBFramework.Animations
     /// <summary>
     /// Types of modes applied when animation is about to wrap.
     /// </summary>
-    public enum WrapModes {
+    public enum WrapModeType {
     
         /// <summary>
         /// The animation will stay at its last time frame upon finishing.

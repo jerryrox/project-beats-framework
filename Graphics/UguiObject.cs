@@ -31,8 +31,8 @@ namespace PBFramework.Graphics
         /// </summary>
         private Dictionary<Type, IEffect> effects;
 
-        private Pivots pivot = Pivots.Center;
-        private Anchors anchor = Anchors.Center;
+        private PivotType pivot = PivotType.Center;
+        private AnchorType anchor = AnchorType.Center;
         private bool isInited = false;
         private int depth = 0;
 
@@ -171,13 +171,13 @@ namespace PBFramework.Graphics
             set => myTransform.localScale = value;
         }
 
-        public Pivots Pivot
+        public PivotType Pivot
         {
             get => pivot;
             set => myTransform.SetPivot(pivot = value);
         }
 
-        public Anchors Anchor
+        public AnchorType Anchor
         {
             get => anchor;
             set => myTransform.SetAnchor(anchor = value);
@@ -284,7 +284,7 @@ namespace PBFramework.Graphics
             this.parent.ReorderChildren();
         }
 
-        public Vector2 GetPositionAtCorner(Pivots corner, Space space = Space.Self)
+        public Vector2 GetPositionAtCorner(PivotType corner, Space space = Space.Self)
         {
             Vector2 curCorner = GraphicHelper.GetPivot(this.pivot);
             Vector2 cornerAnchor = GraphicHelper.GetPivot(corner);
@@ -429,7 +429,7 @@ namespace PBFramework.Graphics
         /// </summary>
         protected float FromSizeDeltaX(float value)
         {
-            if(parent != null && ((anchor >= Anchors.TopStretch && anchor <= Anchors.BottomStretch) || anchor == Anchors.Fill))
+            if(parent != null && ((anchor >= AnchorType.TopStretch && anchor <= AnchorType.BottomStretch) || anchor == AnchorType.Fill))
                 return value + parent.Width;
             return value;
         }
@@ -439,7 +439,7 @@ namespace PBFramework.Graphics
         /// </summary>
         protected float FromSizeDeltaY(float value)
         {
-            if(parent != null && ((anchor >= Anchors.LeftStretch && anchor <= Anchors.RightStretch) || anchor == Anchors.Fill))
+            if(parent != null && ((anchor >= AnchorType.LeftStretch && anchor <= AnchorType.RightStretch) || anchor == AnchorType.Fill))
                 return value + parent.Height;
             return value;
         }
@@ -449,7 +449,7 @@ namespace PBFramework.Graphics
         /// </summary>
         protected float ToSizeDeltaX(float value)
         {
-            if(parent != null && ((anchor >= Anchors.TopStretch && anchor <= Anchors.BottomStretch) || anchor == Anchors.Fill))
+            if(parent != null && ((anchor >= AnchorType.TopStretch && anchor <= AnchorType.BottomStretch) || anchor == AnchorType.Fill))
                 return value - parent.Width;
             return value;
         }
@@ -459,7 +459,7 @@ namespace PBFramework.Graphics
         /// </summary>
         protected float ToSizeDeltaY(float value)
         {
-            if(parent != null && ((anchor >= Anchors.LeftStretch && anchor <= Anchors.RightStretch) || anchor == Anchors.Fill))
+            if(parent != null && ((anchor >= AnchorType.LeftStretch && anchor <= AnchorType.RightStretch) || anchor == AnchorType.Fill))
                 return value - parent.Height;
             return value;
         }

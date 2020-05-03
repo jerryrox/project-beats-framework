@@ -3,7 +3,7 @@ namespace PBFramework.Graphics
     /// <summary>
     /// Types of anchors available for a RectTransform.
     /// </summary>
-    public enum Anchors {
+    public enum AnchorType {
     
         TopLeft,
         Top,

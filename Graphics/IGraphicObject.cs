@@ -89,7 +89,7 @@ namespace PBFramework.Graphics
         /// <summary>
         /// Returns the position relative to this object at specified corner.
         /// </summary>
-        Vector2 GetPositionAtCorner(Pivots corner, Space space = Space.Self);
+        Vector2 GetPositionAtCorner(PivotType corner, Space space = Space.Self);
 
         /// <summary>
         /// Invokes the specified action after specified number of frames.

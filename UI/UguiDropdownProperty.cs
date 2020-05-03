@@ -70,20 +70,20 @@ namespace PBFramework.UI
         public void SetupCell(UguiToggle toggle)
         {
             var background = toggle.Background;
-            background.Anchor = Anchors.Fill;
+            background.Anchor = AnchorType.Fill;
             background.Position = Vector2.zero;
             background.RawSize = Vector2.zero;
 
             var tick = toggle.Tick;
-            tick.Anchor = Anchors.Fill;
+            tick.Anchor = AnchorType.Fill;
             tick.Position = Vector2.zero;
             tick.RawSize = Vector2.zero;
             tick.Color = SelectedColor;
 
             var label = toggle.Label;
-            label.Anchor = Anchors.Fill;
+            label.Anchor = AnchorType.Fill;
             label.Alignment = TextAnchor.MiddleCenter;
-            label.Pivot = Pivots.Center;
+            label.Pivot = PivotType.Center;
             label.Position = Vector2.zero;
             label.RawSize = Vector2.zero;
             label.WrapText = true;

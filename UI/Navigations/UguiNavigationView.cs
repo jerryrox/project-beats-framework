@@ -13,7 +13,7 @@ namespace PBFramework.UI.Navigations
         public event Action OnHide;
 
 
-        public virtual HideActions HideAction => HideActions.Destroy;
+        public virtual HideActionType HideAction => HideActionType.Destroy;
 
         public IAnime ShowAnime { get; private set; }
 
@@ -23,7 +23,7 @@ namespace PBFramework.UI.Navigations
         [InitWithDependency]
         private void Init()
         {
-            Anchor = Anchors.Fill;
+            Anchor = AnchorType.Fill;
             RawSize = Vector2.zero;
 
             // Create animations.

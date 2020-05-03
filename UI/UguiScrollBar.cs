@@ -54,12 +54,12 @@ namespace PBFramework.UI
             background.ImageType = Image.Type.Sliced;
             background.Color = Color.black;
 
-            slideArea.Anchor = Anchors.Fill;
+            slideArea.Anchor = AnchorType.Fill;
             slideArea.RawSize = Vector2.zero;
 
             foreground.OnSpriteChange += OnForegroundSpriteChange;
             foreground.ImageType = Image.Type.Sliced;
-            foreground.Anchor = Anchors.Fill;
+            foreground.Anchor = AnchorType.Fill;
             foreground.RawSize = Vector2.zero;
 
             component.onValueChanged.AddListener((value) => OnChange?.Invoke(value));

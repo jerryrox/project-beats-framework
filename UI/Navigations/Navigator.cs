@@ -144,10 +144,10 @@ namespace PBFramework.UI.Navigations
 
             switch (view.HideAction)
             {
-                case HideActions.Recycle:
+                case HideActionType.Recycle:
                     view.Active = false;
                     break;
-                case HideActions.Destroy:
+                case HideActionType.Destroy:
                     views.Remove(view);
                     GameObject.Destroy(view.RawObject);
                     break;

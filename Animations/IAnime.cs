@@ -36,13 +36,13 @@ namespace PBFramework.Animations
         /// Type of wrap mode applied on the animation.
         /// Default: None
         /// </summary>
-        WrapModes WrapMode { get; set; }
+        WrapModeType WrapMode { get; set; }
 
         /// <summary>
         /// Type of stop mode applied on the animation.
         /// Default: Reset
         /// </summary>
-        StopModes StopMode { get; set; }
+        StopModeType StopMode { get; set; }
 
 
         /// <summary>

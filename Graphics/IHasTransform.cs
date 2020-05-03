@@ -15,11 +15,11 @@ namespace PBFramework.Graphics
         /// <summary>
         /// Pivot point of the rect.
         /// </summary>
-        Pivots Pivot { get; set; }
+        PivotType Pivot { get; set; }
 
         /// <summary>
         /// Anchoring of the transform.
         /// </summary>
-        Anchors Anchor { get; set; }
+        AnchorType Anchor { get; set; }
     }
 }

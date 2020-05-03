@@ -55,7 +55,7 @@ namespace PBFramework.UI
 
             tick.Size = new Vector2(30, 30);
 
-            label.Pivot = Pivots.Left;
+            label.Pivot = PivotType.Left;
             label.Alignment = TextAnchor.MiddleLeft;
             label.Position = new Vector2(20, 0);
             label.Size = new Vector2(200, 36);

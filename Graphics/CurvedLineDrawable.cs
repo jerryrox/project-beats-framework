@@ -19,6 +19,24 @@ namespace PBFramework.Graphics
         /// </summary>
         private List<Line> lines = new List<Line>();
 
+        [SerializeField]
+        private Texture texture;
+
+
+        public Texture Texture
+        {
+            get => texture;
+            set
+            {
+                if(texture == value)
+                    return;
+                texture = value;
+                SetVerticesDirty();
+                SetMaterialDirty();
+            }
+        }
+
+        public override Texture mainTexture => texture;
 
         /// <summary>
         /// The radius of the curve path.

@@ -28,9 +28,9 @@ namespace PBFramework.Animations
             set => speed = Mathf.Clamp(value, 0.001f, float.MaxValue);
         }
 
-        public WrapModes WrapMode { get; set; } = WrapModes.None;
+        public WrapModeType WrapMode { get; set; } = WrapModeType.None;
 
-        public StopModes StopMode { get; set; } = StopModes.Reset;
+        public StopModeType StopMode { get; set; } = StopModeType.Reset;
 
 
 
@@ -78,12 +78,12 @@ namespace PBFramework.Animations
             Pause();
             switch (StopMode)
             {
-                case StopModes.None:
+                case StopModeType.None:
                     break;
-                case StopModes.Reset:
+                case StopModeType.Reset:
                     Seek(0f);
                     break;
-                case StopModes.End:
+                case StopModeType.End:
                     Seek(duration);
                     break;
             }
@@ -114,14 +114,14 @@ namespace PBFramework.Animations
             {
                 switch (WrapMode)
                 {
-                    case WrapModes.None:
+                    case WrapModeType.None:
                         Pause();
                         return false;
-                    case WrapModes.Reset:
+                    case WrapModeType.Reset:
                         Seek(0f);
                         Pause();
                         return false;
-                    case WrapModes.Loop:
+                    case WrapModeType.Loop:
                         // Repeat seeking to beginning until below duration.
                         while (true)
                         {

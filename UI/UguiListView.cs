@@ -202,8 +202,8 @@ namespace PBFramework.UI
         [InitWithDependency]
         private void Init()
         {
-            container.Anchor = Anchors.Center;
-            container.Pivot = Pivots.Center;
+            container.Anchor = AnchorType.Center;
+            container.Pivot = PivotType.Center;
         }
 
         public void Initialize(Func<IListItem> createItem, Action<IListItem> updateItem)
