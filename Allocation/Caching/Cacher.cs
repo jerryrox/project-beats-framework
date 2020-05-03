@@ -73,7 +73,7 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// Creates a new promise which represents the requesting process.
         /// </summary>
-        protected abstract IPromise<TValue> CreateRequest(TKey key);
+        protected abstract IExplicitPromise<TValue> CreateRequest(TKey key);
 
         /// <summary>
         /// Creates a new timer instance to use for delayed destruction.

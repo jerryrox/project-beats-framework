@@ -19,7 +19,7 @@ namespace PBFramework.Assets.Caching
             this.stream = stream;
         }
 
-        protected override IPromise<AudioClip> CreateRequest(string key)
+        protected override IExplicitPromise<AudioClip> CreateRequest(string key)
         {
             return new AudioRequest(key, stream);
         }

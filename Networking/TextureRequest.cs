@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 namespace PBFramework.Networking
 {
-    public class TextureRequest : AssetRequest, IPromise<Texture2D> {
+    public class TextureRequest : AssetRequest, IExplicitPromise<Texture2D> {
 
         public event Action<Texture2D> OnFinishedResult
         {
@@ -17,7 +17,7 @@ namespace PBFramework.Networking
         private bool nonReadable;
 
 
-        public override object Result => response?.TextureData;
+        public override object RawResult => response?.TextureData;
         Texture2D IPromise<Texture2D>.Result => response?.TextureData;
 
 

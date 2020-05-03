@@ -6,7 +6,7 @@ namespace PBFramework.Networking
     /// <summary>
     /// Interface of an object which can make web requests to local or remote server.
     /// </summary>
-    public interface IWebRequest : IPromise {
+    public interface IWebRequest : IExplicitPromise {
 
         /// <summary>
         /// An extra data that can be associated with this request.

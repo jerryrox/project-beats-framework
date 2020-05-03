@@ -63,7 +63,7 @@ namespace PBFramework.Networking
 
         public IWebResponse Response => response;
 
-        public virtual object Result => this;
+        public virtual object RawResult => this;
 
 
         public WebRequest(string url, int timeout = 60, int retryCount = 0)

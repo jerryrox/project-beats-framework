@@ -14,13 +14,13 @@ namespace PBFramework
         /// <summary>
         /// Returns the array of all promises currently being processed.
         /// </summary>
-        public IPromise[] Promises { get; private set; }
+        public IExplicitPromise[] Promises { get; private set; }
 
 
-        public MultiPromise(params IPromise[] promises)
+        public MultiPromise(params IExplicitPromise[] promises)
         {
             // Set default value
-            if(promises == null) promises = new IPromise[0];
+            if(promises == null) promises = new IExplicitPromise[0];
 
             Promises = promises;
 

@@ -7,7 +7,7 @@ namespace PBFramework
     /// <summary>
     /// An anonymous promise which processes and determines completion via external functions.
     /// </summary>
-    public class ProxyPromise : IPromise
+    public class ProxyPromise : IExplicitPromise
     {
         public event Action OnFinished;
 
@@ -17,7 +17,7 @@ namespace PBFramework
         protected Action revokeAction;
 
 
-        public object Result { get; protected set; } = null;
+        public object RawResult { get; protected set; } = null;
 
         public bool IsFinished { get; protected set; } = false;
 
@@ -44,7 +44,7 @@ namespace PBFramework
         /// </summary>
         public virtual void Resolve(object value)
         {
-            Result = value;
+            RawResult = value;
             IsFinished = true;
             OnFinished?.Invoke();
         }
@@ -57,7 +57,7 @@ namespace PBFramework
     /// <summary>
     /// Generic support for ProxyPromise.
     /// </summary>
-    public class ProxyPromise<T> : ProxyPromise, IPromise<T>
+    public class ProxyPromise<T> : ProxyPromise, IExplicitPromise<T>
     {
         public event Action<T> OnFinishedResult
         {
@@ -66,7 +66,7 @@ namespace PBFramework
         }
 
 
-        public new T Result { get; protected set; }
+        public T Result { get; protected set; }
 
     
         public ProxyPromise(Action startAction = null, Action revokeAction = null) :
