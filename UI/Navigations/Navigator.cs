@@ -145,13 +145,17 @@ namespace PBFramework.UI.Navigations
 
             view.ShowAnime?.Stop();
 
-            OnHideView?.Invoke(view);
-
             view.OnPreHide();
             if (view.HideAnime != null)
+            {
                 view.HideAnime.PlayFromStart();
+                OnHideView?.Invoke(view);
+            }
             else
+            {
+                OnHideView?.Invoke(view);
                 DisposeInternal(view);
+            }
         }
 
         /// <summary>
