@@ -40,6 +40,8 @@ namespace PBFramework.UI.Navigations
 
         public bool IsActive(Type type) => views.Any(v => v.Active && type.IsAssignableFrom(v.GetType()));
 
+        public bool IsShowing(Type type) => views.Any(v => v.Active && (v.HideAnime == null ? true : !v.HideAnime.IsPlaying) && type.IsAssignableFrom(v.GetType()));
+
         public T CreateHidden<T>()
             where T : MonoBehaviour, INavigationView
         {
@@ -122,6 +124,8 @@ namespace PBFramework.UI.Navigations
         {
             view.Active = true;
 
+            view.HideAnime?.Stop();
+
             OnShowView?.Invoke(view);
 
             view.OnPreShow();
@@ -138,6 +142,8 @@ namespace PBFramework.UI.Navigations
         {
             if(!view.Active)
                 return;
+
+            view.ShowAnime?.Stop();
 
             OnHideView?.Invoke(view);
 
