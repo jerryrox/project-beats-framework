@@ -48,7 +48,7 @@ namespace PBFramework.UI.Navigations
         /// <summary>
         /// Shows the view of specified type.
         /// </summary>
-        T Show<T>() where T : MonoBehaviour, INavigationView;
+        T Show<T>(bool checkActive = false) where T : MonoBehaviour, INavigationView;
 
         /// <summary>
         /// Hides the view of specified type.

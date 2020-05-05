@@ -55,7 +55,7 @@ namespace PBFramework.UI.Navigations
             return view;
         }
 
-        public T Show<T>()
+        public T Show<T>(bool checkActive = false)
             where T : MonoBehaviour, INavigationView
         {
             var view = Get<T>();
@@ -65,7 +65,7 @@ namespace PBFramework.UI.Navigations
                 views.Add(view);
             }
 
-            ShowInternal(view);
+            ShowInternal(view, checkActive);
             return view;
         }
 
@@ -120,8 +120,10 @@ namespace PBFramework.UI.Navigations
         /// <summary>
         /// Internally handles view showing process.
         /// </summary>
-        protected virtual void ShowInternal(INavigationView view)
+        protected virtual void ShowInternal(INavigationView view, bool checkActive)
         {
+            if(checkActive && view.Active)
+                return;
             view.Active = true;
 
             view.HideAnime?.Stop();
