@@ -24,6 +24,20 @@ namespace PBFramework
         public float Progress { get; protected set; }
 
 
+        /// <summary>
+        /// Initializes a new promise with an empty process so that it resolves immediately on start.
+        /// </summary>
+        public ProxyPromise()
+        {
+            startAction = () => Resolve(null);
+        }
+
+        public ProxyPromise(Action<Action<object>> startActionWithResolve)
+        {
+            if(startActionWithResolve != null)
+                this.startAction = () => startActionWithResolve.Invoke(new Action<object>(Resolve));
+        }
+
         public ProxyPromise(Action startAction = null, Action revokeAction = null)
         {
             this.startAction = startAction;
@@ -68,7 +82,13 @@ namespace PBFramework
 
         public T Result { get; protected set; }
 
-    
+
+        public ProxyPromise(Action<Action<T>> startActionWithResolve)
+        {
+            if (startActionWithResolve != null)
+                this.startAction = () => startActionWithResolve.Invoke(new Action<T>(Resolve));
+        }
+
         public ProxyPromise(Action startAction = null, Action revokeAction = null) :
             base(startAction, revokeAction)
         {
