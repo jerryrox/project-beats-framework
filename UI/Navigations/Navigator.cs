@@ -40,6 +40,19 @@ namespace PBFramework.UI.Navigations
 
         public bool IsActive(Type type) => views.Any(v => v.Active && type.IsAssignableFrom(v.GetType()));
 
+        public T CreateHidden<T>()
+            where T : MonoBehaviour, INavigationView
+        {
+            var view = Get<T>();
+            if (view == null)
+            {
+                view = CreateInternal<T>();
+                views.Add(view);
+                view.Active = false;
+            }
+            return view;
+        }
+
         public T Show<T>()
             where T : MonoBehaviour, INavigationView
         {

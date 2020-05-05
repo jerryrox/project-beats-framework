@@ -36,6 +36,11 @@ namespace PBFramework.UI.Navigations
         bool IsActive(Type type);
 
         /// <summary>
+        /// Creates the view of specified type if not already created, and hides it immediately.
+        /// </summary>
+        T CreateHidden<T>() where T : MonoBehaviour, INavigationView;
+
+        /// <summary>
         /// Shows the view of specified type.
         /// </summary>
         T Show<T>() where T : MonoBehaviour, INavigationView;
