@@ -9,7 +9,7 @@ namespace PBFramework.UI.Navigations
 
         public ScreenNavigator(IGraphicObject root) : base(root) {}
 
-        protected override void ShowInternal(INavigationView view)
+        protected override void ShowInternal(INavigationView view, bool checkActive)
         {
             // Hide all other views.
             for (int i = views.Count - 1; i >= 0; i--)
@@ -19,7 +19,7 @@ namespace PBFramework.UI.Navigations
             }
 
             CurrentScreen = view;
-            base.ShowInternal(view);
+            base.ShowInternal(view, checkActive);
         }
 
         protected override void HideInternal(INavigationView view)
