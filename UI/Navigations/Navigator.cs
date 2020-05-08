@@ -63,6 +63,9 @@ namespace PBFramework.UI.Navigations
             {
                 view = CreateInternal<T>();
                 views.Add(view);
+
+                // If newly created, the view should be shown at all times.
+                checkActive = false;
             }
 
             ShowInternal(view, checkActive);
