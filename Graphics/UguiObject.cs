@@ -205,7 +205,7 @@ namespace PBFramework.Graphics
 
         public int ChildCount => myTransform.childCount;
 
-        public int InputLayer => 0;
+        public virtual int InputLayer => 0;
 
         /// <summary>
         /// A canvas component cached from this gameobject to detect depth overriding.
