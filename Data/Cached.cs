@@ -56,12 +56,14 @@ namespace PBFramework.Data
         public bool DefaultOnInvalidate { get; set; } = true;
 
 
-        public Cached() : this(default) {}
+        public Cached() : this(default, false) {}
 
-        public Cached(T initialValue)
+        public Cached(T initialValue) : this(initialValue, true) { }
+
+        public Cached(T initialValue, bool isValid)
         {
             cachedValue = initialValue;
-            IsValid = true;
+            IsValid = isValid;
         }
 
         /// <summary>
