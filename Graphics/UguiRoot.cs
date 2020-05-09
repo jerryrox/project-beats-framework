@@ -22,6 +22,8 @@ namespace PBFramework.Graphics
             set => scaler.referenceResolution = value;
         }
 
+        public Camera Cam => Canvas.worldCamera;
+
 
         /// <summary>
         /// Creates a new instance of the UguiRoot and returns it.

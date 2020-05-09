@@ -18,6 +18,11 @@ namespace PBFramework.Graphics
         /// </summary>
         Vector2 BaseResolution { get; set; }
 
+        /// <summary>
+        /// Returns the camera associated with the root, if using camera render.
+        /// </summary>
+        Camera Cam { get; }
+
 
         /// <summary>
         /// Sets rendering mode to overlay.
