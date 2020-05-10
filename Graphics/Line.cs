@@ -53,7 +53,9 @@ namespace PBFramework.Graphics
             this.endPoint = end;
             this.Theta = Mathf.Atan2(endPoint.y - StartPoint.y, endPoint.x - StartPoint.x);
             Theta += Theta < 0f ? Radian * 2f : 0f;
+            
             this.Direction = new Vector2(endPoint.x - StartPoint.x, endPoint.y - StartPoint.y);
+            this.Direction.Normalize();
 
             float angle = Theta + Radian * 0.5f;
             this.Right = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
@@ -77,7 +79,7 @@ namespace PBFramework.Graphics
         /// </summary>
         public void SetLength(float length)
         {
-            endPoint = StartPoint + (Direction * Mathf.Clamp(length, 0.0000001f, length));
+            endPoint = StartPoint + (Direction * Mathf.Max(length, 0.0000001f));
         }
     }
 }
