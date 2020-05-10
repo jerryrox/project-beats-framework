@@ -13,6 +13,8 @@ namespace PBFramework.Graphics
         /// </summary>
         private const float Radian = 180f * Mathf.Deg2Rad;
 
+        private Vector2 endPoint;
+
 
         /// <summary>
         /// The starting point reference of the line.
@@ -20,9 +22,9 @@ namespace PBFramework.Graphics
         public readonly Vector2 StartPoint;
 
         /// <summary>
-        /// The ending point reference of the line.
+        /// Returns the ending point reference of the line.
         /// </summary>
-        public readonly Vector2 EndPoint;
+        public Vector2 EndPoint => endPoint;
 
         /// <summary>
         /// The rotation of the line in radians.
@@ -39,14 +41,19 @@ namespace PBFramework.Graphics
         /// </summary>
         public readonly Vector2 Right;
 
+        /// <summary>
+        /// Returns the length of the line.
+        /// </summary>
+        public float Length => Vector2.Distance(endPoint, StartPoint);
+
 
         public Line(Vector2 start, Vector3 end)
         {
             this.StartPoint = start;
-            this.EndPoint = end;
-            this.Theta = Mathf.Atan2(EndPoint.y - StartPoint.y, EndPoint.x - StartPoint.x);
+            this.endPoint = end;
+            this.Theta = Mathf.Atan2(endPoint.y - StartPoint.y, endPoint.x - StartPoint.x);
             Theta += Theta < 0f ? Radian * 2f : 0f;
-            this.Direction = new Vector2(EndPoint.x - StartPoint.x, EndPoint.y - StartPoint.y);
+            this.Direction = new Vector2(endPoint.x - StartPoint.x, endPoint.y - StartPoint.y);
 
             float angle = Theta + Radian * 0.5f;
             this.Right = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
@@ -63,6 +70,14 @@ namespace PBFramework.Graphics
             float deg = Theta * Mathf.Rad2Deg;
             float diff = (otherDeg - deg + 180) % 360 - 180;
             return (diff < -180f ? diff + 360 : diff) * Mathf.Deg2Rad;
+        }
+
+        /// <summary>
+        /// Adjusts the end point of the line to match specified length.
+        /// </summary>
+        public void SetLength(float length)
+        {
+            endPoint = StartPoint + (Direction * Mathf.Clamp(length, 0.0000001f, length));
         }
     }
 }
