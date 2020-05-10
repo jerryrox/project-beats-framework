@@ -9,7 +9,7 @@ namespace PBFramework.Graphics
     public class CurvedLineDrawable : MaskableGraphic {
 
         private float radius = 5f;
-        private float smoothness = 4 * Mathf.Deg2Rad;
+        private float curveAngle = 4 * Mathf.Deg2Rad;
         private bool smoothEnds = false;
 
         private UIVertex vertex = new UIVertex();
@@ -54,16 +54,17 @@ namespace PBFramework.Graphics
         }
 
         /// <summary>
-        /// The smoothness of the curve joint path.
+        /// The angle interval of the curve joint path in degrees.
         /// </summary>
-        public float CurveSmoothness
+        public float CurveAngle
         {
-            get => smoothness;
+            get => curveAngle;
             set
             {
-                if(smoothness == value)
+                value *= Mathf.Deg2Rad;
+                if(curveAngle == value)
                     return;
-                smoothness = value;
+                curveAngle = value;
                 SetVerticesDirty();
             }
         }
@@ -89,6 +90,18 @@ namespace PBFramework.Graphics
         /// </summary>
         public void AddLine(Line line)
         {
+            // If the specified line is positioned at the end of last line and has equal angle, simply extend it instead.
+            if (lines.Count > 0)
+            {
+                var lastLine = lines[lines.Count - 1];
+                if (line.Theta == lastLine.Theta && line.StartPoint == lastLine.EndPoint)
+                {
+                    lastLine.SetLength(lastLine.Length + line.Length);
+                    SetVerticesDirty();
+                    return;
+                }
+            }
+
             lines.Add(line);
             SetVerticesDirty();
         }
@@ -149,12 +162,12 @@ namespace PBFramework.Graphics
             {
                 float turnDir = Mathf.Sign(turnAmount);
                 float angle = startLine.Theta + 90f * -turnDir * (isStartPoint ? -1f : 1f) * Mathf.Deg2Rad;
-                int loopCount = Mathf.CeilToInt(Mathf.Abs(turnAmount / smoothness)) + 1;
+                int loopCount = Mathf.CeilToInt(Mathf.Abs(turnAmount / curveAngle)) + 1;
                 Vector2 prevFill = startLine.Right * -turnDir * radius + joint;
                 for (int t = 0; t < loopCount; t++)
                 {
                     Vector2 newFill = new Vector2(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius) + joint;
-                    angle += smoothness * turnDir;
+                    angle += curveAngle * turnDir;
                     AddTriangle(
                         vh,
                         joint,
