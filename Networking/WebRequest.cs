@@ -99,6 +99,7 @@ namespace PBFramework.Networking
             // Prepare request
             request = CreateRequest(Url);
             request.timeout = timeout;
+            request.useHttpContinue = false;
 
             // Assign requester object on response.
             response.Request = request;
