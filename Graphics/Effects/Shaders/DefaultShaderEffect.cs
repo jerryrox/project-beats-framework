@@ -46,7 +46,6 @@ namespace PBFramework.Graphics.Effects.Shaders
             if(graphic == null) return false;
 
             material = (graphic.material = Object.Instantiate(graphic.defaultMaterial));
-            Debug.Log("Mat name : " + material.name);
             return material != null;
         }
 
