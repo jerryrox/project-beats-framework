@@ -20,6 +20,12 @@ namespace PBFramework.Networking
         uint RetryCount { get; set; }
 
         /// <summary>
+        /// Whether to use caching feature that is provided automatically from the server.
+        /// Default: false
+        /// </summary>
+        bool UseServerCaching { get; set; }
+
+        /// <summary>
         /// Whether there is currently a valid request which is either on-going or finished.
         /// </summary>
         bool IsAlive { get; }
