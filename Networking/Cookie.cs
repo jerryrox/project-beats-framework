@@ -23,6 +23,11 @@ namespace PBFramework.Networking
 
         public bool Secure { get; set; }
 
+        /// <summary>
+        /// Returns whether this cookie is valid for use.
+        /// </summary>
+        public bool IsValid => !IsForDeletion();
+
 
         /// <summary>
         /// Parses the specified cookie string and returns it.
@@ -109,6 +114,17 @@ namespace PBFramework.Networking
                 cookie = null;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Determines whether the expires value indicates cookie deletion.
+        /// </summary>
+        private bool IsForDeletion()
+        {
+            if(!Expires.HasValue)
+                return false;
+            var range = DateTime.Now - Expires.Value;
+            return range.Days > 1;
         }
     }
 }

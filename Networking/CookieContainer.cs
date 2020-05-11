@@ -46,7 +46,7 @@ namespace PBFramework.Networking
         {
             foreach (var entry in ParseEntries(header))
             {
-                if(Cookie.TryParse(entry, out Cookie cookie))
+                if (Cookie.TryParse(entry, out Cookie cookie) && cookie.IsValid)
                     AddCookie(cookie);
             }
         }
@@ -66,11 +66,25 @@ namespace PBFramework.Networking
         /// </summary>
         private IEnumerable<string> ParseEntries(string header)
         {
+            Func<int, bool> isSeparationComma = (commaIndex) =>
+            {
+                // Try to encounter a '=' or ';' character.
+                for (int i = commaIndex+1; i < header.Length; i++)
+                {
+                    switch (header[i])
+                    {
+                        case '=': return true;
+                        case ';': return false;
+                    }
+                }
+                return false;
+            };
+
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < header.Length; i++)
             {
                 // If comma at the end of the header, or a non-white space char after it.
-                if (header[i] == ',' && (i == header.Length-1 || !char.IsWhiteSpace(header[i + 1])))
+                if (header[i] == ',' && isSeparationComma(i))
                 {
                     // Return progress
                     yield return sb.ToString();
