@@ -23,8 +23,6 @@ namespace PBFramework.UI.Navigations
                 if(views[i] != view)
                     HideInternal(views[i]);
             }
-
-            PreviousScreen = CurrentScreen;
             CurrentScreen = view;
             
             base.ShowInternal(view, checkActive);
@@ -33,9 +31,12 @@ namespace PBFramework.UI.Navigations
 
         protected override void HideInternal(INavigationView view)
         {
-            if(view == CurrentScreen)
+            if (view == CurrentScreen)
+            {
+                PreviousScreen = CurrentScreen;
                 CurrentScreen = null;
-                
+            }
+
             base.HideInternal(view);
         }
     }

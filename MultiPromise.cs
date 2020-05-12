@@ -25,7 +25,7 @@ namespace PBFramework
             Promises = promises;
 
             // Bind proxied actions
-            startAction = () =>
+            startAction = (promise) =>
             {
                 if (promises.Length == 0)
                 {

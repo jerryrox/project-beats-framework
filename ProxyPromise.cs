@@ -13,7 +13,7 @@ namespace PBFramework
 
         public event Action<float> OnProgress;
 
-        protected Action startAction;
+        protected Action<ProxyPromise> startAction;
         protected Action revokeAction;
 
 
@@ -29,16 +29,16 @@ namespace PBFramework
         /// </summary>
         public ProxyPromise()
         {
-            startAction = () => Resolve(null);
+            startAction = (promise) => Resolve(null);
         }
 
         public ProxyPromise(Action<Action<object>> startActionWithResolve)
         {
             if(startActionWithResolve != null)
-                this.startAction = () => startActionWithResolve.Invoke(new Action<object>(Resolve));
+                this.startAction = (promise) => startActionWithResolve.Invoke(new Action<object>(Resolve));
         }
 
-        public ProxyPromise(Action startAction = null, Action revokeAction = null)
+        public ProxyPromise(Action<ProxyPromise> startAction = null, Action revokeAction = null)
         {
             this.startAction = startAction;
             this.revokeAction = revokeAction;
@@ -63,7 +63,7 @@ namespace PBFramework
             OnFinished?.Invoke();
         }
 
-        public void Start() => startAction?.Invoke();
+        public void Start() => startAction?.Invoke(this);
 
         public void Revoke() => revokeAction?.Invoke();
     }
@@ -86,10 +86,10 @@ namespace PBFramework
         public ProxyPromise(Action<Action<T>> startActionWithResolve)
         {
             if (startActionWithResolve != null)
-                this.startAction = () => startActionWithResolve.Invoke(new Action<T>(Resolve));
+                this.startAction = (promise) => startActionWithResolve.Invoke(new Action<T>(Resolve));
         }
 
-        public ProxyPromise(Action startAction = null, Action revokeAction = null) :
+        public ProxyPromise(Action<ProxyPromise> startAction = null, Action revokeAction = null) :
             base(startAction, revokeAction)
         {
         }
