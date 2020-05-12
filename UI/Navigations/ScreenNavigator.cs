@@ -1,10 +1,16 @@
+using System;
 using PBFramework.Graphics;
 
 namespace PBFramework.UI.Navigations
 {
     public class ScreenNavigator : Navigator, IScreenNavigator {
 
+        public event Action<INavigationView, INavigationView> OnScreenChange;
+
+
         public INavigationView CurrentScreen { get; private set; }
+
+        public INavigationView PreviousScreen { get; private set; }
 
 
         public ScreenNavigator(IGraphicObject root) : base(root) {}
@@ -18,8 +24,11 @@ namespace PBFramework.UI.Navigations
                     HideInternal(views[i]);
             }
 
+            PreviousScreen = CurrentScreen;
             CurrentScreen = view;
+            
             base.ShowInternal(view, checkActive);
+            OnScreenChange?.Invoke(CurrentScreen, PreviousScreen);
         }
 
         protected override void HideInternal(INavigationView view)
