@@ -24,6 +24,8 @@ namespace PBFramework.Graphics
 
         public Camera Cam => Canvas.worldCamera;
 
+        public GraphicRaycaster Raycaster => raycaster;
+
 
         /// <summary>
         /// Creates a new instance of the UguiRoot and returns it.

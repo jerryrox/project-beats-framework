@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace PBFramework.Graphics
 {
@@ -22,6 +23,11 @@ namespace PBFramework.Graphics
         /// Returns the camera associated with the root, if using camera render.
         /// </summary>
         Camera Cam { get; }
+
+        /// <summary>
+        /// Returns the raycaster for graphic objects.
+        /// </summary>
+        GraphicRaycaster Raycaster { get; }
 
 
         /// <summary>
