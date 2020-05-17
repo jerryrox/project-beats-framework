@@ -29,6 +29,11 @@ namespace PBFramework.Graphics
         /// </summary>
         GraphicRaycaster Raycaster { get; }
 
+        /// <summary>
+        /// Returns the event system instance in the scene.
+        /// </summary>
+        EventSystem EventSystem { get; }
+
 
         /// <summary>
         /// Sets rendering mode to overlay.

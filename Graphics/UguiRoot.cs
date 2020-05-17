@@ -11,7 +11,6 @@ namespace PBFramework.Graphics
     public class UguiRoot : UguiObject, IRoot {
 
         private CanvasScaler scaler;
-        private GraphicRaycaster raycaster;
 
 
         public Vector2 Resolution => this.Size;
@@ -24,7 +23,9 @@ namespace PBFramework.Graphics
 
         public Camera Cam => Canvas.worldCamera;
 
-        public GraphicRaycaster Raycaster => raycaster;
+        public GraphicRaycaster Raycaster { get; protected set; }
+
+        public EventSystem EventSystem { get; protected set; }
 
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace PBFramework.Graphics
 
             Canvas = myObject.AddComponent<Canvas>();
             scaler = myObject.AddComponent<CanvasScaler>();
-            raycaster = myObject.AddComponent<GraphicRaycaster>();
+            Raycaster = myObject.AddComponent<GraphicRaycaster>();
 
             Canvas.planeDistance = 1f;
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -71,6 +72,7 @@ namespace PBFramework.Graphics
                     standaloneModule.repeatDelay = 0.5f;
                 }
             }
+            this.EventSystem = es;
         }
 
         public void SetOverlayRender(int sortOrder = 0)
