@@ -27,6 +27,8 @@ namespace PBFramework.Allocation.Recyclers
 
         public int UnusedCount => unusedObjects.Count;
 
+        public List<T> UnusedObjects => unusedObjects;
+
 
         public Recycler(CreateHandler instantiator)
         {
