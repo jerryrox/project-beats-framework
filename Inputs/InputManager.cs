@@ -134,6 +134,14 @@ namespace PBFramework.Inputs
 
         public IEnumerable<ICursor> GetTouches() => touchCursors;
 
+        public IEnumerable<ICursor> GetCursors()
+        {
+            foreach(var m in mouseCursors)
+                yield return m;
+            foreach (var t in touchCursors)
+                yield return t;
+        }
+
         public IEnumerable<IKey> GetKeys() => keyboardKeys;
 
         /// <summary>

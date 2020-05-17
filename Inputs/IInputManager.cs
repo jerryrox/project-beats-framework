@@ -87,6 +87,11 @@ namespace PBFramework.Inputs
         IEnumerable<ICursor> GetTouches();
 
         /// <summary>
+        /// Returns all mouse and touch currently being managed.
+        /// </summary>
+        IEnumerable<ICursor> GetCursors();
+
+        /// <summary>
         /// Returns all keys currently being managed.
         /// </summary>
         IEnumerable<IKey> GetKeys();
