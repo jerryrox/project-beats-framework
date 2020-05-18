@@ -13,9 +13,16 @@ namespace PBFramework
 
         public event Action<float> OnProgress;
 
-        protected Action<ProxyPromise> startAction;
-        protected Action revokeAction;
 
+        /// <summary>
+        /// The action to invoke on start.
+        /// </summary>
+        public Action<ProxyPromise> StartAction { get; set; }
+
+        /// <summary>
+        /// The action to invoke on revoke.
+        /// </summary>
+        public Action RevokeAction { get; set; }
 
         public object RawResult { get; protected set; } = null;
 
@@ -29,19 +36,19 @@ namespace PBFramework
         /// </summary>
         public ProxyPromise()
         {
-            startAction = (promise) => Resolve(null);
+            StartAction = (promise) => Resolve(null);
         }
 
         public ProxyPromise(Action<Action<object>> startActionWithResolve)
         {
             if(startActionWithResolve != null)
-                this.startAction = (promise) => startActionWithResolve.Invoke(new Action<object>(Resolve));
+                this.StartAction = (promise) => startActionWithResolve.Invoke(new Action<object>(Resolve));
         }
 
         public ProxyPromise(Action<ProxyPromise> startAction = null, Action revokeAction = null)
         {
-            this.startAction = startAction;
-            this.revokeAction = revokeAction;
+            this.StartAction = startAction;
+            this.RevokeAction = revokeAction;
         }
 
         /// <summary>
@@ -63,9 +70,9 @@ namespace PBFramework
             OnFinished?.Invoke();
         }
 
-        public void Start() => startAction?.Invoke(this);
+        public void Start() => StartAction?.Invoke(this);
 
-        public void Revoke() => revokeAction?.Invoke();
+        public void Revoke() => RevokeAction?.Invoke();
     }
 
     /// <summary>
@@ -86,7 +93,7 @@ namespace PBFramework
         public ProxyPromise(Action<Action<T>> startActionWithResolve)
         {
             if (startActionWithResolve != null)
-                this.startAction = (promise) => startActionWithResolve.Invoke(new Action<T>(Resolve));
+                this.StartAction = (promise) => startActionWithResolve.Invoke(new Action<T>(Resolve));
         }
 
         public ProxyPromise(Action<ProxyPromise> startAction = null, Action revokeAction = null) :
