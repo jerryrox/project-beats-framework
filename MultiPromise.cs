@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PBFramework
 {
@@ -10,45 +11,48 @@ namespace PBFramework
 
         private int finishedCount = 0;
 
+        private List<IExplicitPromise> promises = new List<IExplicitPromise>();
+
 
         /// <summary>
         /// Returns the array of all promises currently being processed.
         /// </summary>
-        public IExplicitPromise[] Promises { get; private set; }
+        public IReadOnlyList<IExplicitPromise> Promises => promises;
 
 
-        public MultiPromise(params IExplicitPromise[] promises)
+        public MultiPromise(IEnumerable<IExplicitPromise> promises)
         {
-            // Set default value
-            if(promises == null) promises = new IExplicitPromise[0];
-
-            Promises = promises;
+            foreach (var promise in promises)
+            {
+                if(promise != null)
+                    this.promises.Add(promise);
+            }
 
             // Bind proxied actions
-            startAction = (promise) =>
+            StartAction = (promise) =>
             {
-                if (promises.Length == 0)
+                if (this.promises.Count == 0)
                 {
                     SetProgress(1f);
                     Resolve(null);
                 }
                 else
-                    promises.ForEach(p => p.Start());
+                    this.promises.ForEach(p => p.Start());
             };
-            revokeAction = () => promises.ForEach(p => p.Revoke());
+            RevokeAction = () => this.promises.ForEach(p => p.Revoke());
 
             // Listen to events
-            promises.ForEach(p =>
+            this.promises.ForEach(p =>
             {
                 p.OnFinished += () =>
                 {
                     finishedCount++;
-                    if(finishedCount == promises.Length)
+                    if (finishedCount == this.promises.Count)
                         Resolve(null);
                 };
                 p.OnProgress += (progress) =>
                 {
-                    SetProgress(promises.Sum(p2 => p2.Progress) / promises.Length);
+                    SetProgress(this.promises.Sum(p2 => p2.Progress) / this.promises.Count);
                 };
             });
         }
