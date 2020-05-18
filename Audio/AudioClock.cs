@@ -71,7 +71,7 @@ namespace PBFramework.Audio
         {
         	get
         	{
-                float realtime = ToMs(Time.time);
+                float realtime = ToMs(Time.realtimeSinceStartup);
                 float time = (realtime - startTime);
         		if(!IsPlaying)
         			time -= realtime - idleTime;
@@ -93,7 +93,7 @@ namespace PBFramework.Audio
                 if(IsPlaying)
                     return;
                 IsPlaying = true;
-                var realtime = ToMs(Time.time);
+                var realtime = ToMs(Time.realtimeSinceStartup);
                 startTime = realtime - time;
                 idleTime = realtime;
             };
@@ -102,22 +102,22 @@ namespace PBFramework.Audio
                     return;
                 IsPlaying = true;
                 IsPaused = false;
-                startTime += ToMs(Time.time) - idleTime;
+                startTime += ToMs(Time.realtimeSinceStartup) - idleTime;
             };
             musicController.OnPause += () => {
                 if(!IsPlaying || IsPaused)
                     return;
                 IsPlaying = false;
                 IsPaused = true;
-                idleTime = ToMs(Time.time);
+                idleTime = ToMs(Time.realtimeSinceStartup);
             };
             musicController.OnStop += () => {
                 IsPlaying = false;
                 IsPaused = false;
-                startTime = idleTime = ToMs(Time.time);
+                startTime = idleTime = ToMs(Time.realtimeSinceStartup);
             };
             musicController.OnSeek += (time) => {
-                var realtime = ToMs(Time.time);
+                var realtime = ToMs(Time.realtimeSinceStartup);
                 startTime = realtime - time;
                 idleTime = realtime;
             };
