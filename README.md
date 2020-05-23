@@ -9,13 +9,13 @@ Slowly making progress 🧩
 - Newtonsoft.Json (Tested with net45 version)
 - ICSharpCode.SharpZipLib
 
-## To-Dos
-#### Services/Notifications
-- Develop from scratch
-#### Platform
-- Develop from scratch
+## Development progress
+[https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.0.0
-- Started adding versions.
-- Initial release via Gitflow.
+### 1.0.1 (In progress)
+#### New features
+#### Changes
+#### Fixes
+#### Others
+- Cleaned up README.
