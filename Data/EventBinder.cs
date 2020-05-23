@@ -48,8 +48,9 @@ namespace PBFramework.Data
             if (handler == null)
                 return;
             handler = InjectCustomHandler(handler);
-            bindEvent.Invoke(handler);
+
             this.handler = handler;
+            bindEvent.Invoke(handler);
         }
 
         /// <summary>
