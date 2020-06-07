@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PBFramework.Debugging;
+using Newtonsoft.Json;
 
 namespace PBFramework.Data.Bindables
 {
@@ -38,6 +39,7 @@ namespace PBFramework.Data.Bindables
 
         public bool TriggerWhenDifferent { get; set; } = false;
 
+        [JsonIgnore]
         public object RawValue
         {
             get => Value;
