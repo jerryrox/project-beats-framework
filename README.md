@@ -13,9 +13,10 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.0.1 (In progress)
+### 1.0.1
 #### New features
 #### Changes
+- Make UnityAudio effect/music controllers instantiated on a single object instead of multiple.
 #### Fixes
 #### Others
 - Cleaned up README.
