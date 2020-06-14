@@ -42,8 +42,8 @@ namespace PBFramework.UI
             this.dropdown = dropdown;
 
             // Template object
-            Anchor = Anchors.BottomStretch;
-            Pivot = Pivots.Top;
+            Anchor = AnchorType.BottomStretch;
+            Pivot = PivotType.Top;
             Position = Vector2.zero;
             RawSize = new Vector2(0f, 200f);
 

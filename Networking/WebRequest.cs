@@ -34,6 +34,8 @@ namespace PBFramework.Networking
 
         public uint RetryCount { get => retryCount; set => curRetryCount = retryCount = value; }
 
+        public bool UseServerCaching { get; set; } = false;
+
         public bool IsAlive => request != null;
 
         public virtual bool IsDone => request != null && request.isDone;
@@ -63,7 +65,7 @@ namespace PBFramework.Networking
 
         public IWebResponse Response => response;
 
-        public virtual object Result => this;
+        public virtual object RawResult => this;
 
 
         public WebRequest(string url, int timeout = 60, int retryCount = 0)
@@ -99,6 +101,14 @@ namespace PBFramework.Networking
             // Prepare request
             request = CreateRequest(Url);
             request.timeout = timeout;
+            request.useHttpContinue = false;
+
+            // Use caching?
+            if (!UseServerCaching)
+            {
+                request.SetRequestHeader("Cache-Control", "max-age=0, no-cache, no-store");
+                request.SetRequestHeader("Pragma", "no-cache");
+            }
 
             // Assign requester object on response.
             response.Request = request;

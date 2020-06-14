@@ -7,27 +7,48 @@ namespace PBFramework
     /// <summary>
     /// An anonymous promise which processes and determines completion via external functions.
     /// </summary>
-    public class ProxyPromise : IPromise
+    public class ProxyPromise : IExplicitPromise
     {
         public event Action OnFinished;
 
         public event Action<float> OnProgress;
 
-        protected Action startAction;
-        protected Action revokeAction;
 
+        /// <summary>
+        /// The action to invoke on start.
+        /// </summary>
+        public Action<ProxyPromise> StartAction { get; set; }
 
-        public object Result { get; protected set; } = null;
+        /// <summary>
+        /// The action to invoke on revoke.
+        /// </summary>
+        public Action RevokeAction { get; set; }
+
+        public object RawResult { get; protected set; } = null;
 
         public bool IsFinished { get; protected set; } = false;
 
         public float Progress { get; protected set; }
 
 
-        public ProxyPromise(Action startAction = null, Action revokeAction = null)
+        /// <summary>
+        /// Initializes a new promise with an empty process so that it resolves immediately on start.
+        /// </summary>
+        public ProxyPromise()
         {
-            this.startAction = startAction;
-            this.revokeAction = revokeAction;
+            StartAction = (promise) => Resolve(null);
+        }
+
+        public ProxyPromise(Action<Action<object>> startActionWithResolve)
+        {
+            if(startActionWithResolve != null)
+                this.StartAction = (promise) => startActionWithResolve.Invoke(new Action<object>(Resolve));
+        }
+
+        public ProxyPromise(Action<ProxyPromise> startAction = null, Action revokeAction = null)
+        {
+            this.StartAction = startAction;
+            this.RevokeAction = revokeAction;
         }
 
         /// <summary>
@@ -44,20 +65,20 @@ namespace PBFramework
         /// </summary>
         public virtual void Resolve(object value)
         {
-            Result = value;
+            RawResult = value;
             IsFinished = true;
             OnFinished?.Invoke();
         }
 
-        public void Start() => startAction?.Invoke();
+        public void Start() => StartAction?.Invoke(this);
 
-        public void Revoke() => revokeAction?.Invoke();
+        public void Revoke() => RevokeAction?.Invoke();
     }
 
     /// <summary>
     /// Generic support for ProxyPromise.
     /// </summary>
-    public class ProxyPromise<T> : ProxyPromise, IPromise<T>
+    public class ProxyPromise<T> : ProxyPromise, IExplicitPromise<T>
     {
         public event Action<T> OnFinishedResult
         {
@@ -66,10 +87,16 @@ namespace PBFramework
         }
 
 
-        public new T Result { get; protected set; }
+        public T Result { get; protected set; }
 
-    
-        public ProxyPromise(Action startAction = null, Action revokeAction = null) :
+
+        public ProxyPromise(Action<Action<T>> startActionWithResolve)
+        {
+            if (startActionWithResolve != null)
+                this.StartAction = (promise) => startActionWithResolve.Invoke(new Action<T>(Resolve));
+        }
+
+        public ProxyPromise(Action<ProxyPromise> startAction = null, Action revokeAction = null) :
             base(startAction, revokeAction)
         {
         }

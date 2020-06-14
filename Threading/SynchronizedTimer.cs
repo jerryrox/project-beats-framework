@@ -42,7 +42,7 @@ namespace PBFramework.Threading
         public float Progress { get; set; }
 
         public ITimer Result => this;
-        object IPromise.Result => this;
+        object IPromise.RawResult => this;
 
         public bool IsFinished => Current >= Limit;
 

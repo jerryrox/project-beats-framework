@@ -6,7 +6,7 @@ namespace PBFramework.Networking
     /// <summary>
     /// Interface of an object which can make web requests to local or remote server.
     /// </summary>
-    public interface IWebRequest : IPromise {
+    public interface IWebRequest : IExplicitPromise {
 
         /// <summary>
         /// An extra data that can be associated with this request.
@@ -18,6 +18,12 @@ namespace PBFramework.Networking
         /// Sets the number of automatic retries to make if current request fails.
         /// </summary>
         uint RetryCount { get; set; }
+
+        /// <summary>
+        /// Whether to use caching feature that is provided automatically from the server.
+        /// Default: false
+        /// </summary>
+        bool UseServerCaching { get; set; }
 
         /// <summary>
         /// Whether there is currently a valid request which is either on-going or finished.

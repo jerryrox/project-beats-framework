@@ -20,13 +20,13 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// The actual requester object.
         /// </summary>
-        private IPromise<T> request;
+        private IExplicitPromise<T> request;
 
 
         /// <summary>
         /// The requesting promise.
         /// </summary>
-        public IPromise<T> Request => request;
+        public IExplicitPromise<T> Request => request;
 
         /// <summary>
         /// Returns the number of listeners waiting for the request to finish.
@@ -34,7 +34,7 @@ namespace PBFramework.Allocation.Caching
         public int ListenerCount => listeners.Count;
 
 
-        public CacheRequest(IPromise<T> request)
+        public CacheRequest(IExplicitPromise<T> request)
         {
             this.request = request;
 

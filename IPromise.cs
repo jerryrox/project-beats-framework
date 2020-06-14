@@ -17,23 +17,12 @@ namespace PBFramework
         /// <summary>
         /// The result evaluated from underlying process.
         /// </summary>
-        object Result { get; }
+        object RawResult { get; }
 
         /// <summary>
         /// Returns whether the underlying process is finished.
         /// </summary>
         bool IsFinished { get; }
-
-
-        /// <summary>
-        /// Starts the process of the underlying process, if supported.
-        /// </summary>
-        void Start();
-
-        /// <summary>
-        /// Stops the process of the underlying process, if supported.
-        /// </summary>
-        void Revoke();
     }
 
     /// <summary>
@@ -49,6 +38,6 @@ namespace PBFramework
         /// <summary>
         /// The result evaluated from underlying process.
         /// </summary>
-        new T Result { get; }
+        T Result { get; }
     }
 }

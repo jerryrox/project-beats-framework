@@ -31,8 +31,8 @@ namespace PBFramework.Graphics
         /// </summary>
         private Dictionary<Type, IEffect> effects;
 
-        private Pivots pivot = Pivots.Center;
-        private Anchors anchor = Anchors.Center;
+        private PivotType pivot = PivotType.Center;
+        private AnchorType anchor = AnchorType.Center;
         private bool isInited = false;
         private int depth = 0;
 
@@ -171,13 +171,13 @@ namespace PBFramework.Graphics
             set => myTransform.localScale = value;
         }
 
-        public Pivots Pivot
+        public PivotType Pivot
         {
             get => pivot;
             set => myTransform.SetPivot(pivot = value);
         }
 
-        public Anchors Anchor
+        public AnchorType Anchor
         {
             get => anchor;
             set => myTransform.SetAnchor(anchor = value);
@@ -205,7 +205,7 @@ namespace PBFramework.Graphics
 
         public int ChildCount => myTransform.childCount;
 
-        public int InputLayer => 0;
+        public virtual int InputLayer => 0;
 
         /// <summary>
         /// A canvas component cached from this gameobject to detect depth overriding.
@@ -282,6 +282,20 @@ namespace PBFramework.Graphics
 
             // Re-order the siblings in the parent object.
             this.parent.ReorderChildren();
+        }
+
+        public Vector2 GetPositionAtCorner(PivotType corner, Space space = Space.Self)
+        {
+            Vector2 curCorner = GraphicHelper.GetPivot(this.pivot);
+            Vector2 cornerAnchor = GraphicHelper.GetPivot(corner);
+            Vector2 size = this.Size;
+            Vector2 position = new Vector2(
+                (cornerAnchor.x - curCorner.x) * size.x,
+                (cornerAnchor.y - curCorner.y) * size.y
+            );
+            if(space == Space.World)
+                return myTransform.TransformPoint(position);
+            return position;
         }
 
         public void InvokeAfterFrames(int frames, Action action) => StartCoroutine(InvokeAfterFramesInternal(frames, action));
@@ -415,7 +429,7 @@ namespace PBFramework.Graphics
         /// </summary>
         protected float FromSizeDeltaX(float value)
         {
-            if(parent != null && ((anchor >= Anchors.TopStretch && anchor <= Anchors.BottomStretch) || anchor == Anchors.Fill))
+            if(parent != null && ((anchor >= AnchorType.TopStretch && anchor <= AnchorType.BottomStretch) || anchor == AnchorType.Fill))
                 return value + parent.Width;
             return value;
         }
@@ -425,7 +439,7 @@ namespace PBFramework.Graphics
         /// </summary>
         protected float FromSizeDeltaY(float value)
         {
-            if(parent != null && ((anchor >= Anchors.LeftStretch && anchor <= Anchors.RightStretch) || anchor == Anchors.Fill))
+            if(parent != null && ((anchor >= AnchorType.LeftStretch && anchor <= AnchorType.RightStretch) || anchor == AnchorType.Fill))
                 return value + parent.Height;
             return value;
         }
@@ -435,7 +449,7 @@ namespace PBFramework.Graphics
         /// </summary>
         protected float ToSizeDeltaX(float value)
         {
-            if(parent != null && ((anchor >= Anchors.TopStretch && anchor <= Anchors.BottomStretch) || anchor == Anchors.Fill))
+            if(parent != null && ((anchor >= AnchorType.TopStretch && anchor <= AnchorType.BottomStretch) || anchor == AnchorType.Fill))
                 return value - parent.Width;
             return value;
         }
@@ -445,7 +459,7 @@ namespace PBFramework.Graphics
         /// </summary>
         protected float ToSizeDeltaY(float value)
         {
-            if(parent != null && ((anchor >= Anchors.LeftStretch && anchor <= Anchors.RightStretch) || anchor == Anchors.Fill))
+            if(parent != null && ((anchor >= AnchorType.LeftStretch && anchor <= AnchorType.RightStretch) || anchor == AnchorType.Fill))
                 return value - parent.Height;
             return value;
         }

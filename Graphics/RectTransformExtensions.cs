@@ -87,7 +87,7 @@ namespace PBFramework.Graphics
         /// <summary>
         /// Sets the min and max anchor values for specified anchor type.
         /// </summary>
-        public static void SetAnchor(this RectTransform context, Anchors anchor)
+        public static void SetAnchor(this RectTransform context, AnchorType anchor)
         {
             context.anchorMin = GraphicHelper.GetMinAnchor(anchor);
             context.anchorMax = GraphicHelper.GetMaxAnchor(anchor);
@@ -96,7 +96,7 @@ namespace PBFramework.Graphics
         /// <summary>
         /// Sets the pivot values for specified anchor
         /// </summary>
-        public static void SetPivot(this RectTransform context, Pivots pivot)
+        public static void SetPivot(this RectTransform context, PivotType pivot)
         {
             context.pivot = GraphicHelper.GetPivot(pivot);
         }

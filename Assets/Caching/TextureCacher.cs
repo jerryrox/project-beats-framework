@@ -19,7 +19,7 @@ namespace PBFramework.Assets.Caching
             this.nonReadable = nonReadable;
         }
 
-        protected override IPromise<Texture2D> CreateRequest(string key)
+        protected override IExplicitPromise<Texture2D> CreateRequest(string key)
         {
             return new TextureRequest(key, nonReadable);
         }

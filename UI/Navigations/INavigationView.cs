@@ -19,7 +19,7 @@ namespace PBFramework.UI.Navigations
         /// <summary>
         /// Returns the type of action performed on hiding.
         /// </summary>
-        HideActions HideAction { get; }
+        HideActionType HideAction { get; }
 
         /// <summary>
         /// Returns the animation played on view show.

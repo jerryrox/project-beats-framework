@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace PBFramework.Allocation.Recyclers
 {
     /// <summary>
@@ -14,6 +16,11 @@ namespace PBFramework.Allocation.Recyclers
         /// Returns the number of objects currently disabled and stored in this recycler.
         /// </summary>
         int UnusedCount { get; }
+
+        /// <summary>
+        /// Returns the list of all objects currently unused.
+        /// </summary>
+        List<T> UnusedObjects { get; }
 
 
         /// <summary>

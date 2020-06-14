@@ -60,16 +60,16 @@ namespace PBFramework.UI
             var popupRaycaster = popup.RawObject.AddComponent<GraphicRaycaster>();
             popupRaycaster.ignoreReversedGraphics = true;
 
-            popup.Anchor = Anchors.BottomStretch;
-            popup.Pivot = Pivots.Top;
+            popup.Anchor = AnchorType.BottomStretch;
+            popup.Pivot = PivotType.Top;
             popup.RawSize = new Vector2(0f, 100f);
             popup.IsHorizontal = false;
             popup.VerticalScrollbar = popupScrollbar;
             popup.Active = false;
 
             // Init popup scrollbar
-            popupScrollbar.Anchor = Anchors.RightStretch;
-            popupScrollbar.Pivot = Pivots.TopRight;
+            popupScrollbar.Anchor = AnchorType.RightStretch;
+            popupScrollbar.Pivot = PivotType.TopRight;
             popupScrollbar.SetOffsetVertical(0f);
             popupScrollbar.Width = 4f;
             popupScrollbar.X = 0;
@@ -112,7 +112,7 @@ namespace PBFramework.UI
             var raycaster = blocker.RawObject.AddComponent<GraphicRaycaster>();
             raycaster.ignoreReversedGraphics = true;
 
-            blocker.Anchor = Anchors.Fill;
+            blocker.Anchor = AnchorType.Fill;
             blocker.RawSize = Vector2.zero;
 
             blocker.Background.Color = new Color();

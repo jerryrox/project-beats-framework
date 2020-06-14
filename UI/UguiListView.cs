@@ -202,8 +202,8 @@ namespace PBFramework.UI
         [InitWithDependency]
         private void Init()
         {
-            container.Anchor = Anchors.Center;
-            container.Pivot = Pivots.Center;
+            container.Anchor = AnchorType.Center;
+            container.Pivot = PivotType.Center;
         }
 
         public void Initialize(Func<IListItem> createItem, Action<IListItem> updateItem)
@@ -283,6 +283,21 @@ namespace PBFramework.UI
 
             // Force update the cells.
             ForceUpdate();
+        }
+
+        public override void ScrollTo(Vector2 position)
+        {
+            var startPos = ContainerStartPos;
+            var endPos = ContainerEndPos;
+            if(startPos.x < endPos.x)
+                position.x = Mathf.Clamp(position.x, startPos.x, endPos.x);
+            else
+                position.x = Mathf.Clamp(position.x, endPos.x, startPos.x);
+            if (startPos.y < endPos.y)
+                position.y = Mathf.Clamp(position.y, startPos.y, endPos.y);
+            else
+                position.y = Mathf.Clamp(position.y, endPos.y, startPos.y);
+            base.ScrollTo(position);
         }
 
         protected virtual void Update()

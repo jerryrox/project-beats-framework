@@ -10,6 +10,9 @@ namespace PBFramework.Graphics.Effects.Shaders
 {
     public abstract class BaseShaderEffect : IShaderEffect
     {
+        private Material backupMaterial;
+
+
         public abstract Shader Shader { get; }
 
         public virtual bool UsesMaterial => true;
@@ -34,7 +37,7 @@ namespace PBFramework.Graphics.Effects.Shaders
             var graphic = GetGraphic(obj);
             if (graphic == null) return;
 
-            graphic.material = null;
+            graphic.material = graphic.defaultMaterial;
         }
 
         /// <summary>

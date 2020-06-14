@@ -40,7 +40,9 @@ namespace PBFramework.UI.Navigations
 
         public bool IsActive(Type type) => views.Any(v => v.Active && type.IsAssignableFrom(v.GetType()));
 
-        public T Show<T>()
+        public bool IsShowing(Type type) => views.Any(v => v.Active && (v.HideAnime == null ? true : !v.HideAnime.IsPlaying) && type.IsAssignableFrom(v.GetType()));
+
+        public T CreateHidden<T>()
             where T : MonoBehaviour, INavigationView
         {
             var view = Get<T>();
@@ -48,9 +50,25 @@ namespace PBFramework.UI.Navigations
             {
                 view = CreateInternal<T>();
                 views.Add(view);
+                view.Active = false;
+            }
+            return view;
+        }
+
+        public T Show<T>(bool checkActive = false)
+            where T : MonoBehaviour, INavigationView
+        {
+            var view = Get<T>();
+            if (view == null)
+            {
+                view = CreateInternal<T>();
+                views.Add(view);
+
+                // If newly created, the view should be shown at all times.
+                checkActive = false;
             }
 
-            ShowInternal(view);
+            ShowInternal(view, checkActive);
             return view;
         }
 
@@ -105,9 +123,13 @@ namespace PBFramework.UI.Navigations
         /// <summary>
         /// Internally handles view showing process.
         /// </summary>
-        protected virtual void ShowInternal(INavigationView view)
+        protected virtual void ShowInternal(INavigationView view, bool checkActive)
         {
+            if(checkActive && view.Active)
+                return;
             view.Active = true;
+
+            view.HideAnime?.Stop();
 
             OnShowView?.Invoke(view);
 
@@ -126,13 +148,19 @@ namespace PBFramework.UI.Navigations
             if(!view.Active)
                 return;
 
-            OnHideView?.Invoke(view);
+            view.ShowAnime?.Stop();
 
             view.OnPreHide();
             if (view.HideAnime != null)
+            {
                 view.HideAnime.PlayFromStart();
+                OnHideView?.Invoke(view);
+            }
             else
+            {
+                OnHideView?.Invoke(view);
                 DisposeInternal(view);
+            }
         }
 
         /// <summary>
@@ -144,10 +172,10 @@ namespace PBFramework.UI.Navigations
 
             switch (view.HideAction)
             {
-                case HideActions.Recycle:
+                case HideActionType.Recycle:
                     view.Active = false;
                     break;
-                case HideActions.Destroy:
+                case HideActionType.Destroy:
                     views.Remove(view);
                     GameObject.Destroy(view.RawObject);
                     break;

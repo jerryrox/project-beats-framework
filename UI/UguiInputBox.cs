@@ -148,7 +148,7 @@ namespace PBFramework.UI
             placeholderLabel = CreateChild<UguiLabel>("placeholder", 1);
             valueLabel = CreateChild<UguiLabel>("value", 2);
 
-            valueLabel.Anchor = placeholderLabel.Anchor = Anchors.Fill;
+            valueLabel.Anchor = placeholderLabel.Anchor = AnchorType.Fill;
             valueLabel.RawWidth = placeholderLabel.RawWidth = -20;
             valueLabel.RawHeight = placeholderLabel.RawHeight = -14;
 

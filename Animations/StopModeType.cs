@@ -3,7 +3,7 @@ namespace PBFramework.Animations
     /// <summary>
     /// Types of modes applied when manually calling the IAnime Stop() method.
     /// </summary>
-    public enum StopModes {
+    public enum StopModeType {
     
         /// <summary>
         /// The animation will stay where it was upon calling Stop().

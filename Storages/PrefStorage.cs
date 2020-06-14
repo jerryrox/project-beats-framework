@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,10 @@ using Logger = PBFramework.Debugging.Logger;
 namespace PBFramework.Storages
 {
     public class PrefStorage : IPrefStorage {
+
+        public event Action<string> OnAdded;
+
+        public event Action<string> OnRemoved;
 
         private JObject json;
         private string id;
@@ -79,21 +84,56 @@ namespace PBFramework.Storages
             return defaultValue;
         }
 
-        public void SetString(string key, string value) => json[key] = value;
+        public void SetString(string key, string value)
+        {
+            json[key] = value;
+            OnAdded?.Invoke(key);
+        }
 
-        public void SetInt(string key, int value) => json[key] = value;
+        public void SetInt(string key, int value)
+        {
+            json[key] = value;
+            OnAdded?.Invoke(key);
+        }
 
-        public void SetFloat(string key, float value) => json[key] = value;
+        public void SetFloat(string key, float value)
+        {
+            json[key] = value;
+            OnAdded?.Invoke(key);
+        }
 
-        public void SetBool(string key, bool value) => json[key] = value;
+        public void SetBool(string key, bool value)
+        {
+            json[key] = value;
+            OnAdded?.Invoke(key);
+        }
 
-        public void SetObject<T>(string key, T value) => json[key] = (JObject)JToken.FromObject(value);
+        public void SetObject<T>(string key, T value)
+        {
+            json[key] = (JObject)JToken.FromObject(value);
+            OnAdded?.Invoke(key);
+        }
 
-        public void SetEnum<T>(string key, T value) where T : struct => json[key] = value.ToString();
+        public void SetEnum<T>(string key, T value) where T : struct
+        {
+            json[key] = value.ToString();
+            OnAdded?.Invoke(key);
+        }
 
-        public void Delete(string name) => json.Remove(name);
+        public void Delete(string name)
+        {
+            json.Remove(name);
+            OnRemoved?.Invoke(name);
+        }
 
-        public void DeleteAll() => json = new JObject();
+        public void DeleteAll()
+        {
+            // Invoke removed for all entries
+            foreach(var pair in json)
+                OnRemoved?.Invoke(pair.Key);
+
+            json = new JObject();
+        }
 
         public void Save()
         {

@@ -122,12 +122,12 @@ namespace PBFramework.UI
 
             background.ImageType = Image.Type.Sliced;
 
-            viewport.Anchor = Anchors.Fill;
-            viewport.Pivot = Pivots.TopLeft;
+            viewport.Anchor = AnchorType.Fill;
+            viewport.Pivot = PivotType.TopLeft;
             viewport.RawSize = Vector2.zero;
 
-            container.Anchor = Anchors.TopStretch;
-            container.Pivot = Pivots.TopLeft;
+            container.Anchor = AnchorType.TopStretch;
+            container.Pivot = PivotType.TopLeft;
             container.Position = Vector2.zero;
             container.RawWidth = 0f;
 
@@ -151,7 +151,7 @@ namespace PBFramework.UI
             container.Position = Vector2.zero;
         }
 
-        public void ScrollTo(Vector2 position)
+        public virtual void ScrollTo(Vector2 position)
         {
             scrollTarget = position;
             scrollAni.PlayFromStart();

@@ -36,7 +36,7 @@ namespace PBFramework.UI
             button.targetGraphic = sprite.GetComponent<Image>();
             button.onClick.AddListener(() => OnClick?.Invoke());
 
-            label.Anchor = Anchors.Fill;
+            label.Anchor = AnchorType.Fill;
             label.RawSize = Vector2.zero;
 
             Size = new Vector2(200, 64);

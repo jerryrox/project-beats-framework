@@ -16,8 +16,8 @@ namespace PBFramework.Networking
             audioRequest = new AudioRequest(url, isStream);
 
             // Bind proxied action.
-            startAction = audioRequest.Start;
-            revokeAction = audioRequest.Revoke;
+            StartAction = (promise) => audioRequest.Start();
+            RevokeAction = audioRequest.Revoke;
 
             // Hook onto the request.
             audioRequest.OnProgress += SetProgress;

@@ -6,7 +6,7 @@ using Logger = PBFramework.Debugging.Logger;
 
 namespace PBFramework.Networking
 {
-    public class AudioRequest : AssetRequest, IPromise<AudioClip> {
+    public class AudioRequest : AssetRequest, IExplicitPromise<AudioClip> {
 
         public event Action<AudioClip> OnFinishedResult
         {
@@ -19,7 +19,7 @@ namespace PBFramework.Networking
         private bool isStream;
 
 
-        public override object Result => response?.AudioData;
+        public override object RawResult => response?.AudioData;
         AudioClip IPromise<AudioClip>.Result => response?.AudioData;
 
 

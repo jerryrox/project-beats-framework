@@ -5,7 +5,7 @@ namespace PBFramework.Threading
     /// <summary>
     /// Interface for a timer object.
     /// </summary>
-    public interface ITimer : IPromise<ITimer>
+    public interface ITimer : IExplicitPromise<ITimer>
     {
         /// <summary>
         /// Event called when the timer has reached its limit.

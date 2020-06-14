@@ -16,6 +16,11 @@ namespace PBFramework.Inputs
         int MaxTouchCount { get; }
 
         /// <summary>
+        /// The accelerator module to use to capture acceleration information.
+        /// </summary>
+        IAccelerator Accelerator { get; set; }
+
+        /// <summary>
         /// Whether the mouse input will be processed by the manager.
         /// </summary>
         bool UseMouse { get; set; }
@@ -29,6 +34,11 @@ namespace PBFramework.Inputs
         /// Whether the keyboard input will be processed by the manager.
         /// </summary>
         bool UseKeyboard { get; set; }
+
+        /// <summary>
+        /// Whether acceleration should be captured.
+        /// </summary>
+        bool UseAcceleration { get; set; }
 
 
         /// <summary>
@@ -75,6 +85,11 @@ namespace PBFramework.Inputs
         /// Returns all touches currently being managed.
         /// </summary>
         IEnumerable<ICursor> GetTouches();
+
+        /// <summary>
+        /// Returns all mouse and touch currently being managed.
+        /// </summary>
+        IEnumerable<ICursor> GetCursors();
 
         /// <summary>
         /// Returns all keys currently being managed.
