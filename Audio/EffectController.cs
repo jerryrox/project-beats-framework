@@ -26,9 +26,13 @@ namespace PBFramework.Audio
         public override bool IsStopped => !isPlaying && !isPaused;
 
 
+        /// <summary>
+        /// Creates a new music controller instance.
+        /// </summary>
         public static EffectController Create()
         {
-            return new GameObject("_EffectController").AddComponent<EffectController>();
+            GameObject target = GameObject.Find("_EffectController") ?? new GameObject("_EffectController");
+            return target.AddComponent<EffectController>();
         }
 
         public override void Play(float delay)

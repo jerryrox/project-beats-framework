@@ -64,9 +64,13 @@ namespace PBFramework.Audio
             Clock = new AudioClock(this);
         }
 
+        /// <summary>
+        /// Creates a new music controller instance.
+        /// </summary>
         public static MusicController Create()
         {
-            return new GameObject("_MusicController").AddComponent<MusicController>();
+            GameObject target = GameObject.Find("_MusicController") ?? new GameObject("_MusicController");
+            return target.AddComponent<MusicController>();
         }
 
         public override void Play() => Play(DefaultPlayDelay);
