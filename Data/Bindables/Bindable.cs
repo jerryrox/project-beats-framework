@@ -7,9 +7,11 @@ namespace PBFramework.Data.Bindables
 {
     public class Bindable<T> : IReadOnlyBindable<T>, IReadOnlyBindable, IBindable<T>
     {
-        public event Action<T, T> OnValueChanged;
-
+        public event Action<object> OnNewRawValue;
         public event Action<object, object> OnRawValueChanged;
+
+        public event Action<T> OnNewValue;
+        public event Action<T, T> OnValueChanged;
 
         /// <summary>
         /// The actual value stored.
@@ -70,6 +72,14 @@ namespace PBFramework.Data.Bindables
 
         public void Trigger() => TriggerInternal(Value, Value);
 
+        public void BindAndTrigger(Action<T> callback)
+        {
+            if(callback == null)
+                throw new ArgumentNullException(nameof(callback));
+            OnNewValue += callback;
+            callback.Invoke(Value);
+        }
+
         public void BindAndTrigger(Action<T, T> callback)
         {
             if(callback == null)
@@ -96,8 +106,18 @@ namespace PBFramework.Data.Bindables
         /// </summary>
         protected void TriggerInternal(T newValue, T oldValue)
         {
+            OnNewValue?.Invoke(newValue);
             OnValueChanged?.Invoke(newValue, oldValue);
+            OnNewRawValue?.Invoke(newValue);
             OnRawValueChanged?.Invoke(newValue, oldValue);
+        }
+
+        void IBindable.BindAndTrigger(Action<object> callback)
+        {
+            if(callback == null)
+                throw new ArgumentNullException(nameof(callback));
+            OnNewRawValue += callback;
+            callback.Invoke(RawValue);
         }
 
         void IBindable.BindAndTrigger(Action<object, object> callback)

@@ -5,8 +5,13 @@ namespace PBFramework.Data.Bindables
     public interface IBindable
     {
         /// <summary>
+        /// Events called when the value of the bindable has changed to a new state.
+        /// This event allows listening to state changes without the need to receive the previous state.
+        /// </summary>
+        event Action<object> OnNewRawValue;
+
+        /// <summary>
         /// Events called when the inner value has changed.
-        /// Passes the new value and the previous value as parameter.
         /// </summary>
         event Action<object, object> OnRawValueChanged;
 
@@ -34,6 +39,11 @@ namespace PBFramework.Data.Bindables
         void Parse(string value);
 
         /// <summary>
+        /// Binds the specified new value event listener and triggers for the listener immediately.
+        /// </summary>
+        void BindAndTrigger(Action<object> callback);
+
+        /// <summary>
         /// Binds the specified value changed event listener and triggers for the listener immediately.
         /// </summary>
         void BindAndTrigger(Action<object, object> callback);
@@ -41,6 +51,12 @@ namespace PBFramework.Data.Bindables
 
     public interface IBindable<T> : IBindable
     {
+        /// <summary>
+        /// Events called when the value of the bindable has changed to a new state.
+        /// This event allows listening to state changes without the need to receive the previous state.
+        /// </summary>
+        event Action<T> OnNewValue;
+
         /// <summary>
         /// Events called when the inner value has changed.
         /// </summary>
@@ -52,6 +68,11 @@ namespace PBFramework.Data.Bindables
         /// </summary>
         T Value { get; set; }
 
+
+        /// <summary>
+        /// Binds the specified new value event listener and triggers for the listener immediately.
+        /// </summary>
+        void BindAndTrigger(Action<T> callback);
 
         /// <summary>
         /// Binds the specified value changed event listener and triggers for the listener immediately.
