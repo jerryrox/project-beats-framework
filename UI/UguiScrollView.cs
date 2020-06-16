@@ -1,13 +1,14 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using PBFramework.UI.UGUI;
 using PBFramework.Graphics;
 using PBFramework.Animations;
 using PBFramework.Dependencies;
 
 namespace PBFramework.UI
 {
-    public class UguiScrollView : UguiObject<ScrollRect>, IScrollView {
+    public class UguiScrollView : UguiObject<CustomScrollRect>, IScrollView {
 
         protected CanvasGroup canvasGroup;
 
@@ -133,6 +134,10 @@ namespace PBFramework.UI
 
             component.content = container.RawTransform;
             component.viewport = viewport.RawTransform;
+            component.OnDragStart += () =>
+            {
+                scrollAni.Stop();
+            };
 
             ShowMaskingSprite = false;
             UseInertia = true;
