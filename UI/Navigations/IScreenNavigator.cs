@@ -1,22 +1,14 @@
 using System;
+using PBFramework.Data.Bindables;
 
 namespace PBFramework.UI.Navigations
 {
     public interface IScreenNavigator : INavigator {
 
         /// <summary>
-        /// Event called when the screen is changed from previous to current view.
-        /// Called after INavigator.OnShowView.
-        /// First param = Current view
-        /// Second param = Previous view
+        /// Returns the current screen being focused, if exists.
         /// </summary>
-        event Action<INavigationView, INavigationView> OnScreenChange;
-
-    
-        /// <summary>
-        /// The current screen being focused, if exists.
-        /// </summary>
-        INavigationView CurrentScreen { get; }
+        IReadOnlyBindable<INavigationView> CurrentScreen { get; }
 
         /// <summary>
         /// Returns the previous screen before current, if exists.
