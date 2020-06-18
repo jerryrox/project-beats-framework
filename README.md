@@ -13,7 +13,7 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.0.2
+### 1.0.2 (WIP)
 #### New features
 - Support setting bindable value without triggering.
 - Support manually triggering bindable with a custom previous value.
