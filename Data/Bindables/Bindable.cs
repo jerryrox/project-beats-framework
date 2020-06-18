@@ -69,6 +69,8 @@ namespace PBFramework.Data.Bindables
 
         public void Trigger() => TriggerInternal(Value, Value);
 
+        public void TriggerWithPrevious(T previousValue) => TriggerInternal(Value, previousValue);
+
         public void SetWithoutTrigger(T value) => SetValueInternal(value);
 
         public void BindAndTrigger(Action<T> callback)

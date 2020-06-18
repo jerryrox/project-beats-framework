@@ -75,6 +75,11 @@ namespace PBFramework.Data.Bindables
 
 
         /// <summary>
+        /// Triggers value changed event with a custom previous value.
+        /// </summary>
+        void TriggerWithPrevious(T previousValue);
+
+        /// <summary>
         /// Sets the value of the bindable without triggering change event.
         /// </summary>
         void SetWithoutTrigger(T value);
