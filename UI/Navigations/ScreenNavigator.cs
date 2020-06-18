@@ -34,7 +34,7 @@ namespace PBFramework.UI.Navigations
 
         protected override void HideInternal(INavigationView view)
         {
-            if (view == CurrentScreen)
+            if (view == CurrentScreen.Value)
             {
                 PreviousScreen = curScreen.Value;
                 curScreen.Value = null;
