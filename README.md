@@ -17,9 +17,11 @@ Slowly making progress 🧩
 #### New features
 - Support setting bindable value without triggering.
 - Support manually triggering bindable with a custom previous value.
+- Support listening to bindable state without receing previous state.
 #### Changes
 - Replacement of ScreenNavigator.OnScreenChange with bindable CurrentScreen value.
 #### Fixes
+- Fixed scrollview continuing to move even after a drag has occurred while playing scroll animation via ScrollTo call.
 #### Others
 
 ### 1.0.1
