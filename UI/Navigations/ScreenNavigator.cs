@@ -25,8 +25,11 @@ namespace PBFramework.UI.Navigations
                     HideInternal(views[i]);
             }
 
+            INavigationView prevScreen = PreviousScreen;
+
+            curScreen.SetWithoutTrigger(view);
             base.ShowInternal(view, checkActive);
-            curScreen.Value = view;
+            curScreen.TriggerWithPrevious(prevScreen);
         }
 
         protected override void HideInternal(INavigationView view)
