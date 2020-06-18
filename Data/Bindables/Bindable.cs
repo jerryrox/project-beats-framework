@@ -33,7 +33,8 @@ namespace PBFramework.Data.Bindables
                 // If triggers only when different, but the values are the same, just return.
                 if (TriggerWhenDifferent && EqualityComparer<T>.Default.Equals(oldValue, value))
                     return;
-                TriggerInternal(this.value = value, oldValue);
+                SetValueInternal(value);
+                TriggerInternal(value, oldValue);
             }
         }
 
@@ -50,11 +51,7 @@ namespace PBFramework.Data.Bindables
                 // If null is not allowed, throw
                 if(value == null && !isNullableT)
                     throw new ArgumentException($"Bindable.RawValue - Type ({typeof(T).Name}) is a value type, but a null value was passed!");
-                // Make sure the value is convertible to T.
-                if(value is T val)
-                    Value = val;
-                else
-                    throw new ArgumentException($"Bindable.RawValue - Expected type of ({typeof(T).Name}), but ({value.GetType().Name}) was given!");
+                SetRawValueInternal(value, true);
             }
         }
 
@@ -71,6 +68,8 @@ namespace PBFramework.Data.Bindables
         }
 
         public void Trigger() => TriggerInternal(Value, Value);
+
+        public void SetWithoutTrigger(T value) => SetValueInternal(value);
 
         public void BindAndTrigger(Action<T> callback)
         {
@@ -111,6 +110,30 @@ namespace PBFramework.Data.Bindables
             OnNewRawValue?.Invoke(newValue);
             OnRawValueChanged?.Invoke(newValue, oldValue);
         }
+
+        /// <summary>
+        /// Sets the specified value to whichever state this bindable is referring to.
+        /// </summary>
+        protected virtual void SetValueInternal(T value) => this.value = value;
+
+        /// <summary>
+        /// Sets the specified value to whichever state this bindable is referring to.
+        /// </summary>
+        protected void SetRawValueInternal(object value, bool trigger)
+        {
+            // Make sure the value is convertible to T.
+            if (value is T val)
+            {
+                if(trigger)
+                    Value = val;
+                else
+                    SetValueInternal(val);
+            }
+            else
+                throw new ArgumentException($"Bindable.SetValueInternal - Expected type of ({typeof(T).Name}), but ({value.GetType().Name}) was given!");
+        }
+
+        void IBindable.SetWithoutTrigger(object value) => SetRawValueInternal(value, false);
 
         void IBindable.BindAndTrigger(Action<object> callback)
         {

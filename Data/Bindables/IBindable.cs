@@ -39,6 +39,11 @@ namespace PBFramework.Data.Bindables
         void Parse(string value);
 
         /// <summary>
+        /// Sets the value of the bindable without triggering change event.
+        /// </summary>
+        void SetWithoutTrigger(object value);
+
+        /// <summary>
         /// Binds the specified new value event listener and triggers for the listener immediately.
         /// </summary>
         void BindAndTrigger(Action<object> callback);
@@ -68,6 +73,11 @@ namespace PBFramework.Data.Bindables
         /// </summary>
         T Value { get; set; }
 
+
+        /// <summary>
+        /// Sets the value of the bindable without triggering change event.
+        /// </summary>
+        void SetWithoutTrigger(T value);
 
         /// <summary>
         /// Binds the specified new value event listener and triggers for the listener immediately.
