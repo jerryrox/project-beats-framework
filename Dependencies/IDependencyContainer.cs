@@ -6,6 +6,11 @@ namespace PBFramework.Dependencies
     public interface IDependencyContainer
     {
         /// <summary>
+        /// Returns whether the dependency of specified type exists.
+        /// </summary>
+        bool Contains<T>();
+
+        /// <summary>
         /// Returns the cached dependency of type T.
         /// </summary>
         T Get<T>();

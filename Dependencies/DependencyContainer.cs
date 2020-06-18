@@ -54,7 +54,9 @@ namespace PBFramework.Dependencies
                 container.CacheAs<IDependencyContainer>(container, true);
             return container;
         }
-        
+
+        public bool Contains<T>() => dependencies.ContainsKey(typeof(T));
+
         public T Get<T>()
         {
             if(dependencies.TryGetValue(typeof(T), out object value))
