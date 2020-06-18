@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using PBFramework.Assets.Fonts;
 using PBFramework.Graphics;
+using PBFramework.Dependencies;
 
 namespace PBFramework.UI
 {
@@ -114,6 +115,12 @@ namespace PBFramework.UI
             Alignment = TextAnchor.MiddleCenter;
             WrapText = false;
             this.Color = Color.white;
+        }
+
+        [InitWithDependency]
+        private void Init(IFontManager fontManager)
+        {
+            Font = fontManager.DefaultFont.Value;
         }
 
         /// <summary>
