@@ -22,6 +22,7 @@ Slowly making progress 🧩
 #### Changes
 - Replacement of ScreenNavigator.OnScreenChange with bindable CurrentScreen value.
 - Moved FontManager from game to framework.
+- Changed the reference for audio time tracking.
 #### Fixes
 - Fixed scrollview continuing to move even after a drag has occurred while playing scroll animation via ScrollTo call.
 #### Others
