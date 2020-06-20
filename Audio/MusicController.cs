@@ -43,6 +43,8 @@ namespace PBFramework.Audio
         /// </summary>
         private float curFadeScale = 1f;
 
+        private AudioClock clock;
+
 
         public override bool IsPlaying => Clock.IsPlaying;
 
@@ -54,14 +56,14 @@ namespace PBFramework.Audio
 
         public override float CurrentTime => Clock.IsRunning ? Clock.CurrentTime : 0;
 
-        public AudioClock Clock { get; private set; }
+        public AudioClock Clock => clock;
 
 
         protected override void Awake()
         {
             base.Awake();
 
-            Clock = new AudioClock(this);
+            clock = new AudioClock(this);
         }
 
         /// <summary>
@@ -152,7 +154,7 @@ namespace PBFramework.Audio
         protected override void DisposeInternal()
         {
             base.DisposeInternal();
-            Clock = null;
+            clock = null;
         }
 
         protected override void Update()
@@ -171,13 +173,14 @@ namespace PBFramework.Audio
                 }
             }
 
+            // Update audio clock
+            clock.Update(Time.unscaledDeltaTime);
+
             // Process audio end and loop only when running and is playing.
             if (Clock.IsRunning && Clock.IsPlaying && Clock.CurrentTime > Audio.Duration)
             {
                 base.Update();
             }
-
-            // TODO: Update metronome
         }
 
         protected override void HandleLoop()
