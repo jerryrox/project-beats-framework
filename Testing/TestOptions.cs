@@ -20,16 +20,20 @@ namespace PBFramework.Testing
         public bool UseCamera { get; set; }
 
         /// <summary>
+        /// Whether manual test mode should be enabled.
+        /// </summary>
+        public bool UseManualTesting { get; set; }
+
+        /// <summary>
+        /// Actions to be executed within the test environment.
+        /// </summary>
+        public TestAction[] Actions { get; set; }
+
+        /// <summary>
         /// Options for default root.
         /// Specify a non-null value to activate this option.
         /// </summary>
         public DefaultRootOptions DefaultRoot { get; set; }
-
-        /// <summary>
-        /// Options for key-bound test actions.
-        /// Specify a non-null value to activate this option.
-        /// </summary>
-        public KeyActionOptions KeyAction { get; set; }
 
         /// <summary>
         /// An action to be invoked for Update process.

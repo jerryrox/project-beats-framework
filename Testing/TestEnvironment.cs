@@ -48,50 +48,42 @@ namespace PBFramework.Testing
             if(!IsRunning)
                 yield break;
 
-            // Key-bound action automated testing
-            bool useManualKeyTests = false;
-            if (testOptions.KeyAction != null)
+            // Actions
+            if (testOptions.Actions != null)
             {
-                var keyBindings = testOptions.KeyAction.KeyBindings;
-                if (keyBindings != null && keyBindings.Length > 0)
+                var actions = testOptions.Actions;
+                if (actions != null && actions.Length > 0)
                 {
                     LogInformation(true, "Running key-bound test actions automatically.");
 
-                    // Toggle manual test
-                    useManualKeyTests = testOptions.KeyAction.UseManualTesting;
-
                     // Run automated key action tests.
-                    foreach (var key in keyBindings)
+                    foreach (var action in actions)
                     {
-                        var action = key.RunAction(false);
-                        if(action != null)
-                            yield return action;
+                        var coroutine = action.RunAction(false);
+                        if(coroutine != null)
+                            yield return coroutine;
                     }
 
-
-                    if (useManualKeyTests)
+                    // Output all the available keys for manual testing.
+                    if (testOptions.UseManualTesting)
                     {
-                        // Output all the available keys for manual testing.
                         LogInformation(false, "[LeftControl+1] : Success");
                         LogInformation(false, "[LeftControl+2] : Fail");
                         LogInformation(
                             false,
-                            keyBindings.Select(k => k.GetUsage()).ToArray()
+                            actions.Select(k => k.GetUsage()).ToArray()
                         );
-                        // Manual test must be done during update lifecycle so it shouldn't be null.
-                        if(testOptions.UpdateMethod == null)
-                            testOptions.UpdateMethod = () => { };
                     }
                 }
             }
 
             // Update lifecycle method
-            if (testOptions.UpdateMethod != null)
+            if (testOptions.UpdateMethod != null || testOptions.UseManualTesting)
             {
                 while (IsRunning)
                 {
                     // Run manual key action tests.
-                    if (useManualKeyTests)
+                    if (testOptions.UseManualTesting)
                     {
                         if (Input.GetKey(KeyCode.LeftControl))
                         {
@@ -107,19 +99,19 @@ namespace PBFramework.Testing
                             }
                         }
 
-                        foreach (var key in testOptions.KeyAction.KeyBindings)
+                        foreach (var action in testOptions.Actions)
                         {
-                            var action = key.RunAction(true);
-                            if (action != null)
+                            var coroutine = action.RunAction(true);
+                            if (coroutine != null)
                             {
-                                LogInformation(true, $"Executing manual test ({key.Description})");
-                                yield return action;
+                                LogInformation(true, $"Executing manual test ({action.Description})");
+                                yield return coroutine;
                                 LogInformation(false, "Test ended.");
                             }
                         }
                     }
 
-                    testOptions.UpdateMethod.Invoke();
+                    testOptions.UpdateMethod?.Invoke();
                     yield return null;
                 }
             }
