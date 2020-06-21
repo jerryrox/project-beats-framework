@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using PBFramework.Graphics;
@@ -47,11 +48,77 @@ namespace PBFramework.Testing
             if(!IsRunning)
                 yield break;
 
+            // Key-bound action automated testing
+            bool useManualKeyTests = false;
+            if (testOptions.KeyAction != null)
+            {
+                var keyBindings = testOptions.KeyAction.KeyBindings;
+                if (keyBindings != null && keyBindings.Length > 0)
+                {
+                    LogInformation(true, "Running key-bound test actions automatically.");
+
+                    // Toggle manual test
+                    useManualKeyTests = testOptions.KeyAction.UseManualTesting;
+
+                    // Run automated key action tests.
+                    foreach (var key in keyBindings)
+                    {
+                        var action = key.RunAction(false);
+                        if(action != null)
+                            yield return action;
+                    }
+
+
+                    if (useManualKeyTests)
+                    {
+                        // Output all the available keys for manual testing.
+                        LogInformation(false, "[LeftControl+1] : Success");
+                        LogInformation(false, "[LeftControl+2] : Fail");
+                        LogInformation(
+                            false,
+                            keyBindings.Select(k => k.GetUsage()).ToArray()
+                        );
+                        // Manual test must be done during update lifecycle so it shouldn't be null.
+                        if(testOptions.UpdateMethod == null)
+                            testOptions.UpdateMethod = () => { };
+                    }
+                }
+            }
+
             // Update lifecycle method
             if (testOptions.UpdateMethod != null)
             {
                 while (IsRunning)
                 {
+                    // Run manual key action tests.
+                    if (useManualKeyTests)
+                    {
+                        if (Input.GetKey(KeyCode.LeftControl))
+                        {
+                            if (Input.GetKeyDown(KeyCode.Alpha1))
+                            {
+                                EndSuccess();
+                                continue;
+                            }
+                            if (Input.GetKeyDown(KeyCode.Alpha2))
+                            {
+                                EndFail("Manually failed test");
+                                continue;
+                            }
+                        }
+
+                        foreach (var key in testOptions.KeyAction.KeyBindings)
+                        {
+                            var action = key.RunAction(true);
+                            if (action != null)
+                            {
+                                LogInformation(true, $"Executing manual test ({key.Description})");
+                                yield return action;
+                                LogInformation(false, "Test ended.");
+                            }
+                        }
+                    }
+
                     testOptions.UpdateMethod.Invoke();
                     yield return null;
                 }
@@ -59,8 +126,6 @@ namespace PBFramework.Testing
             else
             {
                 EndSuccess();
-                // Wait for a frame to have consistent behavior.
-                yield return null;
             }
 
             // Cleanup lifecycle method
@@ -122,6 +187,17 @@ namespace PBFramework.Testing
 
             // Inititialize
             testOptions.Dependency.Inject(runner);
+        }
+
+        /// <summary>
+        /// Logs the specified information to the console.
+        /// </summary>
+        private void LogInformation(bool addHeader, params string[] information)
+        {
+            if(addHeader)
+                Debug.LogWarning("===============================");
+            foreach(string info in information)
+                Debug.Log(info);
         }
     }
 }

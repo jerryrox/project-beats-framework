@@ -26,6 +26,12 @@ namespace PBFramework.Testing
         public DefaultRootOptions DefaultRoot { get; set; }
 
         /// <summary>
+        /// Options for key-bound test actions.
+        /// Specify a non-null value to activate this option.
+        /// </summary>
+        public KeyActionOptions KeyAction { get; set; }
+
+        /// <summary>
         /// An action to be invoked for Update process.
         /// </summary>
         public Action UpdateMethod { get; set; }

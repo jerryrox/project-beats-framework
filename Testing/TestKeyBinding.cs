@@ -10,8 +10,15 @@ namespace PBFramework.Testing
     /// </summary>
     public class TestKeyBinding {
 
+        /// <summary>
+        /// Delegate for handling key actions.
+        /// Specifies whether the call is from automatic testing process.
+        /// </summary>
+        public delegate IEnumerator ActionHandler(bool isAuto);
+
+
         private KeyCode keyCode;
-        private Func<IEnumerator> action;
+        private ActionHandler action;
         private string description;
 
 
@@ -21,8 +28,13 @@ namespace PBFramework.Testing
         /// </summary>
         public bool ForceManual { get; set; } = false;
 
+        /// <summary>
+        /// Returns the description of the keybinding.
+        /// </summary>
+        public string Description => description;
 
-        public TestKeyBinding(KeyCode keyCode, Func<IEnumerator> action, string description)
+
+        public TestKeyBinding(KeyCode keyCode, ActionHandler action, string description)
         {
             this.keyCode = keyCode;
             this.action = action;
@@ -45,7 +57,7 @@ namespace PBFramework.Testing
                 return null;
             if(isManual && !Input.GetKeyDown(keyCode))
                 return null;
-            return action.Invoke();
+            return action.Invoke(!isManual);
         }
     }
 }
