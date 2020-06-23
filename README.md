@@ -19,6 +19,7 @@ Slowly making progress 🧩
 - Support manually triggering bindable with a custom previous value.
 - Support listening to bindable state without receing previous state.
 - Added Contains<T>() for IDependencyContainer.
+- Added a Testing namespace for better testing with the UI objects.
 #### Changes
 - Replacement of ScreenNavigator.OnScreenChange with bindable CurrentScreen value.
 - Moved FontManager from game to framework.
