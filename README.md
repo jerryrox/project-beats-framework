@@ -13,10 +13,23 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.0.1
+### 1.0.2
 #### New features
+- Support setting bindable value without triggering.
+- Support manually triggering bindable with a custom previous value.
+- Support listening to bindable state without receing previous state.
+- Added Contains<T>() for IDependencyContainer.
+- Added a Testing namespace for better testing with the UI objects.
+#### Changes
+- Replacement of ScreenNavigator.OnScreenChange with bindable CurrentScreen value.
+- Moved FontManager from game to framework.
+- Changed the reference for audio time tracking.
+#### Fixes
+- Fixed scrollview continuing to move even after a drag has occurred while playing scroll animation via ScrollTo call.
+#### Others
+
+### 1.0.1
 #### Changes
 - Make UnityAudio effect/music controllers instantiated on a single object instead of multiple.
-#### Fixes
 #### Others
 - Cleaned up README.

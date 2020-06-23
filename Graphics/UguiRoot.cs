@@ -37,7 +37,8 @@ namespace PBFramework.Graphics
             var root = new GameObject("UguiRoot").AddComponent<UguiRoot>();
             if (dependency != null)
             {
-                dependency.CacheAs<IRoot>(root);
+                if(!dependency.Contains<IRoot>())
+                    dependency.CacheAs<IRoot>(root);
                 dependency.Inject(root);
             }
             return root;

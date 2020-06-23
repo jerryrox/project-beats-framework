@@ -27,6 +27,11 @@ namespace PBFramework.Audio
         /// </summary>
         private float rate = 1f;
 
+        /// <summary>
+        /// The last updated time.
+        /// </summary>
+        private float updatedTime = 0f;
+
 
         /// <summary>
         /// Returns whether the clock is running.
@@ -71,7 +76,7 @@ namespace PBFramework.Audio
         {
         	get
         	{
-                float realtime = ToMs(Time.realtimeSinceStartup);
+                float realtime = ToMs(updatedTime);
                 float time = (realtime - startTime);
         		if(!IsPlaying)
         			time -= realtime - idleTime;
@@ -93,7 +98,7 @@ namespace PBFramework.Audio
                 if(IsPlaying)
                     return;
                 IsPlaying = true;
-                var realtime = ToMs(Time.realtimeSinceStartup);
+                var realtime = ToMs(updatedTime);
                 startTime = realtime - time;
                 idleTime = realtime;
             };
@@ -102,22 +107,22 @@ namespace PBFramework.Audio
                     return;
                 IsPlaying = true;
                 IsPaused = false;
-                startTime += ToMs(Time.realtimeSinceStartup) - idleTime;
+                startTime += ToMs(updatedTime) - idleTime;
             };
             musicController.OnPause += () => {
                 if(!IsPlaying || IsPaused)
                     return;
                 IsPlaying = false;
                 IsPaused = true;
-                idleTime = ToMs(Time.realtimeSinceStartup);
+                idleTime = ToMs(updatedTime);
             };
             musicController.OnStop += () => {
                 IsPlaying = false;
                 IsPaused = false;
-                startTime = idleTime = ToMs(Time.realtimeSinceStartup);
+                startTime = idleTime = ToMs(updatedTime);
             };
             musicController.OnSeek += (time) => {
-                var realtime = ToMs(Time.realtimeSinceStartup);
+                var realtime = ToMs(updatedTime);
                 startTime = realtime - time;
                 idleTime = realtime;
             };
@@ -125,6 +130,14 @@ namespace PBFramework.Audio
             {
                 Rate = tempo;
             };
+        }
+
+        /// <summary>
+        /// Advances the clock time by specified deltatime.
+        /// </summary>
+        public void Update(float deltaTime)
+        {
+            updatedTime += deltaTime;
         }
 
         /// <summary>

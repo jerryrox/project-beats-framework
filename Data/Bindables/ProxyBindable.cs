@@ -22,7 +22,7 @@ namespace PBFramework.Data.Bindables
                 // If triggers only when different, but the values are the same, just return.
                 if (TriggerWhenDifferent && EqualityComparer<T>.Default.Equals(oldValue, value))
                     return;
-                proxySetter.Invoke(value);
+                SetValueInternal(value);
                 // Even if the requested value for setting may seem valid,
                 // the actual setter function may treat it as invalid and clamp it to a reasonable value.
                 // For this purpose, we should trigger update using the value through proxyGetter and not value.
@@ -39,5 +39,7 @@ namespace PBFramework.Data.Bindables
             proxyGetter = getter;
             proxySetter = setter;
         }
+
+        protected override void SetValueInternal(T value) => proxySetter.Invoke(value);
     }
 }

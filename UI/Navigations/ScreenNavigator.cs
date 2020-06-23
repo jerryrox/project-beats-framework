@@ -1,14 +1,15 @@
 using System;
+using PBFramework.Data.Bindables;
 using PBFramework.Graphics;
 
 namespace PBFramework.UI.Navigations
 {
     public class ScreenNavigator : Navigator, IScreenNavigator {
 
-        public event Action<INavigationView, INavigationView> OnScreenChange;
+        private Bindable<INavigationView> curScreen = new Bindable<INavigationView>(null);
 
 
-        public INavigationView CurrentScreen { get; private set; }
+        public IReadOnlyBindable<INavigationView> CurrentScreen => curScreen;
 
         public INavigationView PreviousScreen { get; private set; }
 
@@ -23,18 +24,20 @@ namespace PBFramework.UI.Navigations
                 if(views[i] != view)
                     HideInternal(views[i]);
             }
-            CurrentScreen = view;
-            
+
+            INavigationView prevScreen = PreviousScreen;
+
+            curScreen.SetWithoutTrigger(view);
             base.ShowInternal(view, checkActive);
-            OnScreenChange?.Invoke(CurrentScreen, PreviousScreen);
+            curScreen.TriggerWithPrevious(prevScreen);
         }
 
         protected override void HideInternal(INavigationView view)
         {
-            if (view == CurrentScreen)
+            if (view == CurrentScreen.Value)
             {
-                PreviousScreen = CurrentScreen;
-                CurrentScreen = null;
+                PreviousScreen = curScreen.Value;
+                curScreen.Value = null;
             }
 
             base.HideInternal(view);
