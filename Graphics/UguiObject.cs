@@ -229,16 +229,16 @@ namespace PBFramework.Graphics
 
         public virtual void ResetSize() {}
 
-        public IGraphicObject CreateChild(string name = "", int depth = 0, IDependencyContainer dependencies = null)
+        public IGraphicObject CreateChild(string name = "", int? depth = null, IDependencyContainer dependencies = null)
         {
             return CreateChild<UguiObject>(name, depth, dependencies);
         }
 
-        public virtual T CreateChild<T>(string name = "", int depth = 0, IDependencyContainer dependencies = null) where T : MonoBehaviour, IGraphicObject
+        public virtual T CreateChild<T>(string name = "", int? depth = null, IDependencyContainer dependencies = null) where T : MonoBehaviour, IGraphicObject
         {
             var child = new GameObject(name).AddComponent<T>();
             // Assign parent
-            child.Depth = depth;
+            child.Depth = depth.HasValue ? depth.Value : children.Count;
             child.SetParent(this);
 
             // Reset properties
