@@ -48,7 +48,7 @@ namespace PBFramework.Dependencies
 
         public IDependencyContainer Clone()
         {
-            var container = new DependencyContainer();
+            var container = new DependencyContainer(false);
             container.CacheFrom(this);
             if(container.Get<IDependencyContainer>() != null)
                 container.CacheAs<IDependencyContainer>(container, true);
