@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using PBFramework.Services;
 using PBFramework.Threading;
+using UnityEngine.Networking;
 
 using Logger = PBFramework.Debugging.Logger;
 
