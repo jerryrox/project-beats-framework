@@ -17,6 +17,7 @@ Slowly making progress 🧩
 #### Changes
 - Make IGraphicObject.CreateChild automatically increment depth based on the number of children if depth is not specified.
 - Reverted AudioClock time source value back to realtimeSinceStartup.
+- Moved Services.UnityThreadService to Threading.UnityThread.
 #### Fixes
 - Fixed warning which kept appearing when cloning dependency containers.
 
