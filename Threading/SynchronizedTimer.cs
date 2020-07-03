@@ -52,7 +52,7 @@ namespace PBFramework.Threading
             if(IsRunning) return;
 
             // Start coroutine.
-            timerCoroutine = UnityThreadService.StartCoroutine(TimerRoutine());
+            timerCoroutine = UnityThread.StartCoroutine(TimerRoutine());
         }
 
         public void Revoke() => Stop();
@@ -62,7 +62,7 @@ namespace PBFramework.Threading
             if(!IsRunning) return;
 
             // Stop coroutine.
-            UnityThreadService.StopCoroutine(timerCoroutine);
+            UnityThread.StopCoroutine(timerCoroutine);
             timerCoroutine = null;
         }
 

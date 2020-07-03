@@ -114,7 +114,7 @@ namespace PBFramework.Networking
             response.Request = request;
 
             // Start polling request completion on coroutine.
-            requestRoutine = UnityThreadService.StartCoroutine(RequestRoutine());
+            requestRoutine = UnityThread.StartCoroutine(RequestRoutine());
         }
 
         public void Abort()
@@ -153,7 +153,7 @@ namespace PBFramework.Networking
         {
             if (requestRoutine != null)
             {
-                UnityThreadService.StopCoroutine(requestRoutine);
+                UnityThread.StopCoroutine(requestRoutine);
                 requestRoutine = null;
             }
             if (request != null)

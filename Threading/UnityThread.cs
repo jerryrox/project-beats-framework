@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-namespace PBFramework.Services
+namespace PBFramework.Threading
 {
     /// <summary>
     /// Provides access to Unity-specific features which can't be accessed from classes other than MonoBehaviour type.
     /// </summary>
-    public class UnityThreadService : MonoBehaviour {
+    public class UnityThread : MonoBehaviour {
 
-        private static UnityThreadService I;
+        private static UnityThread I;
         private static MonoBehaviour MI;
 
         private int unityThreadId = -1;
@@ -34,7 +34,7 @@ namespace PBFramework.Services
         /// <summary>
         /// Returns the instance of this class.
         /// </summary>
-        private static UnityThreadService Instance => I == null ? I = new GameObject("_UnityThreadService").AddComponent<UnityThreadService>() : I;
+        private static UnityThread Instance => I == null ? I = new GameObject("_UnityThreadService").AddComponent<UnityThread>() : I;
 
         /// <summary>
         /// Returns the instance of this class as MonoBehaviour type.
