@@ -13,6 +13,8 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
+### 1.0.4 (WIP)
+
 ### 1.0.3
 #### New features
 - Added DeepLinker module.
