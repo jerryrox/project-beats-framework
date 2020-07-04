@@ -13,6 +13,21 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
+### 1.0.3
+#### New features
+- Added DeepLinker module.
+- Added a method to cache a dependency into a dependency container and inject afterwards.
+#### Improvements
+- Moved all URL manipulation / parsing logic to WebLink class.
+#### Changes
+- Make IGraphicObject.CreateChild automatically increment depth based on the number of children if depth is not specified.
+- Reverted AudioClock time source value back to realtimeSinceStartup.
+- Moved Services.UnityThreadService to Threading.UnityThread.
+- Moved Services.AnimeService to Animations.AnimeService.
+- Removed type parameter on dependency container's Inject method. This should've fixed the bug where injecting on an object referred with an interface fails.
+#### Fixes
+- Fixed warning which kept appearing when cloning dependency containers.
+
 ### 1.0.2
 #### New features
 - Support setting bindable value without triggering.

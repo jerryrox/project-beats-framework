@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Animations;
 
-namespace PBFramework.Services
+namespace PBFramework.Animations
 {
     /// <summary>
     /// Provides IAnime instances the ability to update and mutate its internal states.

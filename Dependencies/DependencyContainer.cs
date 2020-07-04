@@ -19,6 +19,18 @@ namespace PBFramework.Dependencies
                 CacheAs<IDependencyContainer>(this);
         }
 
+        public void CacheAndInject(object value)
+        {
+            Cache(value);
+            Inject(value);
+        }
+
+        public void CacheAndInjectAs<T>(T value) where T : class
+        {
+            CacheAs<T>(value);
+            Inject(value);
+        }
+
         public void Cache(object value, bool replace = false)
         {
             if(value == null)
@@ -48,7 +60,7 @@ namespace PBFramework.Dependencies
 
         public IDependencyContainer Clone()
         {
-            var container = new DependencyContainer();
+            var container = new DependencyContainer(false);
             container.CacheFrom(this);
             if(container.Get<IDependencyContainer>() != null)
                 container.CacheAs<IDependencyContainer>(container, true);
@@ -78,7 +90,7 @@ namespace PBFramework.Dependencies
             return null;
         }
 
-        public void Inject<T>(T obj) where T : class
+        public void Inject(object obj)
         {
             if(obj == null)
                 throw new ArgumentNullException(nameof(obj));

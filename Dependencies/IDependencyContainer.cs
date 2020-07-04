@@ -21,6 +21,16 @@ namespace PBFramework.Dependencies
         object Get(Type type);
 
         /// <summary>
+        /// Caches the specified dependency instance as its top-most child type and injects dependencies into it.
+        /// </summary>
+        void CacheAndInject(object value);
+
+        /// <summary>
+        /// Caches the specified dependency instance as type T and injects dependencies into it.
+        /// </summary>
+        void CacheAndInjectAs<T>(T value) where T : class;
+
+        /// <summary>
         /// Caches the specified dependency instance as its top-most child type.
         /// </summary>
         void Cache(object value, bool replace = false);
@@ -48,7 +58,7 @@ namespace PBFramework.Dependencies
         /// <summary>
         /// Injects dependencies onto specified object.
         /// </summary>
-        void Inject<T>(T obj) where T : class;
+        void Inject(object obj);
 
         /// <summary>
         /// Clones this container.

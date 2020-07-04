@@ -17,14 +17,14 @@ namespace PBFramework.Dependencies
         /// <summary>
         /// Performs injection on specified class-type object.
         /// </summary>
-        public static void Inject<T>(T obj, IDependencyContainer container) where T : class
+        public static void Inject(object obj, IDependencyContainer container)
         {
             if(obj == null)
                 throw new ArgumentNullException(nameof(obj));
             if(container == null)
                 throw new ArgumentNullException(nameof(container));
 
-            TypeInjector injector = GetInjector(typeof(T));
+            TypeInjector injector = GetInjector(obj.GetType());
             injector.Inject(obj, container);
         }
 
