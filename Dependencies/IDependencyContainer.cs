@@ -58,7 +58,7 @@ namespace PBFramework.Dependencies
         /// <summary>
         /// Injects dependencies onto specified object.
         /// </summary>
-        void Inject<T>(T obj) where T : class;
+        void Inject(object obj);
 
         /// <summary>
         /// Clones this container.

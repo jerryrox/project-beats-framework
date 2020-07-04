@@ -90,7 +90,7 @@ namespace PBFramework.Dependencies
             return null;
         }
 
-        public void Inject<T>(T obj) where T : class
+        public void Inject(object obj)
         {
             if(obj == null)
                 throw new ArgumentNullException(nameof(obj));

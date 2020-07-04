@@ -67,12 +67,12 @@ namespace PBFramework.Dependencies
         /// <summary>
         /// Performs injection on specified object.
         /// </summary>
-        public void Inject<T>(T obj, IDependencyContainer container) where T : class
+        public void Inject(object obj, IDependencyContainer container)
         {
             // Make sure the types are matching.
-            if(type != typeof(T))
+            if(type != obj.GetType())
             {
-                Logger.LogError($"TypeInjector.Inject - Injection target's type ({typeof(T).Name}) does not match the responsible type ({type.Name})!");
+                Logger.LogError($"TypeInjector.Inject - Injection target's type ({obj.GetType().Name}) does not match the responsible type ({type.Name})!");
                 return;
             }
 
