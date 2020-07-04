@@ -16,6 +16,7 @@ Slowly making progress 🧩
 ### 1.0.3 (WIP)
 #### New features
 - Added DeepLinker module.
+- Added a method to cache a dependency into a dependency container and inject afterwards.
 #### Improvements
 - Moved all URL manipulation / parsing logic to WebLink class.
 #### Changes

@@ -19,6 +19,18 @@ namespace PBFramework.Dependencies
                 CacheAs<IDependencyContainer>(this);
         }
 
+        public void CacheAndInject(object value)
+        {
+            Cache(value);
+            Inject(value);
+        }
+
+        public void CacheAndInjectAs<T>(T value) where T : class
+        {
+            CacheAs<T>(value);
+            Inject(value);
+        }
+
         public void Cache(object value, bool replace = false)
         {
             if(value == null)
