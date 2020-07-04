@@ -13,6 +13,10 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
+### 1.0.3.1
+#### Fixes
+- Fixed platform host not being created for iOS.
+
 ### 1.0.3
 #### New features
 - Added DeepLinker module.
