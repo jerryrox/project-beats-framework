@@ -34,6 +34,15 @@ namespace PBFramework.Networking.Linking
         }
 
         /// <summary>
+        /// Removes link associated with specified path.
+        /// </summary>
+        public void RemoveLink(string path)
+        {
+            path = WebLink.ExtractPath(path);
+            hooks.Remove(path);
+        }
+
+        /// <summary>
         /// Emits a deeplink event using the specified path.
         /// </summary>
         public void Emit(string path)
