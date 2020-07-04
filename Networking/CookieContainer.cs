@@ -40,6 +40,11 @@ namespace PBFramework.Networking
         }
 
         /// <summary>
+        /// Returns all cookies stored.
+        /// </summary>
+        public IEnumerable<Cookie> GetCookies() => cookies.Values;
+
+        /// <summary>
         /// Sets headers based on the specified Set-Cookie value.
         /// </summary>
         public void SetCookie(string header)
