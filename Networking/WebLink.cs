@@ -39,7 +39,11 @@ namespace PBFramework.Networking
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append(scheme).Append("://").Append(path);
+                sb.Append(scheme).Append("://");
+                if(scheme.Equals("file", StringComparison.OrdinalIgnoreCase))
+                    sb.Append('/');
+                sb.Append(path);
+                
                 if (parameters.Count > 0)
                 {
                     sb.Append('?');

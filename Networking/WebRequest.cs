@@ -69,7 +69,7 @@ namespace PBFramework.Networking
 
         public WebRequest(string url, int timeout = 60, int retryCount = 0)
         {
-            this.link = new WebLink(url);//url.GetUriEscaped();
+            this.link = new WebLink(url.GetUriEscaped());
             this.timeout = timeout;
 
             // Create response data
