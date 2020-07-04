@@ -15,6 +15,10 @@ Slowly making progress 🧩
 ## Versions
 ### 1.0.4 (WIP)
 
+### 1.0.3.1
+#### Fixes
+- Fixed platform host not being created for iOS.
+
 ### 1.0.3
 #### New features
 - Added DeepLinker module.
