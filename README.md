@@ -14,9 +14,15 @@ Slowly making progress 🧩
 
 ## Versions
 ### 1.0.3 (WIP)
+#### New features
+- Added DeepLinker module.
+#### Improvements
+- Moved all URL manipulation / parsing logic to WebLink class.
 #### Changes
 - Make IGraphicObject.CreateChild automatically increment depth based on the number of children if depth is not specified.
 - Reverted AudioClock time source value back to realtimeSinceStartup.
+- Moved Services.UnityThreadService to Threading.UnityThread.
+- Moved Services.AnimeService to Animations.AnimeService.
 #### Fixes
 - Fixed warning which kept appearing when cloning dependency containers.
 

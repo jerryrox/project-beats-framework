@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using PBFramework.Services;
 using PBFramework.Threading;
+using UnityEngine.Networking;
 
 using Logger = PBFramework.Debugging.Logger;
 
@@ -18,7 +17,7 @@ namespace PBFramework.Networking
         protected UnityWebRequest request;
         protected WebResponse response;
 
-        protected string url;
+        protected WebLink link;
         protected int timeout;
 
         protected bool isDisposed = false;
@@ -61,7 +60,7 @@ namespace PBFramework.Networking
             }            
         }
 
-        public virtual string Url => url;
+        public virtual string Url => link.Url;
 
         public IWebResponse Response => response;
 
@@ -70,7 +69,7 @@ namespace PBFramework.Networking
 
         public WebRequest(string url, int timeout = 60, int retryCount = 0)
         {
-            this.url = url.GetUriEscaped();
+            this.link = new WebLink(url.GetUriEscaped());
             this.timeout = timeout;
 
             // Create response data
