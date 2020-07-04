@@ -24,7 +24,7 @@ Slowly making progress 🧩
 - Reverted AudioClock time source value back to realtimeSinceStartup.
 - Moved Services.UnityThreadService to Threading.UnityThread.
 - Moved Services.AnimeService to Animations.AnimeService.
-- Removed type parameter on dependency container's Inject method. This should've fixed some bugs where injecting on an object referred with interface fails.
+- Removed type parameter on dependency container's Inject method. This should've fixed the bug where injecting on an object referred with an interface fails.
 #### Fixes
 - Fixed warning which kept appearing when cloning dependency containers.
 
