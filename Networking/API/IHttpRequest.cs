@@ -10,17 +10,6 @@ namespace PBFramework.Networking.API
     public interface IHttpRequest : IWebRequest {
     
         /// <summary>
-        /// Returns the endpoint of the request.
-        /// </summary>
-        string Endpoint { get; }
-
-        /// <summary>
-        /// Returns the query param string of the request url.
-        /// </summary>
-        string QueryString { get; }
-
-
-        /// <summary>
         /// Sets the specified header pair to the request.
         /// </summary>
         void SetHeader(string key, string value);
