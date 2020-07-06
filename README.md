@@ -14,6 +14,8 @@ Slowly making progress 🧩
 
 ## Versions
 ### 1.0.4 (WIP)
+#### New features
+- Added the ability to directly interact with the inner value of a bindable and automatically call Trigger.
 
 ### 1.0.3.1
 #### Fixes

@@ -85,6 +85,12 @@ namespace PBFramework.Data.Bindables
         void SetWithoutTrigger(T value);
 
         /// <summary>
+        /// Invokes the specified action for modifying the inner value and automatically triggering the bindable.
+        /// Affected by TriggerWhenDifferent flag.
+        /// </summary>
+        void ModifyValue(Action<T> modifyHandler);
+
+        /// <summary>
         /// Binds the specified new value event listener and triggers for the listener immediately.
         /// </summary>
         void BindAndTrigger(Action<T> callback);

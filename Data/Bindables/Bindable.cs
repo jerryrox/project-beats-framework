@@ -73,6 +73,12 @@ namespace PBFramework.Data.Bindables
 
         public void SetWithoutTrigger(T value) => SetValueInternal(value);
 
+        public void ModifyValue(Action<T> modifyHandler)
+        {
+            modifyHandler?.Invoke(Value);
+            Trigger();
+        }
+
         public void BindAndTrigger(Action<T> callback)
         {
             if(callback == null)
