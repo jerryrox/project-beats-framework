@@ -44,6 +44,16 @@ namespace PBFramework.Data.Bindables
         void SetWithoutTrigger(object value);
 
         /// <summary>
+        /// Makes the value of this bindable bound to the specified raw bindable.
+        /// </summary>
+        void BindToRaw(IBindable other);
+
+        /// <summary>
+        /// Makes the value of this bindable no longer bound to the specified raw bindable.
+        /// </summary>
+        void UnbindFromRaw(IBindable other);
+
+        /// <summary>
         /// Binds the specified new value event listener and triggers for the listener immediately.
         /// </summary>
         void BindAndTrigger(Action<object> callback);
@@ -89,6 +99,16 @@ namespace PBFramework.Data.Bindables
         /// Affected by TriggerWhenDifferent flag.
         /// </summary>
         void ModifyValue(Action<T> modifyHandler);
+
+        /// <summary>
+        /// Makes the value of this bindable bound to the specified bindable.
+        /// </summary>
+        void BindTo(IBindable<T> other);
+
+        /// <summary>
+        /// Makes the value of this bindable no longer bound to the specified bindable.
+        /// </summary>
+        void UnbindFrom(IBindable<T> other);
 
         /// <summary>
         /// Binds the specified new value event listener and triggers for the listener immediately.
