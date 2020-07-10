@@ -79,6 +79,30 @@ namespace PBFramework.Data.Bindables
             Trigger();
         }
 
+        public void BindTo(IBindable<T> other)
+        {
+            if(other != null)
+                other.BindAndTrigger(OnExternalBindableChange);
+        }
+
+        public void UnbindFrom(IBindable<T> other)
+        {
+            if(other != null)
+                other.OnNewValue -= OnExternalBindableChange;
+        }
+
+        public void BindToRaw(IBindable other)
+        {
+            if(other != null)
+                other.BindAndTrigger(OnExternalRawBindableChange);
+        }
+
+        public void UnbindFromRaw(IBindable other)
+        {
+            if(other != null)
+                other.OnNewRawValue -= OnExternalRawBindableChange;
+        }
+
         public void BindAndTrigger(Action<T> callback)
         {
             if(callback == null)
@@ -139,6 +163,22 @@ namespace PBFramework.Data.Bindables
             }
             else
                 throw new ArgumentException($"Bindable.SetValueInternal - Expected type of ({typeof(T).Name}), but ({value.GetType().Name}) was given!");
+        }
+
+        /// <summary>
+        /// Event called when the value of the other bindable this is listening to has changed.
+        /// </summary>
+        private void OnExternalBindableChange(T newValue)
+        {
+            this.Value = newValue;
+        }
+
+        /// <summary>
+        /// Event called when the value of the other raw bindable this is listening to has changed.
+        /// </summary>
+        private void OnExternalRawBindableChange(object newValue)
+        {
+            this.RawValue = newValue;
         }
 
         void IBindable.SetWithoutTrigger(object value) => SetRawValueInternal(value, false);
