@@ -4,7 +4,7 @@ using PBFramework.Graphics;
 
 namespace PBFramework.UI
 {
-    public interface ILabel : IGraphicObject, IHasColor, IHasTint {
+    public interface ILabel : IGraphicObject, IHasColor, IHasTint, IRaycastable {
 
         /// <summary>
         /// The preferred width of the label for current text and the label settings.

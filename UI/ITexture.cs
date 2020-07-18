@@ -3,7 +3,7 @@ using PBFramework.Graphics;
 
 namespace PBFramework.UI
 {
-    public interface ITexture : IGraphicObject, IHasColor, IHasTint, IHasMaterial {
+    public interface ITexture : IGraphicObject, IHasColor, IHasTint, IHasMaterial, IRaycastable {
     
         /// <summary>
         /// The texture to render.
