@@ -13,6 +13,13 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
+### 1.0.4
+#### New features
+- Added the ability to directly interact with the inner value of a bindable and automatically call Trigger.
+- Added ability for a bindable to bind to another bindable.
+#### Change
+- Made IRaycastable part of higher level UI interfaces, not implementation objects.
+
 ### 1.0.3.1
 #### Fixes
 - Fixed platform host not being created for iOS.

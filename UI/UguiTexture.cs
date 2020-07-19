@@ -4,7 +4,7 @@ using PBFramework.Graphics;
 
 namespace PBFramework.UI
 {
-    public class UguiTexture : UguiObject<RawImage>, ITexture, IRaycastable {
+    public class UguiTexture : UguiObject<RawImage>, ITexture {
 
         public Material Material
         {

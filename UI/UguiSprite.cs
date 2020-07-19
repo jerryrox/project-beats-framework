@@ -7,7 +7,7 @@ using PBFramework.Assets.Atlasing;
 
 namespace PBFramework.UI
 {
-    public class UguiSprite : UguiObject<Image>, ISprite, IRaycastable {
+    public class UguiSprite : UguiObject<Image>, ISprite {
 
         public event Action<Sprite> OnSpriteChange;
 

@@ -133,6 +133,12 @@ namespace PBFramework.UI
             set => component.characterValidation = value;
         }
 
+        public bool IsRaycastTarget
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
+
 
         protected override void Awake()
         {

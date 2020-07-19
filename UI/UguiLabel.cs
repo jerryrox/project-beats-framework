@@ -6,7 +6,7 @@ using PBFramework.Dependencies;
 
 namespace PBFramework.UI
 {
-    public class UguiLabel : UguiObject<Text>, ILabel, IRaycastable {
+    public class UguiLabel : UguiObject<Text>, ILabel {
 
         private bool isBold;
         private bool isItalic;
