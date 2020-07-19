@@ -13,6 +13,8 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
+### (WIP)
+
 ### 1.0.4
 #### New features
 - Added the ability to directly interact with the inner value of a bindable and automatically call Trigger.
