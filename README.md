@@ -13,7 +13,7 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### (WIP)
+### 1.1.0 (WIP)
 
 ### 1.0.4
 #### New features
