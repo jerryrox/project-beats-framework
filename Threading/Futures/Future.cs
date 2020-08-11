@@ -153,10 +153,10 @@ namespace PBFramework.Threading.Futures
         /// <summary>
         /// Makes sure this object has not yet run its inner task.
         /// </summary>
-        protected void AssertNotRun()
+        protected void AssertNotRun(string message = null)
         {
             if (DidRun)
-                throw new Exception("This Future instance has already been run once!");
+                throw new Exception(message ?? "This Future instance has already been run once!");
         }
 
         /// <summary>
