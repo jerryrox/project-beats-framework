@@ -98,7 +98,10 @@ namespace PBFramework.Threading.Futures
         /// </summary>
         public void SetProgress(float progress) => ReportProgress(progress);
 
-        void INotifyCompletion.OnCompleted(Action continuation) => OnReceiveContinuation(continuation);
+        /// <summary>
+        /// Returns an awaiter to support async/await syntax.
+        /// </summary>
+        public FutureAwaiter GetAwaiter() => new FutureAwaiter(this, OnReceiveContinuation);
 
         /// <summary>
         /// Sets the inner task of the future.
@@ -147,21 +150,6 @@ namespace PBFramework.Threading.Futures
         {
             ReportProgress(1f);
             OnComplete(null);
-        }
-
-        /// <summary>
-        /// Receives async/await continuation callback.
-        /// </summary>
-        protected virtual void OnReceiveContinuation(Action continuation)
-        {
-            AssertNotDisposed();
-
-            RunWithThreadSafety(() =>
-            {
-                this.continuation = continuation;
-                if (isCompleted.Value)
-                    continuation?.Invoke();
-            });
         }
 
         /// <summary>
@@ -242,6 +230,21 @@ namespace PBFramework.Threading.Futures
             {
                 action.Invoke();
             }
+        }
+
+        /// <summary>
+        /// Receives async/await continuation callback.
+        /// </summary>
+        private void OnReceiveContinuation(Action continuation)
+        {
+            AssertNotDisposed();
+
+            RunWithThreadSafety(() =>
+            {
+                this.continuation = continuation;
+                if (isCompleted.Value && continuation != null)
+                    continuation.Invoke();
+            });
         }
     }
 

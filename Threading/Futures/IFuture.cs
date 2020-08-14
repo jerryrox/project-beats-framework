@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using PBFramework.Data.Bindables;
 
 namespace PBFramework.Threading.Futures
@@ -9,7 +8,7 @@ namespace PBFramework.Threading.Futures
     /// It must be assumed that each Future instance can only be used a single time.
     /// Methods should return IFuture or its typed variant if the inner task will automatically run upon returning this instance.
     /// </summary>
-    public interface IFuture : INotifyCompletion, IDisposable {
+    public interface IFuture : IDisposable {
 
         /// <summary>
         /// Returns the progress of the inner task.
