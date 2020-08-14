@@ -7,8 +7,13 @@ using PBFramework.Data.Bindables;
 
 namespace PBFramework.Threading.Futures
 {
-    public abstract class Future : IFuture
+    public class Future : IFuture, IControlledFuture
     {
+        /// <summary>
+        /// Delegate for handling a task under this future's context.
+        /// </summary>
+        public delegate void TaskHandler(Future future);
+
         private BindableFloat progress = new BindableFloat(0f)
         {
             TriggerWhenDifferent = true
@@ -27,8 +32,8 @@ namespace PBFramework.Threading.Futures
         };
 
         private bool isThreadSafe = true;
-
         private Action continuation;
+        private TaskHandler handler;
 
 
         public IReadOnlyBindable<float> Progress => progress;
@@ -55,6 +60,19 @@ namespace PBFramework.Threading.Futures
         public bool DidRun { get; private set; }
 
 
+        public Future(TaskHandler handler = null)
+        {
+            SetHandler(handler);
+        }
+
+        public void Start()
+        {
+            if (handler == null)
+                StartRunning(null);
+            else
+                StartRunning(() => InvokeHandler(handler));
+        }
+
         public virtual void Dispose()
         {
             AssertNotDisposed();
@@ -65,7 +83,31 @@ namespace PBFramework.Threading.Futures
             });
         }
 
+        /// <summary>
+        /// Sets the Future to complete state.
+        /// </summary>
+        public void SetComplete() => OnComplete(null);
+
+        /// <summary>
+        /// Sets the Future to complete state with an error.
+        /// </summary>
+        public void SetFail(Exception e) => OnComplete(e);
+
+        /// <summary>
+        /// Sets the progress state.
+        /// </summary>
+        public void SetProgress(float progress) => ReportProgress(progress);
+
         void INotifyCompletion.OnCompleted(Action continuation) => OnReceiveContinuation(continuation);
+
+        /// <summary>
+        /// Sets the inner task of the future.
+        /// </summary>
+        protected virtual void SetHandler(TaskHandler value)
+        {
+            AssertNotRun("Can not assign task handler to a running future.");
+            handler = value;
+        }
 
         /// <summary>
         /// Starts running the inner task of the future.
@@ -169,6 +211,21 @@ namespace PBFramework.Threading.Futures
         }
 
         /// <summary>
+        /// Invokes the specified handler within a try/catch context.
+        /// </summary>
+        protected void InvokeHandler(TaskHandler handler)
+        {
+            try
+            {
+                handler.Invoke(this);
+            }
+            catch (Exception e)
+            {
+                SetFail(e);
+            }
+        }
+
+        /// <summary>
         /// Runs the specified action in thread-safe manner if IsThreadSafe flag is true.
         /// </summary>
         protected void RunWithThreadSafety(Action action)
@@ -188,8 +245,10 @@ namespace PBFramework.Threading.Futures
         }
     }
 
-    public abstract class Future<T> : Future, IFuture<T>
+    public class Future<T> : Future, IFuture<T>
     {
+        public delegate void TaskHandlerT(Future<T> future);
+
         protected Bindable<T> output = new Bindable<T>()
         {
             TriggerWhenDifferent = true
@@ -198,6 +257,30 @@ namespace PBFramework.Threading.Futures
 
         public IReadOnlyBindable<T> Output => output;
 
+
+        /// <summary>
+        /// Initializes the Future instance with the specified handler.
+        /// </summary>
+        public Future(TaskHandlerT handler = null)
+        {
+            SetHandler(handler);
+        }
+
+        /// <summary>
+        /// Sets the inner task of the future.
+        /// </summary>
+        protected virtual void SetHandler(TaskHandlerT value)
+        {
+            if(value == null)
+                base.SetHandler(null);
+            else
+                base.SetHandler(BuildTaskHandler(value));
+        }
+
+        /// <summary>
+        /// Sets the Future to completed state with a value.
+        /// </summary>
+        public void SetComplete(T value) => OnComplete(value, null);
 
         /// <summary>
         /// Event that should be called when the inner task has finished its job.
@@ -213,6 +296,14 @@ namespace PBFramework.Threading.Futures
                 this.output.Value = output;
                 base.OnComplete(error);
             });
+        }
+
+        /// <summary>
+        /// Builds a non-generic version of TaskHandler from specified handler.
+        /// </summary>
+        protected TaskHandler BuildTaskHandler(TaskHandlerT handler)
+        {
+            return (f) => handler.Invoke(this);
         }
     }
 }
