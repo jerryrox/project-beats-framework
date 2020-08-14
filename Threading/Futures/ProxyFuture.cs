@@ -5,15 +5,29 @@ using System.Collections.Generic;
 namespace PBFramework.Threading.Futures
 {
     /// <summary>
+    /// Non-generic version of ProxyFuture with object type parameter.
+    /// </summary>
+    public class ProxyFuture : ProxyFuture<object>, IControlledFuture {
+
+        public ProxyFuture() : base(null)
+        {
+        }
+
+        public ProxyFuture(TaskHandler handler) : base(handler)
+        {
+        }
+    }
+
+    /// <summary>
     /// Implementation of future which encapsualtes the given task into a future.
     /// Automatically handles catching exception while running the given task.
     /// </summary>
-    public class ProxyFuture : Future, IControlledFuture {
-
+    public class ProxyFuture<T> : Future<T>, IControlledFuture<T>
+    {
         /// <summary>
         /// Delegate for handling a task under this future's context.
         /// </summary>
-        public delegate void TaskHandler(ProxyFuture future);
+        public delegate void TaskHandler(ProxyFuture<T> future);
 
         private TaskHandler handler;
 
@@ -54,9 +68,19 @@ namespace PBFramework.Threading.Futures
         }
 
         /// <summary>
-        /// Sets the Future to completed state.
+        /// Sets the Future to complete state.
         /// </summary>
-        public void SetComplete(Exception error) => base.OnComplete(error);
+        public void SetComplete() => base.OnComplete(null);
+
+        /// <summary>
+        /// Sets the Future to completed state with a value.
+        /// </summary>
+        public void SetComplete(T value) => base.OnComplete(value, null);
+
+        /// <summary>
+        /// Sets the Future to complete state with an error.
+        /// </summary>
+        public void SetFail(Exception e) => base.OnComplete(e);
 
         /// <summary>
         /// Sets the progress state.
@@ -74,7 +98,7 @@ namespace PBFramework.Threading.Futures
             }
             catch (Exception e)
             {
-                SetComplete(e);
+                SetFail(e);
             }
         }
     }

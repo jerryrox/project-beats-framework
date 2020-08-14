@@ -4,10 +4,19 @@ using System.Threading.Tasks;
 namespace PBFramework.Threading.Futures
 {
     /// <summary>
-    /// Variant of ProxyFuture which handles the inner task in a separate thread.
-    /// 
+    /// Non-generic version of AsyncFuture with object type parameter.
     /// </summary>
-    public class AsyncFuture : ProxyFuture {
+    public class AsyncFuture : AsyncFuture<object>
+    {
+        public AsyncFuture(TaskHandler handler) : base(handler)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Variant of ProxyFuture which handles the inner task in a separate thread.
+    /// </summary>
+    public class AsyncFuture<T> : ProxyFuture<T> {
     
         public override TaskHandler Handler
         {

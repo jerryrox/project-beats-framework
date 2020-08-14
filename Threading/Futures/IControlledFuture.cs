@@ -15,7 +15,7 @@ namespace PBFramework.Threading.Futures
     /// <summary>
     /// A generic version of IControlledFuture for an additional property for the output value.
     /// </summary>
-    public interface IControllerFuture<T> : IControlledFuture, IFuture<T>
+    public interface IControlledFuture<T> : IControlledFuture, IFuture<T>
     {
     }
 }
