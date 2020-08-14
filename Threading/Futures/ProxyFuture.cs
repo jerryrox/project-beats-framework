@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 namespace PBFramework.Threading.Futures
 {
+    /// <summary>
+    /// Implementation of future which encapsualtes the given task into a future.
+    /// Automatically handles catching exception while running the given task.
+    /// </summary>
     public class ProxyFuture : Future, IControlledFuture {
 
         /// <summary>
@@ -17,7 +21,7 @@ namespace PBFramework.Threading.Futures
         /// <summary>
         /// The inner task of this Future instance.
         /// </summary>
-        public TaskHandler Handler
+        public virtual TaskHandler Handler
         {
             get => handler;
             set
@@ -46,7 +50,7 @@ namespace PBFramework.Threading.Futures
             if (handler == null)
                 StartRunning(null);
             else
-                StartRunning(() => handler.Invoke(this));
+                StartRunning(() => InvokeHandler(handler));
         }
 
         /// <summary>
@@ -58,5 +62,20 @@ namespace PBFramework.Threading.Futures
         /// Sets the progress state.
         /// </summary>
         public void SetProgress(float progress) => base.ReportProgress(progress);
+
+        /// <summary>
+        /// Invokes the specified handler within a try/catch context.
+        /// </summary>
+        protected void InvokeHandler(TaskHandler handler)
+        {
+            try
+            {
+                handler.Invoke(this);
+            }
+            catch (Exception e)
+            {
+                SetComplete(e);
+            }
+        }
     }
 }

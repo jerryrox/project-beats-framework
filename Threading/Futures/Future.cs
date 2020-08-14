@@ -55,7 +55,7 @@ namespace PBFramework.Threading.Futures
         public bool DidRun { get; private set; }
 
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             AssertNotDisposed();
 
