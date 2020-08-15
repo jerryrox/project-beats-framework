@@ -17,7 +17,15 @@ namespace PBFramework.Networking
 
         public bool IsSuccess 
         {
-            get => Request != null && parent.IsDone && !Request.isNetworkError &&
+            get => IsRequestSuccess && parent.IsCompleted.Value;
+        }
+
+        /// <summary>
+        /// Returns whether the UnityWebRequest itself is a success.
+        /// </summary>
+        public bool IsRequestSuccess
+        {
+            get => Request != null && !Request.isNetworkError &&
                 !Request.isHttpError && string.IsNullOrEmpty(Request.error);
         }
 

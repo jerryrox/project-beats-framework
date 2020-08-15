@@ -1,17 +1,13 @@
 using System;
+using PBFramework.Threading.Futures;
 
 namespace PBFramework.Threading
 {
     /// <summary>
     /// Interface for a timer object.
     /// </summary>
-    public interface ITimer : IExplicitPromise<ITimer>
+    public interface ITimer : IControlledFuture
     {
-        /// <summary>
-        /// Event called when the timer has reached its limit.
-        /// </summary>
-        new event Action<ITimer> OnFinished;
-
         /// <summary>
         /// Maximum amount of time in seconds which the timer can run for since it started.
         /// Upon reaching the limit, OnFinished event will be fired.
