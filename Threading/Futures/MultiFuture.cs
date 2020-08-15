@@ -22,7 +22,7 @@ namespace PBFramework.Threading.Futures
         public MultiFuture(IFuture future = null)
         {
             AddFuture(future);
-            StartWait();
+            SetHandler(BuildTaskHandler());
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace PBFramework.Threading.Futures
         {
             foreach(var future in futures)
                 AddFuture(future);
-            StartWait();
+            SetHandler(BuildTaskHandler());
         }
 
         /// <summary>
@@ -60,17 +60,26 @@ namespace PBFramework.Threading.Futures
         /// </summary>
         private void StartWait()
         {
-            StartRunning(futures.Count == 0 ? null : new Action(() =>
+            foreach (var future in futures)
             {
-                foreach (var future in futures)
-                {
-                    future.Progress.OnNewValue += OnProgressUpdate;
-                    future.IsCompleted.OnNewValue += OnCompleted;
-                }
-                // Trigger initial check.
-                OnProgressUpdate(0f);
-                OnCompleted(false);
-            }));
+                future.Progress.OnNewValue += OnProgressUpdate;
+                future.IsCompleted.OnNewValue += OnCompleted;
+
+                // If the future did not run yet, make it run.
+                if (!future.DidRun)
+                    (future as IControlledFuture)?.Start();
+            }
+            // Trigger initial check.
+            OnProgressUpdate(0f);
+            OnCompleted(false);
+        }
+
+        /// <summary>
+        /// Creates and return the appropriate task handler action.
+        /// </summary>
+        private TaskHandler BuildTaskHandler()
+        {
+            return futures.Count == 0 ? null : new TaskHandler((f) => StartWait());
         }
 
         /// <summary>
