@@ -86,17 +86,17 @@ namespace PBFramework.Threading.Futures
         /// <summary>
         /// Sets the Future to complete state.
         /// </summary>
-        public void SetComplete() => OnComplete(null);
+        public virtual void SetComplete() => OnComplete(null);
 
         /// <summary>
         /// Sets the Future to complete state with an error.
         /// </summary>
-        public void SetFail(Exception e) => OnComplete(e);
+        public virtual void SetFail(Exception e) => OnComplete(e);
 
         /// <summary>
         /// Sets the progress state.
         /// </summary>
-        public void SetProgress(float progress) => ReportProgress(progress);
+        public virtual void SetProgress(float progress) => ReportProgress(progress);
 
         /// <summary>
         /// Returns an awaiter to support async/await syntax.
@@ -164,8 +164,8 @@ namespace PBFramework.Threading.Futures
             RunWithThreadSafety(() =>
             {
                 ReportProgress(1f);
-                this.isCompleted.Value = true;
                 this.error.Value = error;
+                this.isCompleted.Value = true;
 
                 continuation?.Invoke();
             });
