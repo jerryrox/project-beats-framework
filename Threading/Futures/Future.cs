@@ -31,7 +31,7 @@ namespace PBFramework.Threading.Futures
             TriggerWhenDifferent = true
         };
 
-        private bool isThreadSafe = true;
+        private SynchronizedBool isThreadSafe = new SynchronizedBool(true);
         private Action continuation;
         private TaskHandler handler;
 
@@ -44,17 +44,10 @@ namespace PBFramework.Threading.Futures
 
         public IReadOnlyBindable<Exception> Error => error;
 
-        // TODO: Implement thread safe boolean type.
         public bool IsThreadSafe
         {
-            get
-            {
-                return isThreadSafe;
-            }
-            set
-            {
-                isThreadSafe = value;
-            }
+            get => isThreadSafe.Value;
+            set => isThreadSafe.Value = value;
         }
 
         public bool DidRun { get; private set; }
@@ -75,7 +68,8 @@ namespace PBFramework.Threading.Futures
 
         public virtual void Dispose()
         {
-            AssertNotDisposed();
+            if(isDisposed.Value)
+                return;
 
             RunWithThreadSafety(() =>
             {

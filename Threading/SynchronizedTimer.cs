@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using PBFramework.Data.Bindables;
 using UnityEngine;
 
 namespace PBFramework.Threading
@@ -10,20 +10,11 @@ namespace PBFramework.Threading
     /// </summary>
     public class SynchronizedTimer : ITimer
     {
-        public event Action<ITimer> OnFinished;
-        event Action<ITimer> IPromise<ITimer>.OnFinishedResult
+        private BindableFloat progress = new BindableFloat(0f);
+        private BindableBool isCompleted = new BindableBool(false)
         {
-            add => OnFinished += value;
-            remove => OnFinished -= value;
-        }
-        event Action IPromise.OnFinished
-        {
-            add => OnFinished += delegate { value(); };
-            remove => OnFinished -= delegate { value(); };
-        }
-
-        public event Action<float> OnProgress;
-
+            TriggerWhenDifferent = true
+        };
         private Coroutine timerCoroutine;
 
 
@@ -38,12 +29,21 @@ namespace PBFramework.Threading
 
         public bool IsRunning => timerCoroutine != null;
 
-        public float Progress { get; set; }
+        public IReadOnlyBindable<float> Progress => progress;
 
-        public ITimer Result => this;
-        object IPromise.RawResult => this;
+        public IReadOnlyBindable<bool> IsCompleted => isCompleted;
 
-        public bool IsFinished => Current >= Limit;
+        public IReadOnlyBindable<bool> IsDisposed => null;
+        
+        public IReadOnlyBindable<Exception> Error => null;
+
+        public bool DidRun => IsRunning;
+
+        public bool IsThreadSafe
+        {
+            get => true;
+            set => throw new NotSupportedException();
+        }
 
 
         public void Start()
@@ -54,7 +54,7 @@ namespace PBFramework.Threading
             timerCoroutine = UnityThread.StartCoroutine(TimerRoutine());
         }
 
-        public void Revoke() => Stop();
+        public void Dispose() => Stop();
 
         public void Pause()
         {
@@ -94,8 +94,6 @@ namespace PBFramework.Threading
                     Current = Limit;
                     // Notify
                     ReportCurrent();
-                    // Finished
-                    OnFinished?.Invoke(this);
                     // Stop the routine.
                     Pause();
                     yield break;
@@ -114,16 +112,24 @@ namespace PBFramework.Threading
         /// </summary>
         private void ReportCurrent()
         {
-            if(Limit <= 0)
-                Progress = 0f;
+            if (Limit <= 0)
+            {
+                progress.Value = 0f;
+                isCompleted.Value = false;
+            }
             else
             {
-                if(Current >= Limit)
-                    Progress = 1f;
+                if (Current >= Limit)
+                {
+                    progress.Value = 1f;
+                    isCompleted.Value = true;
+                }
                 else
-                    Progress = Current / Limit;
+                {
+                    progress.Value = Current / Limit;
+                    isCompleted.Value = false;
+                }
             }
-            OnProgress?.Invoke(Progress);
         }
     }
 }

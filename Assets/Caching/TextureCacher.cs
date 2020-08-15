@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PBFramework.Threading.Futures;
 using PBFramework.Networking;
 
 namespace PBFramework.Assets.Caching
@@ -19,7 +20,7 @@ namespace PBFramework.Assets.Caching
             this.nonReadable = nonReadable;
         }
 
-        protected override IExplicitPromise<Texture2D> CreateRequest(string key)
+        protected override IControlledFuture<Texture2D> CreateRequest(string key)
         {
             return new TextureRequest(key, nonReadable);
         }
