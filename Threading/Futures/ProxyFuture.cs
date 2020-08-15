@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PBFramework.Data.Bindables;
 
 namespace PBFramework.Threading.Futures
 {
@@ -19,8 +20,7 @@ namespace PBFramework.Threading.Futures
         {
             if(future == null)
                 throw new ArgumentNullException(nameof(future));
-            if(!future.DidRun)
-                throw new Exception("ProxyFuture created with an IFuture must be in a running state.");
+            AssertDidRun(future);
 
             InitWithFuture(future);
         }
@@ -36,6 +36,8 @@ namespace PBFramework.Threading.Futures
             InitWithFuture(future);
         }
 
+        protected ProxyFuture() {}
+
         public override void Dispose()
         {
             base.Dispose();
@@ -43,7 +45,6 @@ namespace PBFramework.Threading.Futures
             RunWithThreadSafety(() =>
             {
                 UnbindEvents();
-                future = null;
             });
         }
 
@@ -86,9 +87,18 @@ namespace PBFramework.Threading.Futures
         }
 
         /// <summary>
+        /// Throws an exception if the given future did not run.
+        /// </summary>
+        protected void AssertDidRun(IFuture future)
+        {
+            if(!future.DidRun)
+                throw new Exception("ProxyFuture created with an IFuture must be in a running state.");
+        }
+
+        /// <summary>
         /// Initializes the ProxyFuture with another future.
         /// </summary>
-        private void InitWithFuture(IFuture future)
+        protected void InitWithFuture(IFuture future)
         {
             this.future = future;
             BindEvents();
@@ -127,6 +137,88 @@ namespace PBFramework.Threading.Futures
                 else
                     base.SetComplete();
             }
+        }
+    }
+
+    /// <summary>
+    /// Generic version of ProxyFuture.
+    /// </summary>
+    public class ProxyFuture<T> : ProxyFuture<T, T>
+    {
+        /// <summary>
+        /// Creates a ProxyFuture with another future assuming it is currently on-going.
+        /// </summary>
+        public ProxyFuture(IFuture<T> future) : base(future)
+        {
+        }
+
+        /// <summary>
+        /// Creates a ProxyFuture with another future assuming it may (not) be currently on-going.
+        /// </summary>
+        public ProxyFuture(IControlledFuture<T> future) : base(future)
+        {
+        }
+
+        protected override T ConvertOutput(T source) => source;
+    }
+
+    /// <summary>
+    /// Generic version of ProxyFuture which assumes the other Future having a different generic type.
+    /// </summary>
+    public abstract class ProxyFuture<TSource, TTarget> : ProxyFuture, IControlledFuture<TTarget>
+    {
+        protected IFuture<TSource> future;
+
+        private Bindable<TTarget> output = new Bindable<TTarget>();
+
+
+        public IReadOnlyBindable<TTarget> Output => output;
+
+
+        public ProxyFuture(IFuture<TSource> future) : base()
+        {
+            if(future == null)
+                throw new ArgumentNullException(nameof(future));
+            AssertDidRun(future);
+
+            this.future = future;
+            InitWithFuture(future);
+        }
+
+        public ProxyFuture(IControlledFuture<TSource> future) : base()
+        {
+            if(future == null)
+                throw new ArgumentNullException(nameof(future));
+
+            this.future = future;
+            InitWithFuture(future);
+        }
+
+        protected override void BindEvents()
+        {
+            base.BindEvents();
+            if(this.IsDisposed.Value)
+                return;
+            future.Output.BindAndTrigger(OnOtherOutput);
+        }
+
+        protected override void UnbindEvents()
+        {
+            base.UnbindEvents();
+            future.Output.OnNewValue -= OnOtherOutput;
+        }
+
+        /// <summary>
+        /// Converts the specified source-type value to target-type value.
+        /// </summary>
+        protected abstract TTarget ConvertOutput(TSource source);
+
+        /// <summary>
+        /// Event called from another future when its output state has changed.
+        /// </summary>
+        private void OnOtherOutput(TSource value)
+        {
+            output.Value = ConvertOutput(value);
         }
     }
 }

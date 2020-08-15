@@ -248,7 +248,7 @@ namespace PBFramework.Threading.Futures
         }
     }
 
-    public class Future<T> : Future, IFuture<T>
+    public class Future<T> : Future, IControlledFuture<T>
     {
         public delegate void TaskHandlerT(Future<T> future);
 
