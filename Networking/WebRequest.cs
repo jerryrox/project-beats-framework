@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PBFramework.Data.Bindables;
 using PBFramework.Threading;
 using UnityEngine.Networking;
 
@@ -11,16 +12,25 @@ namespace PBFramework.Networking
 {
     public class WebRequest : IWebRequest {
 
-        public event Action OnFinished;
-        public event Action<float> OnProgress;
-
         protected UnityWebRequest request;
         protected WebResponse response;
 
         protected WebLink link;
         protected int timeout;
 
-        protected bool isDisposed = false;
+        private BindableFloat progress = new BindableFloat(0f)
+        {
+            TriggerWhenDifferent = true
+        };
+        private BindableBool isDisposed = new BindableBool(false)
+        {
+            TriggerWhenDifferent = true
+        };
+        private BindableBool isCompleted = new BindableBool(false)
+        {
+            TriggerWhenDifferent = true
+        };
+        private Bindable<Exception> error = new Bindable<Exception>(null);
 
         private Coroutine requestRoutine;
         private IReturnableProgress<IWebRequest> progressListener;
@@ -31,23 +41,15 @@ namespace PBFramework.Networking
 
         public object Extra { get; set; }
 
-        public uint RetryCount { get => retryCount; set => curRetryCount = retryCount = value; }
+        public uint RetryCount
+        {
+            get => retryCount;
+            set => curRetryCount = retryCount = value;
+        }
 
         public bool UseServerCaching { get; set; } = false;
 
         public bool IsAlive => request != null;
-
-        public virtual bool IsDone => request != null && request.isDone;
-        public bool IsFinished => IsDone;
-
-        public float Progress
-        {
-            get
-            {
-                if(request == null) return 0;
-                return request.downloadProgress > 0 ? request.downloadProgress : request.uploadProgress;
-            }
-        }
 
         public int Timeout
         {
@@ -66,6 +68,17 @@ namespace PBFramework.Networking
 
         public virtual object RawResult => this;
 
+        public IReadOnlyBindable<float> Progress => progress;
+        public IReadOnlyBindable<bool> IsDisposed => isDisposed;
+        public IReadOnlyBindable<bool> IsCompleted => isCompleted;
+        public IReadOnlyBindable<Exception> Error => error;
+        public bool DidRun => IsAlive;
+        public bool IsThreadSafe
+        {
+            get => true;
+            set => throw new NotSupportedException();
+        }
+
 
         public WebRequest(string url, int timeout = 60, int retryCount = 0)
         {
@@ -76,13 +89,17 @@ namespace PBFramework.Networking
             this.response = new WebResponse(this);
 
             // Setup default event actions.
-            OnFinished += () => progressListener?.InvokeFinished(this);
-            OnProgress += (p) => progressListener?.Report(p);
+            isCompleted.OnNewValue += (completed) =>
+            {
+                if (completed)
+                    progressListener?.InvokeFinished(this);
+            };
+            progress.OnNewValue += (p) => progressListener?.Report(p);
         }
 
         public void Request(IReturnableProgress<IWebRequest> progress = null)
         {
-            if(isDisposed) throw new ObjectDisposedException(nameof(WebRequest));
+            if(isDisposed.Value) throw new ObjectDisposedException(nameof(WebRequest));
             if (request != null)
             {
                 Logger.LogWarning("WebRequest.Request - There is already an on-going request!");
@@ -118,7 +135,7 @@ namespace PBFramework.Networking
 
         public void Abort()
         {
-            if(isDisposed) throw new ObjectDisposedException(nameof(WebRequest));
+            if(isDisposed.Value) throw new ObjectDisposedException(nameof(WebRequest));
             if (request == null)
             {
                 Logger.LogWarning("WebRequest.Abort - There is no request to abort!");
@@ -129,7 +146,7 @@ namespace PBFramework.Networking
 
         public void Retry()
         {
-            if(isDisposed) throw new ObjectDisposedException(nameof(WebRequest));
+            if(isDisposed.Value) throw new ObjectDisposedException(nameof(WebRequest));
             // Abort first if there is already a request.
             if(request != null)
                 Abort();
@@ -138,7 +155,12 @@ namespace PBFramework.Networking
 
         public void Start() => Request();
 
-        public void Revoke() => Abort();
+        public void Dispose() => DisposeHard();
+
+        /// <summary>
+        /// Evalutes web response data, if required by the subtype.
+        /// </summary>
+        protected virtual void EvaluateResponse() { }
 
         /// <summary>
         /// Creates a new UnityWebRequest instance for requesting.
@@ -161,6 +183,12 @@ namespace PBFramework.Networking
                 request.Dispose();
                 request = null;
             }
+            if (!isDisposed.Value)
+            {
+                progress.Value = 0f;
+                error.Value = null;
+                isCompleted.Value = false;
+            }
             // Dispose the response, but do not remove the reference to it.
             if (response != null)
             {
@@ -173,8 +201,8 @@ namespace PBFramework.Networking
         /// </summary>
         protected virtual void DisposeHard()
         {
-            if(isDisposed) return;
-            isDisposed = true;
+            if(isDisposed.Value) return;
+            isDisposed.Value = true;
             DisposeSoft();
 
             if (response != null)
@@ -195,13 +223,14 @@ namespace PBFramework.Networking
             // Polling till finished.
             while (request != null && !request.isDone && !request.isNetworkError)
             {
-                OnProgress?.Invoke(Progress);
+                float p = request.downloadProgress > 0 ? request.downloadProgress : request.uploadProgress;
+                progress.Value = p;
                 yield return null;
             }
-            progressListener?.Report(1);
+            progress.Value = 1f;
 
             // If request failed and there are auto retires remaining
-            if (!response.IsSuccess && curRetryCount > 0)
+            if (!response.IsRequestSuccess && curRetryCount > 0)
             {
                 // Retry.
                 curRetryCount--;
@@ -209,8 +238,12 @@ namespace PBFramework.Networking
             }
             else
             {
-                // Fire event.
-                OnFinished?.Invoke();
+                if (!response.IsRequestSuccess)
+                    error.Value = new Exception(response.ErrorMessage);
+                else
+                    EvaluateResponse();
+
+                isCompleted.Value = true;
             }
         }
     }

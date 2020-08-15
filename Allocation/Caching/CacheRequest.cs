@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using PBFramework.Threading;
+using PBFramework.Threading.Futures;
 
 namespace PBFramework.Allocation.Caching
 {
@@ -20,13 +21,13 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// The actual requester object.
         /// </summary>
-        private IExplicitPromise<T> request;
+        private IFuture<T> request;
 
 
         /// <summary>
-        /// The requesting promise.
+        /// The requesting instance.
         /// </summary>
-        public IExplicitPromise<T> Request => request;
+        public IFuture<T> Request => request;
 
         /// <summary>
         /// Returns the number of listeners waiting for the request to finish.
@@ -34,12 +35,12 @@ namespace PBFramework.Allocation.Caching
         public int ListenerCount => listeners.Count;
 
 
-        public CacheRequest(IExplicitPromise<T> request)
+        public CacheRequest(IFuture<T> request)
         {
             this.request = request;
 
             // Add callback handler action.
-            request.OnProgress += (p) =>
+            request.Progress.OnNewValue += (p) =>
             {
                 foreach (var listener in listeners.Values)
                 {
@@ -49,14 +50,18 @@ namespace PBFramework.Allocation.Caching
                     }
                 }
             };
-            request.OnFinishedResult += (v) =>
+            request.IsCompleted.OnNewValue += (completed) =>
             {
+                if(!completed)
+                    return;
+                    
+                T output = request.Output.Value;
                 foreach(var listener in listeners.Values)
                 {
                     if (listener != null)
                     {
-                        listener.Value = v;
-                        listener.InvokeFinished(v);
+                        listener.Value = output;
+                        listener.InvokeFinished(output);
                     }
                 }
             };

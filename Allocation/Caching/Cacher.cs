@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using PBFramework.Threading;
+using PBFramework.Threading.Futures;
 
 namespace PBFramework.Allocation.Caching
 {
@@ -9,12 +10,12 @@ namespace PBFramework.Allocation.Caching
         where TValue : class
     {
         /// <summary>
-        /// Table fo all pending requests.
+        /// Table for all pending requests.
         /// </summary>
         private Dictionary<TKey, CacheRequest<TValue>> requests = new Dictionary<TKey, CacheRequest<TValue>>();
 
         /// <summary>
-        /// Table fo all cached data.
+        /// Table for all cached data.
         /// </summary>
         private Dictionary<TKey, CachedData<TValue>> caches = new Dictionary<TKey, CachedData<TValue>>();
 
@@ -64,16 +65,19 @@ namespace PBFramework.Allocation.Caching
 
             var timer = CreateTimer();
             timer.Limit = delay;
-            timer.OnFinished += delegate { Remove(key, id); };
+            timer.IsCompleted.OnNewValue += (completed) => {
+                if(completed)
+                    Remove(key, id);
+            };
             timer.Start();
         }
 
         public bool IsCached(TKey key) => caches.ContainsKey(key);
 
         /// <summary>
-        /// Creates a new promise which represents the requesting process.
+        /// Creates a new future which represents the requesting process.
         /// </summary>
-        protected abstract IExplicitPromise<TValue> CreateRequest(TKey key);
+        protected abstract IControlledFuture<TValue> CreateRequest(TKey key);
 
         /// <summary>
         /// Creates a new timer instance to use for delayed destruction.
@@ -95,10 +99,13 @@ namespace PBFramework.Allocation.Caching
             var cacheRequest = new CacheRequest<TValue>(request);
 
             // Set default event handling.
-            request.OnFinishedResult += (value) => OnResourceLoaded(cacheRequest, key, value);
+            request.Output.OnNewValue += (value) =>
+            {
+                OnResourceLoaded(cacheRequest, key, value);
+            };
 
-			// Add to requests list and start.
-			requests.Add(key, cacheRequest);
+            // Add to requests list and start.
+            requests.Add(key, cacheRequest);
 			request.Start();
             return cacheRequest;
         }
@@ -123,7 +130,7 @@ namespace PBFramework.Allocation.Caching
             // If no more reference remaining on the resource, then revoke the request.
             if(request.ListenerCount <= 0)
             {
-                request.Request.Revoke();
+                request.Request.Dispose();
                 requests.Remove(key);
             }
         }

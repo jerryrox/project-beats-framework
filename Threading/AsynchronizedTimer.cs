@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using PBFramework.Data.Bindables;
 
 namespace PBFramework.Threading
 {
@@ -11,19 +10,11 @@ namespace PBFramework.Threading
     /// </summary>
     public class AsynchronizedTimer : ITimer {
     
-        public event Action<ITimer> OnFinished;
-        event Action<ITimer> IPromise<ITimer>.OnFinishedResult
+        private BindableFloat progress = new BindableFloat(0f);
+        private BindableBool isCompleted = new BindableBool(false)
         {
-            add => OnFinished += value;
-            remove => OnFinished -= value;
-        }
-        event Action IPromise.OnFinished
-        {
-            add => OnFinished += delegate { value(); };
-            remove => OnFinished -= delegate { value(); };
-        }
-
-        public event Action<float> OnProgress;
+            TriggerWhenDifferent = true
+        };
 
         private int delta;
         private object locker = new object();
@@ -47,17 +38,23 @@ namespace PBFramework.Threading
 
         public bool IsRunning
         {
-            get { lock (locker) { return shouldRun; } }
+            get { lock (locker) { return shouldRun; }; }
         }
 
-        public float Progress { get; set; }
+        public IReadOnlyBindable<float> Progress => progress;
 
-        public ITimer Result => this;
-        object IPromise.RawResult => this;
+        public IReadOnlyBindable<bool> IsCompleted => isCompleted;
 
-        public bool IsFinished
+        public IReadOnlyBindable<bool> IsDisposed => null;
+
+        public IReadOnlyBindable<Exception> Error => null;
+
+        public bool DidRun => IsRunning;
+
+        public bool IsThreadSafe
         {
-            get { lock (locker) { return current >= limit; } }
+            get => true;
+            set => throw new NotSupportedException();
         }
 
 
@@ -82,7 +79,7 @@ namespace PBFramework.Threading
             }
         }
 
-        public void Revoke() => Stop();
+        public void Dispose() => Stop();
 
         public void Pause()
         {
@@ -131,8 +128,6 @@ namespace PBFramework.Threading
                             current = limit;
                             // Notify asynchronously.
                             ReportCurrent();
-                            // Finished
-                            OnFinished?.Invoke(this);
                             // Stop the routine.
                             Pause();
                             break;
@@ -158,16 +153,24 @@ namespace PBFramework.Threading
         {
             lock (locker)
             {
-                if(limit <= 0)
-                    Progress = 0f;
+                if (limit <= 0)
+                {
+                    progress.Value = 0f;
+                    isCompleted.Value = false;
+                }
                 else
                 {
-                    if(current >= limit)
-                        Progress = 1f;
+                    if (current >= limit)
+                    {
+                        progress.Value = 1f;
+                        isCompleted.Value = true;
+                    }
                     else
-                        Progress = current / limit;
+                    {
+                        progress.Value = current / limit;
+                        isCompleted.Value = false;
+                    }
                 }
-                OnProgress?.Invoke(Progress);
             }
         }
     }

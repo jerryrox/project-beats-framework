@@ -1,12 +1,13 @@
 using System;
 using PBFramework.Threading;
+using PBFramework.Threading.Futures;
 
 namespace PBFramework.Networking
 {
     /// <summary>
     /// Interface of an object which can make web requests to local or remote server.
     /// </summary>
-    public interface IWebRequest : IExplicitPromise {
+    public interface IWebRequest : IControlledFuture {
 
         /// <summary>
         /// An extra data that can be associated with this request.
@@ -29,11 +30,6 @@ namespace PBFramework.Networking
         /// Whether there is currently a valid request which is either on-going or finished.
         /// </summary>
         bool IsAlive { get; }
-
-        /// <summary>
-        /// Returns whether the request is done.
-        /// </summary>
-        bool IsDone { get; }
 
         /// <summary>
         /// The timeout time of the request in seconds.

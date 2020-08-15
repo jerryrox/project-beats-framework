@@ -1,29 +1,40 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using PBFramework.Data.Bindables;
+using PBFramework.Threading.Futures;
 
 namespace PBFramework.Networking
 {
-    public class TextureRequest : AssetRequest, IExplicitPromise<Texture2D> {
+    public class TextureRequest : AssetRequest, IControlledFuture<Texture2D> {
 
-        public event Action<Texture2D> OnFinishedResult
+        private Bindable<Texture2D> output = new Bindable<Texture2D>(null)
         {
-            add => OnFinished += () => value(response.TextureData);
-            remove => OnFinished -= () => value(response.TextureData);
-        }
+            TriggerWhenDifferent = true
+        };
 
         private bool nonReadable;
 
 
+        public IReadOnlyBindable<Texture2D> Output => output;
+
         public override object RawResult => response?.TextureData;
-        Texture2D IPromise<Texture2D>.Result => response?.TextureData;
 
 
         public TextureRequest(string url, bool nonReadable = true) : base(url)
         {
             this.nonReadable = nonReadable;
+        }
+
+        protected override void DisposeSoft()
+        {
+            base.DisposeSoft();
+            if (!IsDisposed.Value)
+                output.Value = null;
+        }
+
+        protected override void EvaluateResponse()
+        {
+            output.Value = response.TextureData;
         }
 
         protected override UnityWebRequest CreateRequest(string url)
