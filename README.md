@@ -16,6 +16,7 @@ Slowly making progress 🧩
 ### 1.1.0 (WIP)
 #### New features
 - Added "Future" namespace under Threading. This will replace the old "Promise" and "Progress" classes which caused inconsistencies and dirtiness in code.
+- Added SychronizedBool class.
 #### Changes
 - Increased the base timeout time for AssetRequest.
 
