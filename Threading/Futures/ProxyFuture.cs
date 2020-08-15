@@ -40,6 +40,8 @@ namespace PBFramework.Threading.Futures
 
         public override void Dispose()
         {
+            if(IsDisposed.Value)
+                return;
             base.Dispose();
 
             RunWithThreadSafety(() =>

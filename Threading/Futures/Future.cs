@@ -75,7 +75,8 @@ namespace PBFramework.Threading.Futures
 
         public virtual void Dispose()
         {
-            AssertNotDisposed();
+            if(isDisposed.Value)
+                return;
 
             RunWithThreadSafety(() =>
             {
