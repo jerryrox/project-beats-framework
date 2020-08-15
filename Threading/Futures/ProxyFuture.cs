@@ -45,6 +45,10 @@ namespace PBFramework.Threading.Futures
             RunWithThreadSafety(() =>
             {
                 UnbindEvents();
+
+                // If this future's dispose is called manually, make the other future disposed too.
+                if(!future.IsDisposed.Value)
+                    future.Dispose();
             });
         }
 
@@ -105,9 +109,18 @@ namespace PBFramework.Threading.Futures
 
             if (!this.IsDisposed.Value && !this.IsCompleted.Value)
             {
-                SetHandler((f) => { });
                 if (future.DidRun)
+                {
+                    SetHandler((f) => { });
                     Start();
+                }
+                // If the future didn't run and ended up here, the future must be controllable.
+                else
+                {
+                    SetHandler((f) => {
+                        (future as IControlledFuture).Start();
+                    });
+                }
             }
         }
 
