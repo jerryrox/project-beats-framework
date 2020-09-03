@@ -229,7 +229,7 @@ namespace PBFramework.Threading.Futures
         /// <summary>
         /// Receives async/await continuation callback.
         /// </summary>
-        private void OnReceiveContinuation(Action continuation)
+        protected void OnReceiveContinuation(Action continuation)
         {
             AssertNotDisposed();
 
@@ -262,6 +262,8 @@ namespace PBFramework.Threading.Futures
         {
             SetHandler(handler);
         }
+
+        public new FutureAwaiter<T> GetAwaiter() => new FutureAwaiter<T>(this, OnReceiveContinuation);
 
         /// <summary>
         /// Sets the inner task of the future.

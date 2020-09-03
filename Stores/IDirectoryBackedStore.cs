@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using PBFramework.DB;
-using PBFramework.Threading;
+using PBFramework.Threading.Futures;
 
 namespace PBFramework.Stores
 {
@@ -12,12 +12,14 @@ namespace PBFramework.Stores
     {
         /// <summary>
         /// Event called when a new data has been added to the store.
+        /// Always called from the main thread.
         /// </summary>
         event Action<T> OnNewData;
 
         /// <summary>
         /// Event called when an existing data has been removed from the store.
         /// Will not be called when delete using DeleteAll().
+        /// Always called from the main thread.
         /// </summary>
         event Action<T> OnRemoveData;
 
@@ -30,14 +32,14 @@ namespace PBFramework.Stores
         /// <summary>
         /// Reloads the store from the file system.
         /// </summary>
-        Task Reload(ISimpleProgress progress = null);
+        IFuture Reload();
 
         /// <summary>
         /// Tries importing the specified zip archive as a a new data.
         /// Returns the imported data if successful.
         /// Otherwise, a null value is returned.
         /// </summary>
-        Task<T> Import(FileInfo archive, bool deleteOnImport = true, IReturnableProgress<T> progress = null);
+        IFuture<T> Import(FileInfo archive, bool deleteOnImport = true);
 
         /// <summary>
         /// Deletes the directory associated with the specified data.

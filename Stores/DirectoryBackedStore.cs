@@ -9,6 +9,7 @@ using PBFramework.DB;
 using PBFramework.Data;
 using PBFramework.Storages;
 using PBFramework.Threading;
+using PBFramework.Threading.Futures;
 using PBFramework.Debugging;
 using PBFramework.Exceptions;
 
@@ -40,80 +41,80 @@ namespace PBFramework.Stores
             tempStorage = new TempDirectoryStorage(GetType().Name);
         }
 
-        public virtual Task Reload(ISimpleProgress progress = null)
+        public virtual IFuture Reload()
         {
-            return Task.Run(() =>
+            return new AsyncFuture((future) =>
             {
-                progress?.Report(0f);
                 InitModules(true);
-                LoadOrphanedData(progress);
-                progress?.Report(1f);
+                LoadOrphanedData(future);
+                future.SetComplete();
             });
         }
 
-        public async Task<T> Import(FileInfo archive, bool deleteOnImport = true, IReturnableProgress<T> progress = null)
+        public IFuture<T> Import(FileInfo archive, bool deleteOnImport = true)
         {
             if (archive == null) throw new ArgumentNullException(nameof(archive));
             if (!archive.Exists) throw new FileNotFoundException($"File at ({archive.FullName}) does not exist!");
 
-            // Retrieve the compressed file representation of the archive.
-            var compressed = CompressedHelper.GetCompressed(archive);
-            if (compressed == null) throw new NotImportableException(archive, GetType());
-
-            // Start extraction of archive.
-            progress?.Report(0f);
-            var extractedDir = await compressed.Uncompress(GetTempExtractDir(archive), progress);
-            if (!extractedDir.Exists) throw new NotImportableException(archive, GetType());
-
-            // Parse the data at temporary extraction destination.
-            var data = ParseData(extractedDir);
-            // Failed to parse.
-            if (data == null)
+            return new AsyncFuture<T>(async (future) =>
             {
-                progress?.Report(1f);
-                progress?.InvokeFinished(default(T));
-                return default(T);
-            }
+                // Retrieve the compressed file representation of the archive.
+                var compressed = CompressedHelper.GetCompressed(archive);
+                if (compressed == null) throw new NotImportableException(archive, GetType());
 
-            // Calculate hash code.
-            data.CalculateHash();
+                // Start extraction of archive.
+                var uncompressTask = compressed.Uncompress(GetTempExtractDir(archive));
+                future.Progress.BindTo(uncompressTask.Progress);
+                var extractedDir = await uncompressTask;
+                if (!extractedDir.Exists) throw new NotImportableException(archive, GetType());
 
-            // Check whether this data already exists using hash check.
-            bool isNewData = false;
-            if (ContainsHash(data.HashCode, out T existingData))
-            {
-                // Replace existing data.
-                PostProcessData(data, existingData.Id);
-            }
-            else
-            {
-                // Allocate a new Id.
-                PostProcessData(data, Guid.NewGuid());
-                isNewData = true;
-            }
+                // Parse the data at temporary extraction destination.
+                var data = ParseData(extractedDir);
+                // Failed to parse.
+                if (data == null)
+                {
+                    future.SetComplete(default);
+                    return;
+                }
 
-            // Move the extracted data under management of the storage.
-            storage.Move(data.Id.ToString(), extractedDir);
-            // Replace or add the data to database.
-            database.Edit().Write(data).Commit();
+                // Calculate hash code.
+                data.CalculateHash();
 
-            // Delete archive
-            if (deleteOnImport)
-                archive.Delete();
+                // Check whether this data already exists using hash check.
+                bool isNewData = false;
+                if (ContainsHash(data.HashCode, out T existingData))
+                {
+                    // Replace existing data.
+                    PostProcessData(data, existingData.Id);
+                }
+                else
+                {
+                    // Allocate a new Id.
+                    PostProcessData(data, Guid.NewGuid());
+                    isNewData = true;
+                }
 
-            // Report finished.
-            progress?.Report(1f);
-            progress?.InvokeFinished(data);
-            if(isNewData)
-                OnNewData?.Invoke(data);
-            return data;
+                // Move the extracted data under management of the storage.
+                storage.Move(data.Id.ToString(), extractedDir);
+                // Replace or add the data to database.
+                database.Edit().Write(data).Commit();
+
+                // Delete archive
+                if (deleteOnImport)
+                    archive.Delete();
+
+                // Report finished.
+                future.SetComplete(data);
+                if(isNewData)
+                    InvokeNewData(data);
+            });
         }
 
         public void Delete(T data)
         {
             database.Edit().Remove(data).Commit();
             storage.Delete(data.Id.ToString());
-            OnRemoveData?.Invoke(data);
+            InvokeRemoveData(data);
         }
 
         public void DeleteAll()
@@ -240,7 +241,7 @@ namespace PBFramework.Stores
         /// <summary>
         /// Tries loading all orphaned data which exist in the directory storage but somehow not indexed in the database.
         /// </summary>
-        private void LoadOrphanedData(ISimpleProgress progress)
+        private void LoadOrphanedData(Future future)
         {
             var directoryList = new List<DirectoryInfo>(storage.GetAll());
             for (int i = 0; i < directoryList.Count; i++)
@@ -248,7 +249,7 @@ namespace PBFramework.Stores
                 var dir = directoryList[i];
 
                 // Report on the progress.
-                progress?.Report((float)i / directoryList.Count);
+                future.SetProgress((float)i / directoryList.Count);
 
                 // Find an entry in the database with matching directory name against index Id.
                 using (var result = database.Query().Where(inx => inx["Id"].ToString().Equals(dir.Name)).GetResult())
@@ -277,7 +278,7 @@ namespace PBFramework.Stores
 
                     // Register this data as a new entry.
                     database.Edit().Write(data).Commit();
-                    OnNewData?.Invoke(data);
+                    InvokeNewData(data);
                     Logger.Log($"DirectoryBackedStore.LoadOrphanedData - Successfully adopted orphaned data at: {dir.FullName}");
                 }
             }
@@ -299,6 +300,30 @@ namespace PBFramework.Stores
                 result = null;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Invokes OnNewData event.
+        /// </summary>
+        private void InvokeNewData(T data)
+        {
+            UnityThread.DispatchUnattended(() =>
+            {
+                OnNewData?.Invoke(data);
+                return null;
+            });
+        }
+
+        /// <summary>
+        /// Invokes OnRemoveData event.
+        /// </summary>
+        private void InvokeRemoveData(T data)
+        {
+            UnityThread.DispatchUnattended(() =>
+            {
+                OnRemoveData?.Invoke(data);
+                return null;
+            });
         }
     }
 }

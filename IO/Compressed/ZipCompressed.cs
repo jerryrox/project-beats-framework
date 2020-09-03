@@ -1,10 +1,7 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
+using PBFramework.Threading.Futures;
 using PBFramework.Debugging;
-using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace PBFramework.IO.Compressed
@@ -40,22 +37,17 @@ namespace PBFramework.IO.Compressed
             return size;
         }
 
-        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, IProgress<float> progress)
+        public IFuture<DirectoryInfo> Uncompress(DirectoryInfo destination)
         {
-            return Task.Run(() => {
-                if (destination == null)
-                {
-                    Logger.LogError($"ZipCompressed.Uncompress - destination is null!");
-                    return null;
-                }
-                if(!Source.Exists)
-                    return null;
-
-                // Reset progress
-                progress.Report(0);
-
+            return new AsyncFuture<DirectoryInfo>((future) =>
+            {
                 try
                 {
+                    if (destination == null)
+                        throw new Exception("Destination is null!");
+                    if (!Source.Exists)
+                        throw new Exception("Source file does not exist!");
+
                     using(var fs = new FileStream(Source.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         // Find total size of the zip first.
@@ -91,7 +83,7 @@ namespace PBFramework.IO.Compressed
                                             if (curInterval <= 0)
                                             {
                                                 curInterval = ProgressInterval;
-                                                progress.Report(curSize / totalSize);
+                                                future.SetProgress(curSize / totalSize);
                                             }
                                         }
                                         writer.Flush();
@@ -99,15 +91,15 @@ namespace PBFramework.IO.Compressed
                                 }
                             }
                             // Finished.
-                            progress.Report(1f);
+                            future.SetProgress(1f);
                         }
                     }
-                    return destination;
+                    future.SetComplete(destination);
                 }
                 catch (Exception e)
                 {
                     Logger.LogError($"ZipCompressed.Uncompress - Error: {e.Message}");
-                    return null;
+                    future.SetFail(e);
                 }
             });
         }

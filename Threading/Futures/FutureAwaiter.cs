@@ -5,8 +5,9 @@ namespace PBFramework.Threading.Futures
 {
     public class FutureAwaiter : INotifyCompletion
     {
+        protected Action<Action> receiveContinuation;
+
         private IFuture future;
-        private Action<Action> receiveContinuation;
 
 
         public bool IsCompleted
@@ -32,5 +33,17 @@ namespace PBFramework.Threading.Futures
         {
             receiveContinuation(continuation);
         }
+    }
+
+    public class FutureAwaiter<T> : FutureAwaiter
+    {
+        private IFuture<T> future;
+
+
+        public FutureAwaiter(IFuture<T> future, Action<Action> receiveContinuation) : base(future, receiveContinuation)
+        {
+        }
+
+        public new T GetResult() => future.Output.Value;
     }
 }

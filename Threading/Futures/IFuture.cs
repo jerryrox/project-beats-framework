@@ -41,6 +41,12 @@ namespace PBFramework.Threading.Futures
         /// Returns whether the progress has been run once.
         /// </summary>
         bool DidRun { get; }
+
+
+        /// <summary>
+        /// Returns the awaitable instance of this Future.
+        /// </summary>
+        FutureAwaiter GetAwaiter();
     }
 
     /// <summary>
@@ -52,5 +58,11 @@ namespace PBFramework.Threading.Futures
         /// Returns the evaluated output instance given from the inner task, if exists.
         /// </summary>
         IReadOnlyBindable<T> Output { get; }
+
+
+        /// <summary>
+        /// Returns the awaitable instance of this Future.
+        /// </summary>
+        new FutureAwaiter<T> GetAwaiter();
     }
 }
