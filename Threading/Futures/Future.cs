@@ -266,6 +266,11 @@ namespace PBFramework.Threading.Futures
         public new FutureAwaiter<T> GetAwaiter() => new FutureAwaiter<T>(this, OnReceiveContinuation);
 
         /// <summary>
+        /// Sets the Future to completed state with a value.
+        /// </summary>
+        public void SetComplete(T value) => OnComplete(value, null);
+
+        /// <summary>
         /// Sets the inner task of the future.
         /// </summary>
         protected virtual void SetHandler(TaskHandlerT value)
@@ -275,11 +280,6 @@ namespace PBFramework.Threading.Futures
             else
                 base.SetHandler(BuildTaskHandler(value));
         }
-
-        /// <summary>
-        /// Sets the Future to completed state with a value.
-        /// </summary>
-        public void SetComplete(T value) => OnComplete(value, null);
 
         /// <summary>
         /// Event that should be called when the inner task has finished its job.
