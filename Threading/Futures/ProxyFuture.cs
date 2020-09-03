@@ -209,6 +209,8 @@ namespace PBFramework.Threading.Futures
             InitWithFuture(future);
         }
 
+        public new FutureAwaiter<TTarget> GetAwaiter() => new FutureAwaiter<TTarget>(this, OnReceiveContinuation);
+
         protected override void BindEvents()
         {
             base.BindEvents();

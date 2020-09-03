@@ -8,7 +8,7 @@ namespace PBFramework.Networking
 {
     public class WebResponse : IWebResponse {
 
-        private WebRequest parent;
+        private IWebRequest parent;
 
 
         public UnityWebRequest Request { get; set; }
@@ -72,7 +72,7 @@ namespace PBFramework.Networking
         public ulong BytesLoaded => Request == null ? 0 : Request.downloadedBytes;
 
 
-        public WebResponse(WebRequest parent)
+        public WebResponse(IWebRequest parent)
         {
             this.parent = parent;
         }

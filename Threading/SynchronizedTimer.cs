@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using PBFramework.Data.Bindables;
+using PBFramework.Threading.Futures;
 using UnityEngine;
 
 namespace PBFramework.Threading
@@ -72,6 +73,16 @@ namespace PBFramework.Threading
             // Reset state.
             Current = 0f;
             ReportCurrent();
+        }
+
+        public FutureAwaiter GetAwaiter()
+        {
+            var future = (
+                IsRunning ?
+                new ProxyFuture(this as IFuture) :
+                new ProxyFuture(this as IControlledFuture)
+            );
+            return future.GetAwaiter();
         }
 
         /// <summary>
