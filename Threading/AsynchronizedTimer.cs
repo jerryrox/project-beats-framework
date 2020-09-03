@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using PBFramework.Data.Bindables;
+using PBFramework.Threading;
+using PBFramework.Threading.Futures;
 
 namespace PBFramework.Threading
 {
@@ -20,7 +22,6 @@ namespace PBFramework.Threading
         private object locker = new object();
         private float limit = float.MaxValue;
         private float current;
-
         private bool shouldRun;
 
 
@@ -103,6 +104,16 @@ namespace PBFramework.Threading
             }
         }
 
+        public FutureAwaiter GetAwaiter()
+        {
+            var future = (
+                IsRunning ?
+                new ProxyFuture(this as IFuture) :
+                new ProxyFuture(this as IControlledFuture)
+            );
+            return future.GetAwaiter();
+        }
+
         private void StartInternal()
         {
             Task.Run(() =>
@@ -151,27 +162,31 @@ namespace PBFramework.Threading
         /// </summary>
         private void ReportCurrent()
         {
-            lock (locker)
+            UnityThread.DispatchUnattended(() =>
             {
-                if (limit <= 0)
+                lock (locker)
                 {
-                    progress.Value = 0f;
-                    isCompleted.Value = false;
-                }
-                else
-                {
-                    if (current >= limit)
+                    if (limit <= 0)
                     {
-                        progress.Value = 1f;
-                        isCompleted.Value = true;
+                        progress.Value = 0f;
+                        isCompleted.Value = false;
                     }
                     else
                     {
-                        progress.Value = current / limit;
-                        isCompleted.Value = false;
+                        if (current >= limit)
+                        {
+                            progress.Value = 1f;
+                            isCompleted.Value = true;
+                        }
+                        else
+                        {
+                            progress.Value = current / limit;
+                            isCompleted.Value = false;
+                        }
                     }
                 }
-            }
+                return null;
+            });
         }
     }
 }
