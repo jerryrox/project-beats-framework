@@ -6,40 +6,43 @@ using PBFramework.Threading.Futures;
 namespace PBFramework.Allocation.Caching
 {
     public abstract class Cacher<TKey, TValue> : ICacher<TKey, TValue>
-        where TKey : class
         where TValue : class
     {
         /// <summary>
         /// Table for all pending requests.
         /// </summary>
-        private Dictionary<TKey, CacheRequest<TKey, TValue>> requests = new Dictionary<TKey, CacheRequest<TKey, TValue>>();
+        private Dictionary<object, CacheRequest<TValue>> requests = new Dictionary<object, CacheRequest<TValue>>();
 
 
-        public CacheListener<TKey, TValue> Request(TKey key)
+        public CacheListener<TValue> Request(TKey key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            object convertedKey = ConvertKey(key);
+
+            if (convertedKey == null)
+                throw new ArgumentNullException(nameof(convertedKey));
 
             // If there is already an on-going/completed request, hook listener on to that request.
-            if (requests.TryGetValue(key, out CacheRequest<TKey, TValue> request))
+            if (requests.TryGetValue(convertedKey, out CacheRequest<TValue> request))
                 return request.Listen();
 
             // Else, start a new request and listen to it.
-            request = RequestNew(key);
+            request = RequestNew(key, convertedKey);
             return request.Listen();
         }
 
-        public void Remove(CacheListener<TKey, TValue> listener)
+        public void Remove(CacheListener<TValue> listener)
         {
-            if (listener == null) throw new ArgumentNullException(nameof(listener));
+            if (listener == null)
+                throw new ArgumentNullException(nameof(listener));
 
-            if (requests.TryGetValue(listener.Key, out CacheRequest<TKey, TValue> request))
+            if (requests.TryGetValue(listener.Key, out CacheRequest<TValue> request))
             {
                 RemoveListener(listener, request);
                 return;
             }
         }
 
-        public void RemoveDelayed(CacheListener<TKey, TValue> listener, float delay = 2f)
+        public void RemoveDelayed(CacheListener<TValue> listener, float delay = 2f)
         {
 			if(listener == null) throw new ArgumentNullException(nameof(listener));
 
@@ -55,7 +58,7 @@ namespace PBFramework.Allocation.Caching
 
         public bool IsCached(TKey key)
         {
-            if(requests.TryGetValue(key, out CacheRequest<TKey, TValue> value))
+            if(requests.TryGetValue(ConvertKey(key), out CacheRequest<TValue> value))
                 return value.IsComplete;
             return false;
         }
@@ -76,16 +79,23 @@ namespace PBFramework.Allocation.Caching
         protected virtual void DestroyData(TValue data) {}
 
         /// <summary>
+        /// Converts the specified key to the desired format.
+        /// This will be useful when different instances of TKey should be considered the same key
+        /// as part of the app-specific requirements.
+        /// </summary>
+        protected virtual object ConvertKey(TKey key) => key;
+
+        /// <summary>
         /// Initializes a new CacheRequest for specified key.
         /// </summary>
-        private CacheRequest<TKey, TValue> RequestNew(TKey key)
+        private CacheRequest<TValue> RequestNew(TKey key, object convertedKey)
         {
             // Create request
             var request = CreateRequest(key);
-            var cacheRequest = new CacheRequest<TKey, TValue>(key, request);
+            var cacheRequest = new CacheRequest<TValue>(convertedKey, request);
 
             // Add to requests list and start.
-            requests.Add(key, cacheRequest);
+            requests.Add(convertedKey, cacheRequest);
 			request.Start();
             return cacheRequest;
         }
@@ -93,7 +103,7 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// Removes the specified listener from the request.
         /// </summary>
-        private void RemoveListener(CacheListener<TKey, TValue> listener, CacheRequest<TKey, TValue> request)
+        private void RemoveListener(CacheListener<TValue> listener, CacheRequest<TValue> request)
         {
             // Remove listener
             request.Unlisten(listener);
@@ -106,11 +116,5 @@ namespace PBFramework.Allocation.Caching
                 requests.Remove(request.Key);
             }
         }
-    }
-
-    public abstract class Cacher<TValue> : Cacher<string, TValue>, ICacher<TValue>
-        where TValue : class
-    {
-
     }
 }

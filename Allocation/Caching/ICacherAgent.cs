@@ -27,13 +27,13 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// The current listener attached on the cacher.
         /// </summary>
-        CacheListener<TKey, TValue> Listener { get; }
+        CacheListener<TValue> Listener { get; }
 
 
         /// <summary>
         /// Requests for the cache data using specified key.
         /// </summary>
-        CacheListener<TKey, TValue> Request(TKey key);
+        CacheListener<TValue> Request(TKey key);
 
         /// <summary>
         /// Removes the last cached data fetched from the cacher using the last specified key.

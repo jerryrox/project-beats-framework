@@ -12,7 +12,7 @@ namespace PBFramework.Allocation.Caching
 
         public ICacher<TKey, TValue> Cacher { get; private set; }
 
-        public CacheListener<TKey, TValue> Listener { get; private set; }
+        public CacheListener<TValue> Listener { get; private set; }
 
 
         public CacherAgent(ICacher<TKey, TValue> cacher)
@@ -22,7 +22,7 @@ namespace PBFramework.Allocation.Caching
             this.Cacher = cacher;
         }
 
-        public CacheListener<TKey, TValue> Request(TKey key)
+        public CacheListener<TValue> Request(TKey key)
         {
 			if(key == null) throw new ArgumentNullException(nameof(key));
 
@@ -43,14 +43,6 @@ namespace PBFramework.Allocation.Caching
 					Cacher.Remove(Listener);
 			}
             Listener = null;
-        }
-    }
-
-    public class CacherAgent<T> : CacherAgent<string, T>
-        where T : class
-    {
-        public CacherAgent(ICacher<string, T> cacher) : base(cacher)
-        {
         }
     }
 }
