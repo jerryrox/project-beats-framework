@@ -12,67 +12,53 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// Table for all pending requests.
         /// </summary>
-        private Dictionary<TKey, CacheRequest<TValue>> requests = new Dictionary<TKey, CacheRequest<TValue>>();
-
-        /// <summary>
-        /// Table for all cached data.
-        /// </summary>
-        private Dictionary<TKey, CachedData<TValue>> caches = new Dictionary<TKey, CachedData<TValue>>();
+        private Dictionary<TKey, CacheRequest<TKey, TValue>> requests = new Dictionary<TKey, CacheRequest<TKey, TValue>>();
 
 
-        public uint Request(TKey key, IReturnableProgress<TValue> progress)
+        public CacheListener<TKey, TValue> Request(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            if (progress == null) throw new ArgumentNullException(nameof(progress));
 
-            // If there is a cached resource, return that straight away.
-            if (caches.TryGetValue(key, out CachedData<TValue> cached))
-            {
-                AcquireData(progress, cached);
-                return 0;
-            }
-            // If there is already an on-going request, hook listener on to that request.
-            if (requests.TryGetValue(key, out CacheRequest<TValue> request))
-            {
-                return request.Listen(progress);
-            }
+            // If there is already an on-going/completed request, hook listener on to that request.
+            if (requests.TryGetValue(key, out CacheRequest<TKey, TValue> request))
+                return request.Listen();
+
             // Else, start a new request and listen to it.
             request = RequestNew(key);
-            return request.Listen(progress);
+            return request.Listen();
         }
 
-        public void Remove(TKey key, uint id)
+        public void Remove(CacheListener<TKey, TValue> listener)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (listener == null) throw new ArgumentNullException(nameof(listener));
 
-            // Force stop request and remove it.
-            if (requests.TryGetValue(key, out CacheRequest<TValue> request))
+            if (requests.TryGetValue(listener.Key, out CacheRequest<TKey, TValue> request))
             {
-                RemoveRequest(id, key, request);
-                return;
-            }
-            // Destroy cached resource and remove it.
-            if (caches.TryGetValue(key, out CachedData<TValue> data))
-            {
-                RemoveData(key, data);
+                RemoveListener(listener, request);
                 return;
             }
         }
 
-        public void RemoveDelayed(TKey key, uint id, float delay = 2f)
+        public void RemoveDelayed(CacheListener<TKey, TValue> listener, float delay = 2f)
         {
-			if(key == null) throw new ArgumentNullException(nameof(key));
+			if(listener == null) throw new ArgumentNullException(nameof(listener));
 
             var timer = CreateTimer();
             timer.Limit = delay;
-            timer.IsCompleted.OnNewValue += (completed) => {
+            timer.IsCompleted.OnNewValue += (completed) =>
+            {
                 if(completed)
-                    Remove(key, id);
+                    Remove(listener);
             };
             timer.Start();
         }
 
-        public bool IsCached(TKey key) => caches.ContainsKey(key);
+        public bool IsCached(TKey key)
+        {
+            if(requests.TryGetValue(key, out CacheRequest<TKey, TValue> value))
+                return value.IsComplete;
+            return false;
+        }
 
         /// <summary>
         /// Creates a new future which represents the requesting process.
@@ -92,17 +78,11 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// Initializes a new CacheRequest for specified key.
         /// </summary>
-        private CacheRequest<TValue> RequestNew(TKey key)
+        private CacheRequest<TKey, TValue> RequestNew(TKey key)
         {
             // Create request
             var request = CreateRequest(key);
-            var cacheRequest = new CacheRequest<TValue>(request);
-
-            // Set default event handling.
-            request.Output.OnNewValue += (value) =>
-            {
-                OnResourceLoaded(cacheRequest, key, value);
-            };
+            var cacheRequest = new CacheRequest<TKey, TValue>(key, request);
 
             // Add to requests list and start.
             requests.Add(key, cacheRequest);
@@ -111,63 +91,21 @@ namespace PBFramework.Allocation.Caching
         }
 
         /// <summary>
-        /// Makes the specified listener acquire the data.
+        /// Removes the specified listener from the request.
         /// </summary>
-        private void AcquireData(IReturnableProgress<TValue> progress, CachedData<TValue> cached)
+        private void RemoveListener(CacheListener<TKey, TValue> listener, CacheRequest<TKey, TValue> request)
         {
-            cached.Lock++;
-            progress.InvokeFinished(cached.Value);
-        }
-
-        /// <summary>
-        /// Removes the specified request.
-        /// </summary>
-        private void RemoveRequest(uint id, TKey key, CacheRequest<TValue> request)
-        {
-            // Unhook the callback.
-            request.Remove(id);
-
+            // Remove listener
+            request.Unlisten(listener);
             // If no more reference remaining on the resource, then revoke the request.
-            if(request.ListenerCount <= 0)
+            if(request.Listeners.Count <= 0)
             {
-                request.Request.Dispose();
-                requests.Remove(key);
+                if(request.IsComplete)
+                    DestroyData(request.Value);
+                request.Dispose();
+                requests.Remove(request.Key);
             }
         }
-
-        /// <summary>
-        /// Removes a lock on the specified data and if necessary, complete remove the entry from table.
-        /// </summary>
-        private void RemoveData(TKey key, CachedData<TValue> data)
-        {
-            // Remove reference count on the resource.
-            data.Lock --;
-
-            // If no more reference remaining on the resource, just destroy it.
-            if(data.Lock <= 0)
-            {
-                DestroyData(data.Value);
-                this.caches.Remove(key);
-            }
-        }
-
-        /// <summary>
-		/// Callback from a request when it has finished loading its resources.
-		/// </summary>
-		private void OnResourceLoaded(CacheRequest<TValue> request, TKey identifier, TValue value)
-		{
-			// Remove request from requests table.
-			requests.Remove(identifier);
-
-			// Cache resource.
-			if(!caches.ContainsKey(identifier))
-			{
-				caches.Add(identifier, new CachedData<TValue>() {
-					Value = value,
-					Lock = request.ListenerCount
-				});
-			}
-		}
     }
 
     public abstract class Cacher<TValue> : Cacher<string, TValue>, ICacher<TValue>

@@ -1,82 +1,92 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using PBFramework.Threading;
 using PBFramework.Threading.Futures;
 
 namespace PBFramework.Allocation.Caching
 {
-    public class CacheRequest<T> {
-
+    public class CacheRequest<TKey, TValue> : IDisposable
+        where TKey : class
+        where TValue : class
+    {
         /// <summary>
-        /// Table of listeners waiting for the request to finish.
+        /// The key associated with this request.
         /// </summary>
-        private Dictionary<uint, IReturnableProgress<T>> listeners = new Dictionary<uint, IReturnableProgress<T>>();
-
-        /// <summary>
-        /// The next hook id number to be assigned to a new callback.
-        /// </summary>
-        private uint nextId;
-
-        /// <summary>
-        /// The actual requester object.
-        /// </summary>
-        private IFuture<T> request;
-
+        public TKey Key { get; private set; }
 
         /// <summary>
         /// The requesting instance.
         /// </summary>
-        public IFuture<T> Request => request;
+        public IFuture<TValue> Request { get; private set; }
 
         /// <summary>
-        /// Returns the number of listeners waiting for the request to finish.
+        /// The list of listeners waiting for the resource request to be completed.
         /// </summary>
-        public int ListenerCount => listeners.Count;
+        public List<CacheListener<TKey, TValue>> Listeners { get; } = new List<CacheListener<TKey, TValue>>();
+
+        /// <summary>
+        /// The actual value loaded from the inner request.
+        /// </summary>
+        public TValue Value => Request.Output.Value;
+
+        /// <summary>
+        /// Returns whether the inner resource load request is completed.
+        /// </summary>
+        public bool IsComplete => Request.IsCompleted.Value;
 
 
-        public CacheRequest(IFuture<T> request)
+        public CacheRequest(TKey key, IFuture<TValue> request)
         {
-            this.request = request;
-
-            // Add callback handler action.
-            request.Progress.OnNewValue += (p) =>
-            {
-                foreach (var listener in listeners.Values)
-                {
-                    if (listener != null)
-                    {
-                        listener.Report(p);
-                    }
-                }
-            };
-            request.IsCompleted.OnNewValue += (completed) =>
-            {
-                if(!completed)
-                    return;
-                    
-                T output = request.Output.Value;
-                foreach(var listener in listeners.Values)
-                {
-                    if (listener != null)
-                    {
-                        listener.Value = output;
-                        listener.InvokeFinished(output);
-                    }
-                }
-            };
+            this.Request = request;
         }
 
-        public uint Listen(IReturnableProgress<T> progress)
+        /// <summary>
+        /// Creates a new listener that listens to the completion of this request.
+        /// </summary>
+        public CacheListener<TKey, TValue> Listen()
         {
-            // Increment id
-            nextId ++;
-            // Register callback.
-            listeners.Add(nextId, progress);
-            // Return id for referencing.
-            return nextId;
+            AssertNotDisposed();
+
+            var listener = (
+                IsComplete ?
+                new CacheListener<TKey, TValue>(Key, Value) :
+                new CacheListener<TKey, TValue>(Key, Request)
+            );
+            Listeners.Add(listener);
+            return listener;
         }
 
-        public void Remove(uint id) => listeners.Remove(id);
+        /// <summary>
+        /// Attempts to remove and dispose the specified listener, if managed by this request.
+        /// </summary>
+        public bool Unlisten(CacheListener<TKey, TValue> listener)
+        {
+            AssertNotDisposed();
+
+            if (Listeners.Remove(listener))
+            {
+                listener.Dispose();
+                return true;
+            }
+            return false;
+        }
+
+        public void Dispose()
+        {
+            foreach(var listener in Listeners)
+                listener.Dispose();
+            Listeners.Clear();
+
+            Request.Dispose();
+            Request = null;
+        }
+
+        /// <summary>
+        /// Asserts that this object hasn't been disposed.
+        /// </summary>
+        private void AssertNotDisposed()
+        {
+            if(Request == null)
+                throw new ObjectDisposedException(nameof(CacheRequest<TKey, TValue>));
+        }
     }
 }
