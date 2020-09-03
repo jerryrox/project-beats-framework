@@ -1,5 +1,3 @@
-using System;
-using PBFramework.Threading;
 using PBFramework.Threading.Futures;
 
 namespace PBFramework.Networking
@@ -50,17 +48,13 @@ namespace PBFramework.Networking
 
         /// <summary>
         /// Makes the web request to remote or local server.
+        /// Returns this instance.
         /// </summary>
-        void Request(IReturnableProgress<IWebRequest> progress = null);
+        IFuture Request();
 
         /// <summary>
         /// Attempts to abort current request if on-going.
         /// </summary>
         void Abort();
-
-        /// <summary>
-        /// Retries the request.
-        /// </summary>
-        void Retry();
     }
 }
