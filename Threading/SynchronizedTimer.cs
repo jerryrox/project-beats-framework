@@ -47,12 +47,14 @@ namespace PBFramework.Threading
         }
 
 
-        public void Start()
+        public IFuture Start()
         {
-            if(IsRunning) return;
+            if(IsRunning)
+                return this;
 
             // Start coroutine.
             timerCoroutine = UnityThread.StartCoroutine(TimerRoutine());
+            return this;
         }
 
         public void Dispose() => Stop();

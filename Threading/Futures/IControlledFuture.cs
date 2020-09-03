@@ -9,7 +9,7 @@ namespace PBFramework.Threading.Futures
         /// <summary>
         /// Starts running the associated inner task.
         /// </summary>
-        void Start();
+        IFuture Start();
     }
 
     /// <summary>
@@ -17,5 +17,9 @@ namespace PBFramework.Threading.Futures
     /// </summary>
     public interface IControlledFuture<T> : IControlledFuture, IFuture<T>
     {
+        /// <summary>
+        /// Starts running the associated inner task.
+        /// </summary>
+        new IFuture<T> Start();
     }
 }

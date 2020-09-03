@@ -48,7 +48,7 @@ namespace PBFramework.Stores
                 InitModules(true);
                 LoadOrphanedData(future);
                 future.SetComplete();
-            });
+            }).Start();
         }
 
         public IFuture<T> Import(FileInfo archive, bool deleteOnImport = true)

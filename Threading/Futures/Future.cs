@@ -58,12 +58,13 @@ namespace PBFramework.Threading.Futures
             SetHandler(handler);
         }
 
-        public void Start()
+        public IFuture Start()
         {
             if (handler == null)
                 StartRunning(null);
             else
                 StartRunning(() => InvokeHandler(handler));
+            return this;
         }
 
         public virtual void Dispose()
@@ -261,6 +262,12 @@ namespace PBFramework.Threading.Futures
         public Future(TaskHandlerT handler = null)
         {
             SetHandler(handler);
+        }
+
+        public new IFuture<T> Start()
+        {
+            base.Start();
+            return this;
         }
 
         public new FutureAwaiter<T> GetAwaiter() => new FutureAwaiter<T>(this, OnReceiveContinuation);

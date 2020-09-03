@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using PBFramework.Data.Bindables;
-using PBFramework.Threading;
 using PBFramework.Threading.Futures;
 
 namespace PBFramework.Threading
@@ -69,14 +68,16 @@ namespace PBFramework.Threading
             this.delta = delta;
         }
 
-        public void Start()
+        public IFuture Start()
         {
             lock (locker)
             {
-                if(IsRunning) return;
+                if(IsRunning)
+                    return this;
 
                 shouldRun = true;
                 StartInternal();
+                return this;
             }
         }
 
