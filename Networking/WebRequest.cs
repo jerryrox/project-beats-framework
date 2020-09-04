@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using PBFramework.Data.Bindables;
 using PBFramework.Threading;
@@ -33,7 +32,7 @@ namespace PBFramework.Networking
         private Bindable<Exception> error = new Bindable<Exception>(null);
 
         private Coroutine requestRoutine;
-        private IReturnableProgress<IWebRequest> progressListener;
+        private TaskListener<IWebRequest> listener;
 
         private uint curRetryCount;
         private uint retryCount;
@@ -84,6 +83,7 @@ namespace PBFramework.Networking
         {
             this.link = new WebLink(url.GetUriEscaped());
             this.timeout = timeout;
+            this.RetryCount = (uint)Mathf.Clamp(retryCount, 0, retryCount);
 
             // Create response data
             this.response = new WebResponse(this);
@@ -92,12 +92,12 @@ namespace PBFramework.Networking
             isCompleted.OnNewValue += (completed) =>
             {
                 if (completed)
-                    progressListener?.InvokeFinished(this);
+                    listener?.SetFinished(this);
             };
-            progress.OnNewValue += (p) => progressListener?.Report(p);
+            progress.OnNewValue += (p) => listener?.SetProgress(p);
         }
 
-        public void Request(IReturnableProgress<IWebRequest> progress = null)
+        public void Request(TaskListener<IWebRequest> listener = null)
         {
             if(isDisposed.Value) throw new ObjectDisposedException(nameof(WebRequest));
             if (request != null)
@@ -107,9 +107,9 @@ namespace PBFramework.Networking
             }
 
             // Associate progress listener.
-            progressListener = progress;
-            if(progressListener != null)
-                progressListener.Value = this;
+            this.listener = listener;
+            if(this.listener != null)
+                this.listener.SetValue(this);
 
             // Dispose last request
             DisposeSoft();
@@ -150,7 +150,7 @@ namespace PBFramework.Networking
             // Abort first if there is already a request.
             if(request != null)
                 Abort();
-            Request(progressListener);
+            Request(listener);
         }
 
         public void Start() => Request();

@@ -20,25 +20,25 @@ namespace PBFramework.Allocation.Caching
         private Dictionary<TKey, CachedData<TValue>> caches = new Dictionary<TKey, CachedData<TValue>>();
 
 
-        public uint Request(TKey key, IReturnableProgress<TValue> progress)
+        public uint Request(TKey key, TaskListener<TValue> listener)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            if (progress == null) throw new ArgumentNullException(nameof(progress));
+            if (listener == null) throw new ArgumentNullException(nameof(listener));
 
             // If there is a cached resource, return that straight away.
             if (caches.TryGetValue(key, out CachedData<TValue> cached))
             {
-                AcquireData(progress, cached);
+                AcquireData(listener, cached);
                 return 0;
             }
             // If there is already an on-going request, hook listener on to that request.
             if (requests.TryGetValue(key, out CacheRequest<TValue> request))
             {
-                return request.Listen(progress);
+                return request.Listen(listener);
             }
             // Else, start a new request and listen to it.
             request = RequestNew(key);
-            return request.Listen(progress);
+            return request.Listen(listener);
         }
 
         public void Remove(TKey key, uint id)
@@ -113,10 +113,10 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// Makes the specified listener acquire the data.
         /// </summary>
-        private void AcquireData(IReturnableProgress<TValue> progress, CachedData<TValue> cached)
+        private void AcquireData(TaskListener<TValue> listener, CachedData<TValue> cached)
         {
             cached.Lock++;
-            progress.InvokeFinished(cached.Value);
+            listener.SetFinished(cached.Value);
         }
 
         /// <summary>

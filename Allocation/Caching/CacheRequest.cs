@@ -11,7 +11,7 @@ namespace PBFramework.Allocation.Caching
         /// <summary>
         /// Table of listeners waiting for the request to finish.
         /// </summary>
-        private Dictionary<uint, IReturnableProgress<T>> listeners = new Dictionary<uint, IReturnableProgress<T>>();
+        private Dictionary<uint, TaskListener<T>> listeners = new Dictionary<uint, TaskListener<T>>();
 
         /// <summary>
         /// The next hook id number to be assigned to a new callback.
@@ -45,9 +45,7 @@ namespace PBFramework.Allocation.Caching
                 foreach (var listener in listeners.Values)
                 {
                     if (listener != null)
-                    {
-                        listener.Report(p);
-                    }
+                        listener.SetProgress(p);
                 }
             };
             request.IsCompleted.OnNewValue += (completed) =>
@@ -60,14 +58,13 @@ namespace PBFramework.Allocation.Caching
                 {
                     if (listener != null)
                     {
-                        listener.Value = output;
-                        listener.InvokeFinished(output);
+                        listener.SetFinished(output);
                     }
                 }
             };
         }
 
-        public uint Listen(IReturnableProgress<T> progress)
+        public uint Listen(TaskListener<T> progress)
         {
             // Increment id
             nextId ++;

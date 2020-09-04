@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using PBFramework.Debugging;
+using PBFramework.Threading;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -40,7 +41,7 @@ namespace PBFramework.IO.Compressed
             return size;
         }
 
-        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, IProgress<float> progress)
+        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, TaskListener<DirectoryInfo> listener)
         {
             return Task.Run(() => {
                 if (destination == null)
@@ -50,9 +51,6 @@ namespace PBFramework.IO.Compressed
                 }
                 if(!Source.Exists)
                     return null;
-
-                // Reset progress
-                progress.Report(0);
 
                 try
                 {
@@ -91,22 +89,21 @@ namespace PBFramework.IO.Compressed
                                             if (curInterval <= 0)
                                             {
                                                 curInterval = ProgressInterval;
-                                                progress.Report(curSize / totalSize);
+                                                listener?.SetProgress(curSize / totalSize);
                                             }
                                         }
                                         writer.Flush();
                                     }
                                 }
                             }
-                            // Finished.
-                            progress.Report(1f);
                         }
                     }
+                    listener?.SetFinished(destination);
                     return destination;
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError($"ZipCompressed.Uncompress - Error: {e.Message}");
+                    Logger.LogError($"ZipCompressed.Uncompress - Error: {e}");
                     return null;
                 }
             });

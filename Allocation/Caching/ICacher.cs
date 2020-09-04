@@ -14,7 +14,7 @@ namespace PBFramework.Allocation.Caching
         /// Requests for a data with specified key.
         /// Returns a hook ID which uniquely identifies the IProgress passed as parameter.
         /// </summary>
-        uint Request(TKey key, IReturnableProgress<TValue> progress);
+        uint Request(TKey key, TaskListener<TValue> listener);
 
         /// <summary>
         /// Attempts to remove the data associated with specified key immediately.

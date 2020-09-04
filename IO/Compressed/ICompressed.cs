@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using PBFramework.Threading;
 
 namespace PBFramework.IO.Compressed
 {
@@ -25,6 +26,6 @@ namespace PBFramework.IO.Compressed
         /// Uncompresses the compressed file to the specified destination.
         /// If successful, returns the same directory provided. Otherwise, null is returned.
         /// </summary>
-        Task<DirectoryInfo> Uncompress(DirectoryInfo destination, IProgress<float> progress = null);
+        Task<DirectoryInfo> Uncompress(DirectoryInfo destination, TaskListener<DirectoryInfo> listener = null);
     }
 }

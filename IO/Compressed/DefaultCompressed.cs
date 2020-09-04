@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using PBFramework.Threading;
 
 namespace PBFramework.IO.Compressed
 {
@@ -21,6 +22,9 @@ namespace PBFramework.IO.Compressed
 
         public long GetUncompressedSize() => 0;
 
-        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, IProgress<float> progress) => Task.Run(() => null as DirectoryInfo);
+        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, TaskListener<DirectoryInfo> listener) => Task.Run(() => {
+            listener?.SetFinished(null);
+            return null as DirectoryInfo;
+        });
     }
 }

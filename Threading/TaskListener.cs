@@ -60,23 +60,31 @@ namespace PBFramework.Threading
             }
         }
 
-
         /// <summary>
         /// Creates a new listener branched out from this listener to represent a child task.
         /// Returns null if listener has already finished its task.
         /// </summary>
         public TaskListener CreateSubListener()
         {
-            if(IsFinished)
+            if (IsFinished)
                 return null;
 
             var listener = new TaskListener();
-            listener.OnProgress += (p) => EvaluateTotalProgress();
-            lock (subListeners)
-            {
-                subListeners.Add(listener);
-                EvaluateTotalProgress();
-            }
+            AddSubListener(listener);
+            return listener;
+        }
+
+        /// <summary>
+        /// Creates a new generic listener branched out from this listener to represent a child task.
+        /// Returns null if listener has already finished its task.
+        /// </summary>
+        public TaskListener<T> CreateSubListener<T>()
+        {
+            if (IsFinished)
+                return null;
+
+            var listener = new TaskListener<T>();
+            AddSubListener(listener);
             return listener;
         }
 
@@ -85,7 +93,7 @@ namespace PBFramework.Threading
         /// </summary>
         public void SetProgress(float progress)
         {
-            if(IsFinished)
+            if (IsFinished)
                 return;
 
             this.Progress = Mathf.Clamp01(progress);
@@ -97,13 +105,37 @@ namespace PBFramework.Threading
         /// </summary>
         public void SetFinished()
         {
-            if(IsFinished)
+            if (IsFinished)
                 return;
 
             this.IsFinished = true;
             this.Progress = 1f;
             EvaluateTotalProgress();
             InvokeFinished();
+        }
+
+        /// <summary>
+        /// Resets the listener's state for reuse.
+        /// </summary>
+        public virtual void ResetState()
+        {
+            TotalProgress = 0;
+            Progress = 0;
+            IsFinished = false;
+            subListeners.Clear();
+        }
+
+        /// <summary>
+        /// Adds the specified listener while setting up as a sub listener under this instance.
+        /// </summary>
+        private void AddSubListener(TaskListener listener)
+        {
+            listener.OnProgress += (p) => EvaluateTotalProgress();
+            lock (subListeners)
+            {
+                subListeners.Add(listener);
+                EvaluateTotalProgress();
+            }
         }
 
         /// <summary>
@@ -185,6 +217,12 @@ namespace PBFramework.Threading
             base.OnFinished += () => this.OnFinished?.Invoke(Value);
         }
 
+        public override void ResetState()
+        {
+            base.ResetState();
+            Value = default;
+        }
+
         /// <summary>
         /// Sets the output data from the task.
         /// </summary>
@@ -194,6 +232,15 @@ namespace PBFramework.Threading
                 return;
 
             this.Value = value;
+        }
+
+        /// <summary>
+        /// Flags finished state with a return value T.
+        /// </summary>
+        public void SetFinished(T value)
+        {
+            SetValue(value);
+            base.SetFinished();
         }
     }
 }

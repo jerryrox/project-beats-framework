@@ -30,14 +30,14 @@ namespace PBFramework.Stores
         /// <summary>
         /// Reloads the store from the file system.
         /// </summary>
-        Task Reload(ISimpleProgress progress = null);
+        Task Reload(TaskListener listener = null);
 
         /// <summary>
         /// Tries importing the specified zip archive as a a new data.
         /// Returns the imported data if successful.
         /// Otherwise, a null value is returned.
         /// </summary>
-        Task<T> Import(FileInfo archive, bool deleteOnImport = true, IReturnableProgress<T> progress = null);
+        Task<T> Import(FileInfo archive, bool deleteOnImport = true, TaskListener<T> listener = null);
 
         /// <summary>
         /// Deletes the directory associated with the specified data.

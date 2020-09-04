@@ -51,7 +51,7 @@ namespace PBFramework.Networking
         /// <summary>
         /// Makes the web request to remote or local server.
         /// </summary>
-        void Request(IReturnableProgress<IWebRequest> progress = null);
+        void Request(TaskListener<IWebRequest> listener = null);
 
         /// <summary>
         /// Attempts to abort current request if on-going.

@@ -40,18 +40,16 @@ namespace PBFramework.Stores
             tempStorage = new TempDirectoryStorage(GetType().Name);
         }
 
-        public virtual Task Reload(ISimpleProgress progress = null)
+        public virtual Task Reload(TaskListener listener = null)
         {
             return Task.Run(() =>
             {
-                progress?.Report(0f);
                 InitModules(true);
-                LoadOrphanedData(progress);
-                progress?.Report(1f);
+                LoadOrphanedData(listener);
             });
         }
 
-        public async Task<T> Import(FileInfo archive, bool deleteOnImport = true, IReturnableProgress<T> progress = null)
+        public async Task<T> Import(FileInfo archive, bool deleteOnImport = true, TaskListener<T> listener = null)
         {
             if (archive == null) throw new ArgumentNullException(nameof(archive));
             if (!archive.Exists) throw new FileNotFoundException($"File at ({archive.FullName}) does not exist!");
@@ -61,8 +59,7 @@ namespace PBFramework.Stores
             if (compressed == null) throw new NotImportableException(archive, GetType());
 
             // Start extraction of archive.
-            progress?.Report(0f);
-            var extractedDir = await compressed.Uncompress(GetTempExtractDir(archive), progress);
+            var extractedDir = await compressed.Uncompress(GetTempExtractDir(archive), listener?.CreateSubListener<DirectoryInfo>());
             if (!extractedDir.Exists) throw new NotImportableException(archive, GetType());
 
             // Parse the data at temporary extraction destination.
@@ -70,8 +67,7 @@ namespace PBFramework.Stores
             // Failed to parse.
             if (data == null)
             {
-                progress?.Report(1f);
-                progress?.InvokeFinished(default(T));
+                listener?.SetFinished();
                 return default(T);
             }
 
@@ -102,8 +98,8 @@ namespace PBFramework.Stores
                 archive.Delete();
 
             // Report finished.
-            progress?.Report(1f);
-            progress?.InvokeFinished(data);
+            listener?.SetValue(data);
+            listener?.SetFinished();
             if(isNewData)
                 OnNewData?.Invoke(data);
             return data;
@@ -240,7 +236,7 @@ namespace PBFramework.Stores
         /// <summary>
         /// Tries loading all orphaned data which exist in the directory storage but somehow not indexed in the database.
         /// </summary>
-        private void LoadOrphanedData(ISimpleProgress progress)
+        private void LoadOrphanedData(TaskListener listener)
         {
             var directoryList = new List<DirectoryInfo>(storage.GetAll());
             for (int i = 0; i < directoryList.Count; i++)
@@ -248,7 +244,7 @@ namespace PBFramework.Stores
                 var dir = directoryList[i];
 
                 // Report on the progress.
-                progress?.Report((float)i / directoryList.Count);
+                listener?.SetProgress((float)i / directoryList.Count);
 
                 // Find an entry in the database with matching directory name against index Id.
                 using (var result = database.Query().Where(inx => inx["Id"].ToString().Equals(dir.Name)).GetResult())
@@ -281,6 +277,7 @@ namespace PBFramework.Stores
                     Logger.Log($"DirectoryBackedStore.LoadOrphanedData - Successfully adopted orphaned data at: {dir.FullName}");
                 }
             }
+            listener?.SetFinished();
         }
 
         /// <summary>
