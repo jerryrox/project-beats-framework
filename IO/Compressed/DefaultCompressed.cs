@@ -22,7 +22,7 @@ namespace PBFramework.IO.Compressed
 
         public long GetUncompressedSize() => 0;
 
-        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, TaskListener<DirectoryInfo> listener) => Task.Run(() => {
+        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, TaskListener<DirectoryInfo> listener = null) => Task.Run(() => {
             listener?.SetFinished(null);
             return null as DirectoryInfo;
         });

@@ -64,12 +64,12 @@ namespace PBFramework.Allocation.Caching
             };
         }
 
-        public uint Listen(TaskListener<T> progress)
+        public uint Listen(TaskListener<T> listener)
         {
             // Increment id
             nextId ++;
             // Register callback.
-            listeners.Add(nextId, progress);
+            listeners.Add(nextId, listener);
             // Return id for referencing.
             return nextId;
         }

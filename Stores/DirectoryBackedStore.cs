@@ -45,7 +45,8 @@ namespace PBFramework.Stores
             return Task.Run(() =>
             {
                 InitModules(true);
-                LoadOrphanedData(listener);
+                LoadOrphanedData(listener?.CreateSubListener());
+                listener.SetFinished();
             });
         }
 
@@ -236,7 +237,7 @@ namespace PBFramework.Stores
         /// <summary>
         /// Tries loading all orphaned data which exist in the directory storage but somehow not indexed in the database.
         /// </summary>
-        private void LoadOrphanedData(TaskListener listener)
+        private void LoadOrphanedData(TaskListener listener = null)
         {
             var directoryList = new List<DirectoryInfo>(storage.GetAll());
             for (int i = 0; i < directoryList.Count; i++)

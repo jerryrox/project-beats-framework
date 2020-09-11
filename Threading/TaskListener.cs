@@ -128,7 +128,7 @@ namespace PBFramework.Threading
         /// <summary>
         /// Adds the specified listener while setting up as a sub listener under this instance.
         /// </summary>
-        private void AddSubListener(TaskListener listener)
+        private void AddSubListener(TaskListener listener = null)
         {
             listener.OnProgress += (p) => EvaluateTotalProgress();
             lock (subListeners)

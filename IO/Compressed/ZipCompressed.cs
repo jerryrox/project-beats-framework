@@ -41,7 +41,7 @@ namespace PBFramework.IO.Compressed
             return size;
         }
 
-        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, TaskListener<DirectoryInfo> listener)
+        public Task<DirectoryInfo> Uncompress(DirectoryInfo destination, TaskListener<DirectoryInfo> listener = null)
         {
             return Task.Run(() => {
                 if (destination == null)
