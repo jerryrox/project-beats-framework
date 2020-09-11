@@ -10,11 +10,10 @@ namespace PBFramework.Threading
     /// </summary>
     public class SynchronizedTimer : ITimer
     {
-        private BindableFloat progress = new BindableFloat(0f);
-        private BindableBool isCompleted = new BindableBool(false)
-        {
-            TriggerWhenDifferent = true
-        };
+        public event Action OnFinished;
+
+        public event Action<float> OnProgress;
+
         private Coroutine timerCoroutine;
 
 
@@ -27,23 +26,11 @@ namespace PBFramework.Threading
 
         public float Current { get; set; }
 
+        public float Progress => Limit == 0 ? 1 : Current / Limit;
+
         public bool IsRunning => timerCoroutine != null;
 
-        public IReadOnlyBindable<float> Progress => progress;
-
-        public IReadOnlyBindable<bool> IsCompleted => isCompleted;
-
-        public IReadOnlyBindable<bool> IsDisposed => null;
-        
-        public IReadOnlyBindable<Exception> Error => null;
-
-        public bool DidRun => IsRunning;
-
-        public bool IsThreadSafe
-        {
-            get => true;
-            set => throw new NotSupportedException();
-        }
+        public bool IsFinished => Current >= Limit;
 
 
         public void Start()
@@ -53,8 +40,6 @@ namespace PBFramework.Threading
             // Start coroutine.
             timerCoroutine = UnityThread.StartCoroutine(TimerRoutine());
         }
-
-        public void Dispose() => Stop();
 
         public void Pause()
         {
@@ -114,22 +99,36 @@ namespace PBFramework.Threading
         {
             if (Limit <= 0)
             {
-                progress.Value = 0f;
-                isCompleted.Value = false;
+                InvokeProgress();
             }
             else
             {
                 if (Current >= Limit)
                 {
-                    progress.Value = 1f;
-                    isCompleted.Value = true;
+                    InvokeProgress();
+                    InvokeFinished();
                 }
                 else
                 {
-                    progress.Value = Current / Limit;
-                    isCompleted.Value = false;
+                    InvokeProgress();
                 }
             }
+        }
+
+        /// <summary>
+        /// Invokes OnProgress event.
+        /// </summary>
+        private void InvokeProgress()
+        {
+            OnProgress?.Invoke(Progress);
+        }
+
+        /// <summary>
+        /// Invokes OnFinished event.
+        /// </summary>
+        private void InvokeFinished()
+        {
+            OnFinished?.Invoke();
         }
     }
 }

@@ -42,6 +42,12 @@ namespace PBFramework.Threading
         public bool IsFinished { get; private set; }
 
         /// <summary>
+        /// Whether this listener contributes to the calculation of the total progress.
+        /// Default: true
+        /// </summary>
+        public bool HasSelfProgress { get; set; } = true;
+
+        /// <summary>
         /// Whether events should always be called on the main thread.
         /// </summary>
         public SynchronizedBool CallEventOnMainThread { get; } = new SynchronizedBool(true);
@@ -183,12 +189,18 @@ namespace PBFramework.Threading
         /// </summary>
         private void EvaluateTotalProgress()
         {
-            float totalProgress = this.Progress;
+            float totalProgress = HasSelfProgress ? this.Progress : 0;
             lock (subListeners)
             {
-                totalProgress += subListeners.Sum(l => l.TotalProgress);
-                totalProgress /= (subListeners.Count + 1);
-
+                int progressCount = subListeners.Count + (HasSelfProgress ? 1 : 0);
+                if (progressCount > 0)
+                {
+                    totalProgress += subListeners.Sum(l => l.TotalProgress);
+                    totalProgress /= progressCount;
+                }
+                else
+                    totalProgress = IsFinished ? 1 : 0;
+                    
                 this.TotalProgress = totalProgress;
             }
             InvokeProgress(totalProgress);

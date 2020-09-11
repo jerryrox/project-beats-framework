@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using PBFramework.Threading;
-using PBFramework.Threading.Futures;
 
 namespace PBFramework.Allocation.Caching
 {
@@ -65,19 +64,16 @@ namespace PBFramework.Allocation.Caching
 
             var timer = CreateTimer();
             timer.Limit = delay;
-            timer.IsCompleted.OnNewValue += (completed) => {
-                if(completed)
-                    Remove(key, id);
-            };
+            timer.OnFinished += () => Remove(key, id);
             timer.Start();
         }
 
         public bool IsCached(TKey key) => caches.ContainsKey(key);
 
         /// <summary>
-        /// Creates a new future which represents the requesting process.
+        /// Returns a new task that retrieves the data associated with the key.
         /// </summary>
-        protected abstract IControlledFuture<TValue> CreateRequest(TKey key);
+        protected abstract ITask<TValue> CreateRequest(TKey key);
 
         /// <summary>
         /// Creates a new timer instance to use for delayed destruction.
@@ -99,14 +95,14 @@ namespace PBFramework.Allocation.Caching
             var cacheRequest = new CacheRequest<TValue>(request);
 
             // Set default event handling.
-            request.Output.OnNewValue += (value) =>
+            cacheRequest.RequestListener.OnFinished += (value) =>
             {
                 OnResourceLoaded(cacheRequest, key, value);
             };
 
             // Add to requests list and start.
             requests.Add(key, cacheRequest);
-			request.Start();
+            request.StartTask();
             return cacheRequest;
         }
 
@@ -130,7 +126,7 @@ namespace PBFramework.Allocation.Caching
             // If no more reference remaining on the resource, then revoke the request.
             if(request.ListenerCount <= 0)
             {
-                request.Request.Dispose();
+                request.Request.RevokeTask();
                 requests.Remove(key);
             }
         }

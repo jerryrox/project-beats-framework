@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using PBFramework.Threading;
-using PBFramework.Threading.Futures;
 
 namespace PBFramework.Allocation.Caching
 {
@@ -18,16 +17,16 @@ namespace PBFramework.Allocation.Caching
         /// </summary>
         private uint nextId;
 
-        /// <summary>
-        /// The actual requester object.
-        /// </summary>
-        private IFuture<T> request;
-
 
         /// <summary>
-        /// The requesting instance.
+        /// The listener which listens to the requester's events.
         /// </summary>
-        public IFuture<T> Request => request;
+        public TaskListener<T> RequestListener { get; } = new TaskListener<T>();
+
+        /// <summary>
+        /// The requester that retrieves the actual data.
+        /// </summary>
+        public ITask<T> Request { get; private set; }
 
         /// <summary>
         /// Returns the number of listeners waiting for the request to finish.
@@ -35,12 +34,12 @@ namespace PBFramework.Allocation.Caching
         public int ListenerCount => listeners.Count;
 
 
-        public CacheRequest(IFuture<T> request)
+        public CacheRequest(ITask<T> request)
         {
-            this.request = request;
-
+            this.Request = request;
+            
             // Add callback handler action.
-            request.Progress.OnNewValue += (p) =>
+            RequestListener.OnProgress += (p) =>
             {
                 foreach (var listener in listeners.Values)
                 {
@@ -48,18 +47,12 @@ namespace PBFramework.Allocation.Caching
                         listener.SetProgress(p);
                 }
             };
-            request.IsCompleted.OnNewValue += (completed) =>
+            RequestListener.OnFinished += (data) =>
             {
-                if(!completed)
-                    return;
-                    
-                T output = request.Output.Value;
                 foreach(var listener in listeners.Values)
                 {
                     if (listener != null)
-                    {
-                        listener.SetFinished(output);
-                    }
+                        listener.SetFinished(data);
                 }
             };
         }

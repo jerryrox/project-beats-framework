@@ -1,28 +1,16 @@
 using System;
 using UnityEngine;
 using UnityEngine.Networking;
-using PBFramework.Data.Bindables;
-using PBFramework.Threading.Futures;
 
 using Logger = PBFramework.Debugging.Logger;
 
 namespace PBFramework.Networking
 {
-    public class AudioRequest : AssetRequest, IControlledFuture<AudioClip> {
-
-        private Bindable<AudioClip> output = new Bindable<AudioClip>(null)
-        {
-            TriggerWhenDifferent = true
-        };
+    public class AudioRequest : AssetRequest<AudioClip> {
 
         private DownloadHandlerAudioClip downloadHandler;
 
         private bool isStream;
-
-
-        public IReadOnlyBindable<AudioClip> Output => output;
-
-        public override object RawResult => response?.AudioData;
 
 
         public AudioRequest(string url, bool isStream = false) : base(url)
@@ -33,17 +21,13 @@ namespace PBFramework.Networking
         protected override void DisposeSoft()
         {
             base.DisposeSoft();
-            if (!IsDisposed.Value)
-            {
-                output.Value = null;
-            }
             if (downloadHandler != null)
                 downloadHandler = null;
         }
 
         protected override void EvaluateResponse()
         {
-            output.Value = response.AudioData;
+            Output = response.AudioData;
         }
 
         protected override UnityWebRequest CreateRequest(string url)
