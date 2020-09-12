@@ -42,10 +42,16 @@ namespace PBFramework.Threading
         public bool IsFinished { get; private set; }
 
         /// <summary>
-        /// Whether this listener contributes to the calculation of the total progress.
+        /// Returns whether this instance contributes to the total progress.
         /// Default: true
         /// </summary>
-        public bool HasSelfProgress { get; set; } = true;
+        public bool HasOwnProgress { get; set; } = true;
+
+        /// <summary>
+        /// Whether the finish event should be called automatically when all the sub listeners have been finished.
+        /// Default: false
+        /// </summary>
+        public bool IsAutoFinish { get; set; }
 
         /// <summary>
         /// Whether events should always be called on the main thread.
@@ -111,7 +117,7 @@ namespace PBFramework.Threading
         /// </summary>
         public void SetFinished()
         {
-            if (IsFinished)
+            if(IsFinished)
                 return;
 
             this.IsFinished = true;
@@ -137,11 +143,21 @@ namespace PBFramework.Threading
         private void AddSubListener(TaskListener listener = null)
         {
             listener.OnProgress += (p) => EvaluateTotalProgress();
+            listener.OnFinished += () => EvaluateAutoFinish();
             lock (subListeners)
             {
                 subListeners.Add(listener);
                 EvaluateTotalProgress();
             }
+        }
+
+        /// <summary>
+        /// Hooks on to the specified sublistener's finish event to evaluate completion of this listener.
+        /// </summary>
+        private void EvaluateAutoFinish()
+        {
+            if(IsAutoFinish && subListeners.All(l => l.IsFinished))
+                SetFinished();
         }
 
         /// <summary>
@@ -189,10 +205,10 @@ namespace PBFramework.Threading
         /// </summary>
         private void EvaluateTotalProgress()
         {
-            float totalProgress = HasSelfProgress ? this.Progress : 0;
+            float totalProgress = HasOwnProgress ? this.Progress : 0;
             lock (subListeners)
             {
-                int progressCount = subListeners.Count + (HasSelfProgress ? 1 : 0);
+                int progressCount = subListeners.Count + (HasOwnProgress ? 1 : 0);
                 if (progressCount > 0)
                 {
                     totalProgress += subListeners.Sum(l => l.TotalProgress);

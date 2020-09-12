@@ -13,6 +13,7 @@ namespace PBFramework.Threading
         /// <summary>
         /// Stops any on-going task.
         /// Specify "dispose" to tell the task whether the object should be disposed.
+        /// However, there is no guarantee the implementation will be reusable with dispose = false.
         /// </summary>
         void RevokeTask(bool dispose = false);
     }
