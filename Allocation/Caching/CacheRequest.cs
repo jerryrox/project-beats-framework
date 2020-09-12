@@ -5,18 +5,17 @@ using PBFramework.Threading;
 
 namespace PBFramework.Allocation.Caching
 {
-    public class CacheRequest<T> {
+    public class CacheRequest<T> : IDisposable {
 
         /// <summary>
-        /// Table of listeners waiting for the request to finish.
+        /// The key associated with this request.
         /// </summary>
-        private Dictionary<uint, TaskListener<T>> listeners = new Dictionary<uint, TaskListener<T>>();
+        public object Key { get; private set; }
 
         /// <summary>
-        /// The next hook id number to be assigned to a new callback.
+        /// The list of listeners waiting for the resource request to be completed.
         /// </summary>
-        private uint nextId;
-
+        public List<CacheListener<T>> Listeners { get; } = new List<CacheListener<T>>();
 
         /// <summary>
         /// The listener which listens to the requester's events.
@@ -29,19 +28,25 @@ namespace PBFramework.Allocation.Caching
         public ITask<T> Request { get; private set; }
 
         /// <summary>
-        /// Returns the number of listeners waiting for the request to finish.
+        /// The actual value loaded from the inner request.
         /// </summary>
-        public int ListenerCount => listeners.Count;
+        public T Value => RequestListener.Value;
+
+        /// <summary>
+        /// Returns whether the inner resource load request is completed.
+        /// </summary>
+        public bool IsComplete => RequestListener.IsFinished;
 
 
-        public CacheRequest(ITask<T> request)
+        public CacheRequest(object key, ITask<T> request)
         {
+            this.Key = key;
             this.Request = request;
             
-            // Add callback handler action.
+            // // Add callback handler action.
             RequestListener.OnProgress += (p) =>
             {
-                foreach (var listener in listeners.Values)
+                foreach (var listener in Listeners)
                 {
                     if (listener != null)
                         listener.SetProgress(p);
@@ -49,7 +54,7 @@ namespace PBFramework.Allocation.Caching
             };
             RequestListener.OnFinished += (data) =>
             {
-                foreach(var listener in listeners.Values)
+                foreach(var listener in Listeners)
                 {
                     if (listener != null)
                         listener.SetFinished(data);
@@ -58,23 +63,52 @@ namespace PBFramework.Allocation.Caching
         }
 
         /// <summary>
+        /// Creates a new listener that listens to the completion of this request.
+        /// </summary>
+        public CacheListener<T> Listen()
+        {
+            AssertNotDisposed();
+
+            var listener = new CacheListener<T>(Key);
+            if(IsComplete)
+                listener.SetFinished(Value);
+                
+            Listeners.Add(listener);
+            return listener;
+        }
+
+        /// <summary>
+        /// Attempts to remove the specified listener, if managed by this request.
+        /// </summary>
+        public bool Unlisten(CacheListener<T> listener)
+        {
+            AssertNotDisposed();
+
+            return Listeners.Remove(listener);
+        }
+
+        /// <summary>
         /// Starts requesting on the actual requester.
         /// </summary>
         public void StartRequest()
         {
-            Request?.StartTask(RequestListener);
+            Request.StartTask(RequestListener);
         }
 
-        public uint Listen(TaskListener<T> listener)
+        public void Dispose()
         {
-            // Increment id
-            nextId ++;
-            // Register callback.
-            listeners.Add(nextId, listener);
-            // Return id for referencing.
-            return nextId;
+            Listeners.Clear();
+            Request.RevokeTask(true);
+            Request = null;
         }
 
-        public void Remove(uint id) => listeners.Remove(id);
+        /// <summary>
+        /// Asserts that this object hasn't been disposed.
+        /// </summary>
+        private void AssertNotDisposed()
+        {
+            if(Request == null)
+                throw new ObjectDisposedException(nameof(CacheRequest<T>));
+        }
     }
 }
