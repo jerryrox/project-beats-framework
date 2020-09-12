@@ -26,6 +26,8 @@ namespace PBFramework.Networking
 
         public bool IsFinished => request.IsFinished;
 
+        public float Progress => request.Progress;
+
         protected TRequest request;
 
 
@@ -34,14 +36,16 @@ namespace PBFramework.Networking
             this.request = request;
         }
 
-        public void StartTask(TaskListener<TOutput> listener)
+        public void StartTask(TaskListener<TOutput> listener = null)
         {
-            request.Request(ConvertListener(listener, () => listener?.SetFinished(Output)));
+            ListenToRequest(listener, () => listener?.SetFinished(Output));
+            request.Request();
         }
 
-        public void StartTask(TaskListener listener)
+        void ITask.StartTask(TaskListener listener)
         {
-            request.Request(ConvertListener(listener, () => listener?.SetFinished()));
+            ListenToRequest(listener, () => listener?.SetFinished());
+            request.Request();
         }
 
         public void RevokeTask(bool dispose)
@@ -55,22 +59,19 @@ namespace PBFramework.Networking
         protected abstract TOutput GetOutput(TRequest request);
 
         /// <summary>
-        /// Converts the specified listener to a compatible listener for the wrapped requester.
+        /// Listens to events emitted from the wrapped request.
         /// </summary>
-        private TaskListener<IWebRequest> ConvertListener(TaskListener listener, Action onFinished)
+        private void ListenToRequest(TaskListener listener, Action onFinished)
         {
-            if(listener == null)
-                return null;
-            TaskListener<IWebRequest> newListener = listener.CreateSubListener<IWebRequest>();
-            newListener.OnFinished += (req) =>
+            request.OnFinished += (req) =>
             {
                 Output = GetOutput(request);
-                
-                onFinished?.Invoke();
+
+                onFinished.Invoke();
                 this.OnFinished?.Invoke(Output);
             };
-            listener.HasOwnProgress = false;
-            return newListener;
+            if(listener != null)
+                request.OnProgress += listener.SetProgress;
         }
     }
 }

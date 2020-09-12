@@ -10,6 +10,11 @@ namespace PBFramework.Networking
         where T : UnityEngine.Object
     {
         /// <summary>
+        /// Event called when the request has finished and an output was evaluated.
+        /// </summary>
+        public event Action<T> OnOutput;
+
+        /// <summary>
         /// The output evaluated from the request.
         /// </summary>
         public T Output { get; protected set; }
@@ -21,7 +26,9 @@ namespace PBFramework.Networking
                 timeout: timeout,
                 retryCount: retryCount
             )
-        { }
+        {
+            base.OnFinished += (req) => OnOutput?.Invoke(Output);
+        }
 
         void ITask<T>.StartTask(TaskListener<T> listener)
         {

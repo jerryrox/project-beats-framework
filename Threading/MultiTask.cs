@@ -57,10 +57,7 @@ namespace PBFramework.Threading
 
             this.Listener = listener;
             if (listener != null)
-            {
                 listener.HasOwnProgress = false;
-                listener.IsAutoFinish = true;
-            }
 
             EvaluateFinished();
             if(IsFinished)
@@ -70,16 +67,19 @@ namespace PBFramework.Threading
             {
                 if (!t.IsFinished)
                 {
-                    var subListener = listener?.CreateSubListener();
-                    if (subListener != null)
-                        subListener.OnFinished += EvaluateFinished;
-                    t.StartTask(listener?.CreateSubListener());
+                    var subListener = listener?.CreateSubListener() ?? new TaskListener();
+                    subListener.OnFinished += EvaluateFinished;
+                    t.StartTask(subListener);
                 }
             });
         }
 
         public void RevokeTask(bool dispose)
         {
+            if(isRevoked.Value)
+                return;
+            isRevoked.Value = true;
+            
             tasks.ForEach(t => t.RevokeTask(dispose));
         }
 
@@ -94,7 +94,7 @@ namespace PBFramework.Threading
         /// </summary>
         private void SetFinished()
         {
-            if(isRevoked.Value || IsFinished)
+            if (isRevoked.Value || IsFinished)
                 return;
             IsFinished = true;
 

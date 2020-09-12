@@ -25,6 +25,8 @@ namespace PBFramework.Threading
 
         protected List<TaskListener> subListeners = new List<TaskListener>();
 
+        private bool hasOwnProgress = true;
+
 
         /// <summary>
         /// Returns the total progress of this and the sub listeners' tasks.
@@ -45,7 +47,18 @@ namespace PBFramework.Threading
         /// Returns whether this instance contributes to the total progress.
         /// Default: true
         /// </summary>
-        public bool HasOwnProgress { get; set; } = true;
+        public bool HasOwnProgress
+        {
+            get => hasOwnProgress;
+            set
+            {
+                if (hasOwnProgress != value)
+                {
+                    hasOwnProgress = value;
+                    EvaluateTotalProgress();
+                }
+            }
+        }
 
         /// <summary>
         /// Whether the finish event should be called automatically when all the sub listeners have been finished.

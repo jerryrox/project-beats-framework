@@ -34,8 +34,7 @@ namespace PBFramework.Threading
         public IReadOnlyBindable<bool> IsRevoked => isRevoked;
 
 
-        public ManualTask() : this(null)
-        { }
+        public ManualTask() : this(null) { }
 
         /// <summary>
         /// Initializes a new ManualTask with the specified action.
@@ -109,6 +108,8 @@ namespace PBFramework.Threading
         /// </summary>
         public new event Action<T> OnFinished;
 
+
+        public ManualTask() : this(null) { }
 
         public ManualTask(Action<ManualTask<T>> action) :
             base(action == null ? null : new Action<ManualTask>((task) =>

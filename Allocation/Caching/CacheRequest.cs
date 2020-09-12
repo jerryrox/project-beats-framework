@@ -57,6 +57,14 @@ namespace PBFramework.Allocation.Caching
             };
         }
 
+        /// <summary>
+        /// Starts requesting on the actual requester.
+        /// </summary>
+        public void StartRequest()
+        {
+            Request?.StartTask(RequestListener);
+        }
+
         public uint Listen(TaskListener<T> listener)
         {
             // Increment id

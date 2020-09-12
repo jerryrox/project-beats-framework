@@ -102,7 +102,7 @@ namespace PBFramework.Allocation.Caching
 
             // Add to requests list and start.
             requests.Add(key, cacheRequest);
-            request.StartTask();
+            cacheRequest.StartRequest();
             return cacheRequest;
         }
 
