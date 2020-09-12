@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using PBFramework.Threading.Futures;
+using PBFramework.Threading;
 using PBFramework.Networking;
 
 namespace PBFramework.Assets.Caching
@@ -20,7 +20,7 @@ namespace PBFramework.Assets.Caching
             this.stream = stream;
         }
 
-        protected override IControlledFuture<AudioClip> CreateRequest(string key)
+        protected override ITask<AudioClip> CreateRequest(string key)
         {
             return new AudioRequest(key, stream);
         }

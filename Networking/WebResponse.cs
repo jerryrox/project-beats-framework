@@ -15,10 +15,7 @@ namespace PBFramework.Networking
 
         public long Code => Request == null ? 0 : (Request.responseCode == 0 ? Request.GetResponseHeaders().GetResponseCode() : Request.responseCode);
 
-        public bool IsSuccess 
-        {
-            get => IsRequestSuccess && parent.IsCompleted.Value;
-        }
+        public bool IsSuccess => IsRequestSuccess && parent.IsFinished;
 
         /// <summary>
         /// Returns whether the UnityWebRequest itself is a success.

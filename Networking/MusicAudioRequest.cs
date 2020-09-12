@@ -1,18 +1,16 @@
 using PBFramework.Audio;
-using PBFramework.Threading.Futures;
-using UnityEngine;
 
 namespace PBFramework.Networking
 {
-    public class MusicAudioRequest : ProxyFuture<AudioClip, IMusicAudio> {
+    public class MusicAudioRequest : WrappedWebRequest<AudioRequest, IMusicAudio> {
 
-        public MusicAudioRequest(string url, bool isStream = true) : base(new AudioRequest(url, isStream))
-        {
-        }
+        public MusicAudioRequest(string url, bool isStream = true) :
+            base(new AudioRequest(url, isStream))
+        { }
 
-        protected override IMusicAudio ConvertOutput(AudioClip source)
+        protected override IMusicAudio GetOutput(AudioRequest request)
         {
-            return new UnityAudio(source);
+            return new UnityAudio(request.Output);
         }
     }
 }
