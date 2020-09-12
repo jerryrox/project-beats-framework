@@ -11,7 +11,6 @@ namespace PBFramework.Networking
 {
     public class WebRequest : IWebRequest
     {
-
         public event Action<IWebRequest> OnFinished;
 
         public event Action<float> OnProgress;
@@ -61,6 +60,8 @@ namespace PBFramework.Networking
         public virtual string Url => link.Url;
 
         public IWebResponse Response => response;
+
+        bool ITask.DidRun => IsAlive;
 
 
         public WebRequest(string url, int timeout = 60, int retryCount = 0)
@@ -139,7 +140,7 @@ namespace PBFramework.Networking
             TaskListener<IWebRequest> newListener = null;
             if (listener != null)
             {
-                listener.HasSelfProgress = false;
+                listener.HasOwnProgress = false;
                 newListener = listener.CreateSubListener<IWebRequest>();
                 newListener.OnFinished += (req) => listener.SetFinished();
             }

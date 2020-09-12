@@ -28,7 +28,7 @@ namespace PBFramework.Networking
             TaskListener<IWebRequest> newListener = null;
             if (listener != null)
             {
-                listener.HasSelfProgress = false;
+                listener.HasOwnProgress = false;
                 newListener = listener.CreateSubListener<IWebRequest>();
                 newListener.OnFinished += (req) => listener.SetFinished(Output);
             }

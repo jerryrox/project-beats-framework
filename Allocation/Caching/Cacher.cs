@@ -126,7 +126,7 @@ namespace PBFramework.Allocation.Caching
             // If no more reference remaining on the resource, then revoke the request.
             if(request.ListenerCount <= 0)
             {
-                request.Request.RevokeTask();
+                request.Request.RevokeTask(false);
                 requests.Remove(key);
             }
         }

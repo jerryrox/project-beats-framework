@@ -42,11 +42,6 @@ namespace PBFramework.Networking
         bool IsAlive { get; }
 
         /// <summary>
-        /// Returns whether the request has been finished.
-        /// </summary>
-        bool IsFinished { get; }
-
-        /// <summary>
         /// Returns whether this request has been disposed.
         /// </summary>
         bool IsDisposed { get; }

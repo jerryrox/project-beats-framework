@@ -17,6 +17,10 @@ namespace PBFramework.Networking
         /// </summary>
         public TOutput Output { get; private set; }
 
+        public bool DidRun => request.IsAlive;
+
+        public bool IsFinished => request.IsFinished;
+
         protected TRequest request;
 
 
@@ -58,7 +62,7 @@ namespace PBFramework.Networking
                 this.Output = GetOutput(request);
                 onFinished?.Invoke();
             };
-            listener.HasSelfProgress = false;
+            listener.HasOwnProgress = false;
             return newListener;
         }
     }
