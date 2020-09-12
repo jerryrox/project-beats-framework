@@ -13,6 +13,11 @@ namespace PBFramework.Networking
         where TOutput : class
     {
         /// <summary>
+        /// Event called when the request has been finished.
+        /// </summary>
+        public event Action<TOutput> OnFinished;
+
+        /// <summary>
         /// The output value from the wrapped request.
         /// </summary>
         public TOutput Output { get; private set; }
@@ -59,8 +64,10 @@ namespace PBFramework.Networking
             TaskListener<IWebRequest> newListener = listener.CreateSubListener<IWebRequest>();
             newListener.OnFinished += (req) =>
             {
-                this.Output = GetOutput(request);
+                Output = GetOutput(request);
+                
                 onFinished?.Invoke();
+                this.OnFinished?.Invoke(Output);
             };
             listener.HasOwnProgress = false;
             return newListener;
