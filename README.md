@@ -18,6 +18,7 @@ Slowly making progress 🧩
 - Added `TaskListener` and `ITask`.
 - Added SychronizedBool class.
 #### Changes
+- Refactored Cacher.
 - Removed `Promise` and `Progress`.
 - Increased the base timeout time for AssetRequest.
 
