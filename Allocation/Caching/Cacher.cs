@@ -5,75 +5,64 @@ using PBFramework.Threading;
 namespace PBFramework.Allocation.Caching
 {
     public abstract class Cacher<TKey, TValue> : ICacher<TKey, TValue>
-        where TKey : class
         where TValue : class
     {
         /// <summary>
-        /// Table fo all pending requests.
+        /// Table for all pending requests.
         /// </summary>
-        private Dictionary<TKey, CacheRequest<TValue>> requests = new Dictionary<TKey, CacheRequest<TValue>>();
-
-        /// <summary>
-        /// Table fo all cached data.
-        /// </summary>
-        private Dictionary<TKey, CachedData<TValue>> caches = new Dictionary<TKey, CachedData<TValue>>();
+        private Dictionary<object, CacheRequest<TValue>> requests = new Dictionary<object, CacheRequest<TValue>>();
 
 
-        public uint Request(TKey key, IReturnableProgress<TValue> progress)
+        public CacheListener<TValue> Request(TKey key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (progress == null) throw new ArgumentNullException(nameof(progress));
+            object convertedKey = ConvertKey(key);
+
+            if (convertedKey == null)
+                throw new ArgumentNullException(nameof(convertedKey));
 
             // If there is a cached resource, return that straight away.
-            if (caches.TryGetValue(key, out CachedData<TValue> cached))
-            {
-                AcquireData(progress, cached);
-                return 0;
-            }
-            // If there is already an on-going request, hook listener on to that request.
-            if (requests.TryGetValue(key, out CacheRequest<TValue> request))
-            {
-                return request.Listen(progress);
-            }
+            if(requests.TryGetValue(convertedKey, out CacheRequest<TValue> request))
+                return request.Listen();
+
             // Else, start a new request and listen to it.
-            request = RequestNew(key);
-            return request.Listen(progress);
+            request = RequestNew(key, convertedKey);
+            return request.Listen();
         }
 
-        public void Remove(TKey key, uint id)
+        public void Remove(CacheListener<TValue> listener)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (listener == null)
+                throw new ArgumentNullException(nameof(listener));
 
-            // Force stop request and remove it.
-            if (requests.TryGetValue(key, out CacheRequest<TValue> request))
+            if (requests.TryGetValue(listener.Key, out CacheRequest<TValue> request))
             {
-                RemoveRequest(id, key, request);
-                return;
-            }
-            // Destroy cached resource and remove it.
-            if (caches.TryGetValue(key, out CachedData<TValue> data))
-            {
-                RemoveData(key, data);
+                RemoveListener(listener, request);
                 return;
             }
         }
 
-        public void RemoveDelayed(TKey key, uint id, float delay = 2f)
+        public void RemoveDelayed(CacheListener<TValue> listener, float delay = 2f)
         {
-			if(key == null) throw new ArgumentNullException(nameof(key));
+			if(listener == null)
+                throw new ArgumentNullException(nameof(listener));
 
             var timer = CreateTimer();
             timer.Limit = delay;
-            timer.OnFinished += delegate { Remove(key, id); };
+            timer.OnFinished += () => Remove(listener);
             timer.Start();
         }
 
-        public bool IsCached(TKey key) => caches.ContainsKey(key);
+        public bool IsCached(TKey key)
+        {
+            if(requests.TryGetValue(ConvertKey(key), out CacheRequest<TValue> value))
+                return value.IsComplete;
+            return false;
+        }
 
         /// <summary>
-        /// Creates a new promise which represents the requesting process.
+        /// Returns a new task that retrieves the data associated with the key.
         /// </summary>
-        protected abstract IExplicitPromise<TValue> CreateRequest(TKey key);
+        protected abstract ITask<TValue> CreateRequest(TKey key);
 
         /// <summary>
         /// Creates a new timer instance to use for delayed destruction.
@@ -86,86 +75,43 @@ namespace PBFramework.Allocation.Caching
         protected virtual void DestroyData(TValue data) {}
 
         /// <summary>
+        /// Converts the specified key to the desired format.
+        /// This will be useful when different instances of TKey should be considered the same key
+        /// as part of the app-specific requirements.
+        /// </summary>
+        protected virtual object ConvertKey(TKey key) => key;
+
+        /// <summary>
         /// Initializes a new CacheRequest for specified key.
         /// </summary>
-        private CacheRequest<TValue> RequestNew(TKey key)
+        private CacheRequest<TValue> RequestNew(TKey key, object convertedKey)
         {
             // Create request
             var request = CreateRequest(key);
-            var cacheRequest = new CacheRequest<TValue>(request);
+            var cacheRequest = new CacheRequest<TValue>(convertedKey, request);
 
-            // Set default event handling.
-            request.OnFinishedResult += (value) => OnResourceLoaded(cacheRequest, key, value);
-
-			// Add to requests list and start.
-			requests.Add(key, cacheRequest);
-			request.Start();
+            // Add to requests list and start.
+            requests.Add(convertedKey, cacheRequest);
+            cacheRequest.StartRequest();
             return cacheRequest;
         }
 
         /// <summary>
-        /// Makes the specified listener acquire the data.
+        /// Removes the specified listener from the request.
         /// </summary>
-        private void AcquireData(IReturnableProgress<TValue> progress, CachedData<TValue> cached)
+        private void RemoveListener(CacheListener<TValue> listener, CacheRequest<TValue> request)
         {
-            cached.Lock++;
-            progress.InvokeFinished(cached.Value);
-        }
-
-        /// <summary>
-        /// Removes the specified request.
-        /// </summary>
-        private void RemoveRequest(uint id, TKey key, CacheRequest<TValue> request)
-        {
-            // Unhook the callback.
-            request.Remove(id);
+            // Remove listener
+            request.Unlisten(listener);
 
             // If no more reference remaining on the resource, then revoke the request.
-            if(request.ListenerCount <= 0)
+            if(request.Listeners.Count <= 0)
             {
-                request.Request.Revoke();
-                requests.Remove(key);
+                if(request.IsComplete)
+                    DestroyData(request.Value);
+                request.Dispose();
+                requests.Remove(request.Key);
             }
         }
-
-        /// <summary>
-        /// Removes a lock on the specified data and if necessary, complete remove the entry from table.
-        /// </summary>
-        private void RemoveData(TKey key, CachedData<TValue> data)
-        {
-            // Remove reference count on the resource.
-            data.Lock --;
-
-            // If no more reference remaining on the resource, just destroy it.
-            if(data.Lock <= 0)
-            {
-                DestroyData(data.Value);
-                this.caches.Remove(key);
-            }
-        }
-
-        /// <summary>
-		/// Callback from a request when it has finished loading its resources.
-		/// </summary>
-		private void OnResourceLoaded(CacheRequest<TValue> request, TKey identifier, TValue value)
-		{
-			// Remove request from requests table.
-			requests.Remove(identifier);
-
-			// Cache resource.
-			if(!caches.ContainsKey(identifier))
-			{
-				caches.Add(identifier, new CachedData<TValue>() {
-					Value = value,
-					Lock = request.ListenerCount
-				});
-			}
-		}
-    }
-
-    public abstract class Cacher<TValue> : Cacher<string, TValue>, ICacher<TValue>
-        where TValue : class
-    {
-
     }
 }

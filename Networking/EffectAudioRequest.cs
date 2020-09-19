@@ -2,26 +2,18 @@ using PBFramework.Audio;
 
 namespace PBFramework.Networking
 {
-    public class EffectAudioRequest : ProxyPromise<IEffectAudio> {
+    /// <summary>
+    /// A request wrapper over audio request with ITask as base interface to retrieve effect audio.
+    /// </summary>
+    public class EffectAudioRequest : WrappedWebRequest<AudioRequest, IEffectAudio> {
 
-        /// <summary>
-        /// The inner request being wrapped over.
-        /// </summary>
-        private AudioRequest audioRequest;
+        public EffectAudioRequest(string url, bool isStream = false) :
+            base(new AudioRequest(url, isStream))
+        { }
 
-
-        public EffectAudioRequest(string url, bool isStream = false) : base()
+        protected override IEffectAudio GetOutput(AudioRequest request)
         {
-            // Create the actual request to make.
-            audioRequest = new AudioRequest(url, isStream);
-
-            // Bind proxied action.
-            StartAction = (promise) => audioRequest.Start();
-            RevokeAction = audioRequest.Revoke;
-
-            // Hook onto the request.
-            audioRequest.OnProgress += SetProgress;
-            audioRequest.OnFinishedResult += (audio) => Resolve(new UnityAudio(audio));
+            return new UnityAudio(request.Output);
         }
     }
 }

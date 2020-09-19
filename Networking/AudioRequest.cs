@@ -6,21 +6,11 @@ using Logger = PBFramework.Debugging.Logger;
 
 namespace PBFramework.Networking
 {
-    public class AudioRequest : AssetRequest, IExplicitPromise<AudioClip> {
-
-        public event Action<AudioClip> OnFinishedResult
-        {
-            add => OnFinished += () => value(response.AudioData);
-            remove => OnFinished -= () => value(response.AudioData);
-        }
+    public class AudioRequest : AssetRequest<AudioClip> {
 
         private DownloadHandlerAudioClip downloadHandler;
 
         private bool isStream;
-
-
-        public override object RawResult => response?.AudioData;
-        AudioClip IPromise<AudioClip>.Result => response?.AudioData;
 
 
         public AudioRequest(string url, bool isStream = false) : base(url)
@@ -32,9 +22,12 @@ namespace PBFramework.Networking
         {
             base.DisposeSoft();
             if (downloadHandler != null)
-            {
                 downloadHandler = null;
-            }
+        }
+
+        protected override void EvaluateResponse()
+        {
+            Output = response.AudioData;
         }
 
         protected override UnityWebRequest CreateRequest(string url)

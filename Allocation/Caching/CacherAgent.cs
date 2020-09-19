@@ -1,79 +1,119 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using PBFramework.Threading;
 
 namespace PBFramework.Allocation.Caching
 {
-    public class CacherAgent<TKey, TValue> : ReturnableProgress<TValue>, ICacherAgent<TKey, TValue>
+    /// <summary>
+    /// Class which encapsulates resource loading, destruction,
+    /// and management of data and load ID away from consumer for cleaner code.
+    /// </summary>
+    public class CacherAgent<TKey, TValue>
         where TKey : class
         where TValue : class
     {
-        private ICacher<TKey, TValue> cacher;
+        /// <summary>
+        /// Event called when the last request object has been retrieved.
+        /// </summary>
+        public event Action<TValue> OnFinished;
 
-        private TKey lastKey;
-        private uint lastId;
+        /// <summary>
+        /// Event called when the last request has a new progress to report.
+        /// </summary>
+        public event Action<float> OnProgress;
 
-
+        /// <summary>
+        /// Whether removing data should be done through delayed removal.
+        /// </summary>
         public bool UseDelayedRemove { get; set; } = true;
 
+        /// <summary>
+        /// The amount of seconds to delay before actually removing the data.
+        /// </summary>
         public float RemoveDelay { get; set; } = 2f;
 
-        public ICacher<TKey, TValue> Cacher => cacher;
+        /// <summary>
+        /// The last key used to make a cacher request.
+        /// </summary>
+        public TKey Key { get; private set; }
 
-        public TKey CurrentKey => lastKey;
+        /// <summary>
+        /// The cacher instance which the data is loaded from.
+        /// </summary>
+        public ICacher<TKey, TValue> Cacher { get; private set; }
+
+        /// <summary>
+        /// The current object listening to cacher request.
+        /// </summary>
+        public CacheListener<TValue> Listener { get; private set; }
 
 
         public CacherAgent(ICacher<TKey, TValue> cacher)
         {
-            if(cacher == null) throw new ArgumentNullException(nameof(cacher));
+            if (cacher == null)
+                throw new ArgumentNullException(nameof(cacher));
 
-            this.cacher = cacher;
+            this.Cacher = cacher;
         }
 
-        public void Request(TKey key)
+        /// <summary>
+        /// Requests for the cache data using specified key.
+        /// </summary>
+        public CacheListener<TValue> Request(TKey key)
         {
-			if(key == null) throw new ArgumentNullException(nameof(key));
+			if(key == null)
+                throw new ArgumentNullException(nameof(key));
 
             // Remove last data or request first.
-            if(lastKey != null) Remove();
+            if(Listener != null)
+                Remove();
 
-            lastKey = key;
-            lastId = cacher.Request(key, this);
+            Key = key;
+            Listener = Cacher.Request(key);
+            if (Listener.IsFinished)
+            {
+                InvokeFinished(Listener.Value);
+                InvokeProgress(1f);
+            }
+            else
+            {
+                Listener.OnFinished += InvokeFinished;
+                Listener.OnProgress -= InvokeProgress;
+            }
+            return Listener;
         }
 
+        /// <summary>
+        /// Removes the last cached data fetched from the cacher using the last specified key.
+        /// </summary>
         public void Remove()
         {
-			if(lastId > 0 || lastKey != null)
+			if(Listener != null)
 			{
-				if(UseDelayedRemove)
-					cacher.RemoveDelayed(lastKey, lastId, RemoveDelay);
+                Listener.OnFinished -= InvokeFinished;
+                Listener.OnProgress -= InvokeProgress;
+
+                if(UseDelayedRemove)
+					Cacher.RemoveDelayed(Listener, RemoveDelay);
 				else
-					cacher.Remove(lastKey, lastId);
+					Cacher.Remove(Listener);
 			}
-
-            // Reset progress
-            Report(0);
-
-            Value = null;
-            lastKey = null;
-            lastId = 0;
+            Key = null;
+            Listener = null;
         }
 
-        public override void InvokeFinished(TValue value)
+        /// <summary>
+        /// Invokes the OnFinished event.
+        /// </summary>
+        private void InvokeFinished(TValue value)
         {
-            lastId = 0;
-            base.InvokeFinished(value);
+            OnFinished?.Invoke(value);
         }
 
-        public override void InvokeFinished() => throw new NotSupportedException();
-    }
-
-    public class CacherAgent<T> : CacherAgent<string, T>
-        where T : class
-    {
-        public CacherAgent(ICacher<string, T> cacher) : base(cacher)
+        /// <summary>
+        /// Invokes the OnProgress event.
+        /// </summary>
+        private void InvokeProgress(float value)
         {
+            OnProgress?.Invoke(value);
         }
     }
 }

@@ -6,7 +6,18 @@ namespace PBFramework.Networking
     /// <summary>
     /// Interface of an object which can make web requests to local or remote server.
     /// </summary>
-    public interface IWebRequest : IExplicitPromise {
+    public interface IWebRequest : ITask<IWebRequest> {
+
+        /// <summary>
+        /// Event called when this request has finished.
+        /// </summary>
+        event Action<IWebRequest> OnFinished;
+
+        /// <summary>
+        /// Event called when this request has a new progress.
+        /// </summary>
+        event Action<float> OnProgress;
+
 
         /// <summary>
         /// An extra data that can be associated with this request.
@@ -31,9 +42,14 @@ namespace PBFramework.Networking
         bool IsAlive { get; }
 
         /// <summary>
-        /// Returns whether the request is done.
+        /// Returns whether this request has been disposed.
         /// </summary>
-        bool IsDone { get; }
+        bool IsDisposed { get; }
+
+        /// <summary>
+        /// Returns the current progress of the request.
+        /// </summary>
+        float Progress { get; }
 
         /// <summary>
         /// The timeout time of the request in seconds.
@@ -55,7 +71,7 @@ namespace PBFramework.Networking
         /// <summary>
         /// Makes the web request to remote or local server.
         /// </summary>
-        void Request(IReturnableProgress<IWebRequest> progress = null);
+        void Request(TaskListener<IWebRequest> listener = null);
 
         /// <summary>
         /// Attempts to abort current request if on-going.

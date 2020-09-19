@@ -13,6 +13,16 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
+### 1.1.0
+#### New features
+- Added `TaskListener` and `ITask`.
+- Added `SychronizedBool` class.
+- Added `TestExtensions`.
+#### Changes
+- Refactored Cacher.
+- Removed `Promise` and `Progress`.
+- Increased the base timeout time for AssetRequest.
+
 ### 1.0.4
 #### New features
 - Added the ability to directly interact with the inner value of a bindable and automatically call Trigger.

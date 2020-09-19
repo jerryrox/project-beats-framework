@@ -50,6 +50,9 @@ namespace PBFramework.Testing
             this.Description = description ?? "";
         }
 
+        public TestAction(KeyCode keyCode, Func<IEnumerator> action, string description) :
+            this(false, keyCode, isAuto => action?.Invoke(), description) {}
+
         public TestAction(bool manualOnly, KeyCode keyCode, Func<IEnumerator> action, string description) :
             this(manualOnly, keyCode, isAuto => action?.Invoke(), description) {}
 

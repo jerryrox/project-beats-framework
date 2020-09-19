@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using PBFramework.Data.Bindables;
 using UnityEngine;
 
 namespace PBFramework.Threading
@@ -10,17 +10,7 @@ namespace PBFramework.Threading
     /// </summary>
     public class SynchronizedTimer : ITimer
     {
-        public event Action<ITimer> OnFinished;
-        event Action<ITimer> IPromise<ITimer>.OnFinishedResult
-        {
-            add => OnFinished += value;
-            remove => OnFinished -= value;
-        }
-        event Action IPromise.OnFinished
-        {
-            add => OnFinished += delegate { value(); };
-            remove => OnFinished -= delegate { value(); };
-        }
+        public event Action OnFinished;
 
         public event Action<float> OnProgress;
 
@@ -36,12 +26,9 @@ namespace PBFramework.Threading
 
         public float Current { get; set; }
 
+        public float Progress => Limit == 0 ? 1 : Current / Limit;
+
         public bool IsRunning => timerCoroutine != null;
-
-        public float Progress { get; set; }
-
-        public ITimer Result => this;
-        object IPromise.RawResult => this;
 
         public bool IsFinished => Current >= Limit;
 
@@ -53,8 +40,6 @@ namespace PBFramework.Threading
             // Start coroutine.
             timerCoroutine = UnityThread.StartCoroutine(TimerRoutine());
         }
-
-        public void Revoke() => Stop();
 
         public void Pause()
         {
@@ -94,8 +79,6 @@ namespace PBFramework.Threading
                     Current = Limit;
                     // Notify
                     ReportCurrent();
-                    // Finished
-                    OnFinished?.Invoke(this);
                     // Stop the routine.
                     Pause();
                     yield break;
@@ -114,16 +97,38 @@ namespace PBFramework.Threading
         /// </summary>
         private void ReportCurrent()
         {
-            if(Limit <= 0)
-                Progress = 0f;
+            if (Limit <= 0)
+            {
+                InvokeProgress();
+            }
             else
             {
-                if(Current >= Limit)
-                    Progress = 1f;
+                if (Current >= Limit)
+                {
+                    InvokeProgress();
+                    InvokeFinished();
+                }
                 else
-                    Progress = Current / Limit;
+                {
+                    InvokeProgress();
+                }
             }
+        }
+
+        /// <summary>
+        /// Invokes OnProgress event.
+        /// </summary>
+        private void InvokeProgress()
+        {
             OnProgress?.Invoke(Progress);
+        }
+
+        /// <summary>
+        /// Invokes OnFinished event.
+        /// </summary>
+        private void InvokeFinished()
+        {
+            OnFinished?.Invoke();
         }
     }
 }

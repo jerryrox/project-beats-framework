@@ -5,73 +5,110 @@ using PBFramework.Threading;
 
 namespace PBFramework.Allocation.Caching
 {
-    public class CacheRequest<T> {
+    public class CacheRequest<T> : IDisposable {
 
         /// <summary>
-        /// Table of listeners waiting for the request to finish.
+        /// The key associated with this request.
         /// </summary>
-        private Dictionary<uint, IReturnableProgress<T>> listeners = new Dictionary<uint, IReturnableProgress<T>>();
+        public object Key { get; private set; }
 
         /// <summary>
-        /// The next hook id number to be assigned to a new callback.
+        /// The list of listeners waiting for the resource request to be completed.
         /// </summary>
-        private uint nextId;
+        public List<CacheListener<T>> Listeners { get; } = new List<CacheListener<T>>();
 
         /// <summary>
-        /// The actual requester object.
+        /// The listener which listens to the requester's events.
         /// </summary>
-        private IExplicitPromise<T> request;
-
+        public TaskListener<T> RequestListener { get; } = new TaskListener<T>();
 
         /// <summary>
-        /// The requesting promise.
+        /// The requester that retrieves the actual data.
         /// </summary>
-        public IExplicitPromise<T> Request => request;
+        public ITask<T> Request { get; private set; }
 
         /// <summary>
-        /// Returns the number of listeners waiting for the request to finish.
+        /// The actual value loaded from the inner request.
         /// </summary>
-        public int ListenerCount => listeners.Count;
+        public T Value => RequestListener.Value;
+
+        /// <summary>
+        /// Returns whether the inner resource load request is completed.
+        /// </summary>
+        public bool IsComplete => RequestListener.IsFinished;
 
 
-        public CacheRequest(IExplicitPromise<T> request)
+        public CacheRequest(object key, ITask<T> request)
         {
-            this.request = request;
-
-            // Add callback handler action.
-            request.OnProgress += (p) =>
+            this.Key = key;
+            this.Request = request;
+            
+            // // Add callback handler action.
+            RequestListener.OnProgress += (p) =>
             {
-                foreach (var listener in listeners.Values)
+                foreach (var listener in Listeners)
                 {
                     if (listener != null)
-                    {
-                        listener.Report(p);
-                    }
+                        listener.SetProgress(p);
                 }
             };
-            request.OnFinishedResult += (v) =>
+            RequestListener.OnFinished += (data) =>
             {
-                foreach(var listener in listeners.Values)
+                foreach(var listener in Listeners)
                 {
                     if (listener != null)
-                    {
-                        listener.Value = v;
-                        listener.InvokeFinished(v);
-                    }
+                        listener.SetFinished(data);
                 }
             };
         }
 
-        public uint Listen(IReturnableProgress<T> progress)
+        /// <summary>
+        /// Creates a new listener that listens to the completion of this request.
+        /// </summary>
+        public CacheListener<T> Listen()
         {
-            // Increment id
-            nextId ++;
-            // Register callback.
-            listeners.Add(nextId, progress);
-            // Return id for referencing.
-            return nextId;
+            AssertNotDisposed();
+
+            var listener = new CacheListener<T>(Key);
+            if(IsComplete)
+                listener.SetFinished(Value);
+                
+            Listeners.Add(listener);
+            return listener;
         }
 
-        public void Remove(uint id) => listeners.Remove(id);
+        /// <summary>
+        /// Attempts to remove the specified listener, if managed by this request.
+        /// </summary>
+        public bool Unlisten(CacheListener<T> listener)
+        {
+            AssertNotDisposed();
+
+            return Listeners.Remove(listener);
+        }
+
+        /// <summary>
+        /// Starts requesting on the actual requester.
+        /// </summary>
+        public void StartRequest()
+        {
+            Request.StartTask(RequestListener);
+        }
+
+        public void Dispose()
+        {
+            Listeners.Clear();
+            Request.RevokeTask(true);
+            Request = null;
+        }
+
+        /// <summary>
+        /// Asserts that this object hasn't been disposed.
+        /// </summary>
+        private void AssertNotDisposed()
+        {
+            if(Request == null)
+                throw new ObjectDisposedException(nameof(CacheRequest<T>));
+        }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using PBFramework.Data.Bindables;
 using PBFramework.Threading;
 using UnityEngine.Networking;
 
@@ -9,9 +9,10 @@ using Logger = PBFramework.Debugging.Logger;
 
 namespace PBFramework.Networking
 {
-    public class WebRequest : IWebRequest {
+    public class WebRequest : IWebRequest
+    {
+        public event Action<IWebRequest> OnFinished;
 
-        public event Action OnFinished;
         public event Action<float> OnProgress;
 
         protected UnityWebRequest request;
@@ -20,10 +21,8 @@ namespace PBFramework.Networking
         protected WebLink link;
         protected int timeout;
 
-        protected bool isDisposed = false;
-
         private Coroutine requestRoutine;
-        private IReturnableProgress<IWebRequest> progressListener;
+        private TaskListener<IWebRequest> listener;
 
         private uint curRetryCount;
         private uint retryCount;
@@ -31,23 +30,21 @@ namespace PBFramework.Networking
 
         public object Extra { get; set; }
 
-        public uint RetryCount { get => retryCount; set => curRetryCount = retryCount = value; }
+        public uint RetryCount
+        {
+            get => retryCount;
+            set => curRetryCount = retryCount = value;
+        }
 
         public bool UseServerCaching { get; set; } = false;
 
         public bool IsAlive => request != null;
 
-        public virtual bool IsDone => request != null && request.isDone;
-        public bool IsFinished => IsDone;
+        public bool IsFinished { get; private set; }
 
-        public float Progress
-        {
-            get
-            {
-                if(request == null) return 0;
-                return request.downloadProgress > 0 ? request.downloadProgress : request.uploadProgress;
-            }
-        }
+        public bool IsDisposed { get; private set; }
+
+        public float Progress { get; private set; }
 
         public int Timeout
         {
@@ -55,34 +52,35 @@ namespace PBFramework.Networking
             set
             {
                 timeout = value;
-                if(request != null)
+                if (request != null)
                     request.timeout = value;
-            }            
+            }
         }
 
         public virtual string Url => link.Url;
 
         public IWebResponse Response => response;
 
-        public virtual object RawResult => this;
+        bool ITask.DidRun => IsAlive;
 
 
         public WebRequest(string url, int timeout = 60, int retryCount = 0)
         {
             this.link = new WebLink(url.GetUriEscaped());
             this.timeout = timeout;
+            this.RetryCount = (uint)Mathf.Clamp(retryCount, 0, retryCount);
 
             // Create response data
             this.response = new WebResponse(this);
 
             // Setup default event actions.
-            OnFinished += () => progressListener?.InvokeFinished(this);
-            OnProgress += (p) => progressListener?.Report(p);
+            OnFinished += (request) => listener?.SetFinished(this);
+            OnProgress += (p) => listener?.SetProgress(p);
         }
 
-        public void Request(IReturnableProgress<IWebRequest> progress = null)
+        public void Request(TaskListener<IWebRequest> listener = null)
         {
-            if(isDisposed) throw new ObjectDisposedException(nameof(WebRequest));
+            AssertNotDisposed();
             if (request != null)
             {
                 Logger.LogWarning("WebRequest.Request - There is already an on-going request!");
@@ -90,9 +88,9 @@ namespace PBFramework.Networking
             }
 
             // Associate progress listener.
-            progressListener = progress;
-            if(progressListener != null)
-                progressListener.Value = this;
+            this.listener = listener;
+            if (this.listener != null)
+                this.listener.SetValue(this);
 
             // Dispose last request
             DisposeSoft();
@@ -118,7 +116,7 @@ namespace PBFramework.Networking
 
         public void Abort()
         {
-            if(isDisposed) throw new ObjectDisposedException(nameof(WebRequest));
+            AssertNotDisposed();
             if (request == null)
             {
                 Logger.LogWarning("WebRequest.Abort - There is no request to abort!");
@@ -129,16 +127,37 @@ namespace PBFramework.Networking
 
         public void Retry()
         {
-            if(isDisposed) throw new ObjectDisposedException(nameof(WebRequest));
+            AssertNotDisposed();
             // Abort first if there is already a request.
-            if(request != null)
+            if (request != null)
                 Abort();
-            Request(progressListener);
+            Request(listener);
         }
 
-        public void Start() => Request();
+        void ITask<IWebRequest>.StartTask(TaskListener<IWebRequest> listener) => Request(listener);
+        void ITask.StartTask(TaskListener listener)
+        {
+            TaskListener<IWebRequest> newListener = null;
+            if (listener != null)
+            {
+                listener.HasOwnProgress = false;
+                newListener = listener.CreateSubListener<IWebRequest>();
+                newListener.OnFinished += (req) => listener.SetFinished();
+            }
+            Request(newListener);
+        }
+        void ITask.RevokeTask(bool dispose)
+        {
+            if (dispose)
+                DisposeHard();
+            else
+                Abort();
+        }
 
-        public void Revoke() => Abort();
+        /// <summary>
+        /// Evalutes web response data, if required by the subtype.
+        /// </summary>
+        protected virtual void EvaluateResponse() { }
 
         /// <summary>
         /// Creates a new UnityWebRequest instance for requesting.
@@ -166,6 +185,11 @@ namespace PBFramework.Networking
             {
                 response.Dispose();
             }
+            if (!IsDisposed)
+            {
+                Progress = 0f;
+                IsFinished = false;
+            }
         }
 
         /// <summary>
@@ -173,8 +197,9 @@ namespace PBFramework.Networking
         /// </summary>
         protected virtual void DisposeHard()
         {
-            if(isDisposed) return;
-            isDisposed = true;
+            if (IsDisposed)
+                return;
+            IsDisposed = true;
             DisposeSoft();
 
             if (response != null)
@@ -182,6 +207,15 @@ namespace PBFramework.Networking
                 response.Dispose();
                 response = null;
             }
+        }
+
+        /// <summary>
+        /// Flags the request as finished state, while invoking OnFinished event.
+        /// </summary>
+        protected virtual void SetFinished()
+        {
+            IsFinished = true;
+            OnFinished?.Invoke(this);
         }
 
         /// <summary>
@@ -195,13 +229,14 @@ namespace PBFramework.Networking
             // Polling till finished.
             while (request != null && !request.isDone && !request.isNetworkError)
             {
-                OnProgress?.Invoke(Progress);
+                float p = request.downloadProgress > 0 ? request.downloadProgress : request.uploadProgress;
+                SetProgress(p);
                 yield return null;
             }
-            progressListener?.Report(1);
+            SetProgress(1f);
 
             // If request failed and there are auto retires remaining
-            if (!response.IsSuccess && curRetryCount > 0)
+            if (!response.IsRequestSuccess && curRetryCount > 0)
             {
                 // Retry.
                 curRetryCount--;
@@ -209,9 +244,29 @@ namespace PBFramework.Networking
             }
             else
             {
-                // Fire event.
-                OnFinished?.Invoke();
+                if (response.IsRequestSuccess)
+                    EvaluateResponse();
+
+                SetFinished();
             }
+        }
+
+        /// <summary>
+        /// Sets the current progress of the request, while invoking OnProgress event.
+        /// </summary>
+        private void SetProgress(float progress)
+        {
+            this.Progress = progress;
+            OnProgress?.Invoke(progress);
+        }
+
+        /// <summary>
+        /// Asserts that this object is not disposed.
+        /// </summary>
+        private void AssertNotDisposed()
+        {
+            if(IsDisposed)
+                throw new ObjectDisposedException(nameof(WebRequest));
         }
     }
 }
