@@ -16,7 +16,8 @@ Slowly making progress 🧩
 ### 1.1.0 (WIP)
 #### New features
 - Added `TaskListener` and `ITask`.
-- Added SychronizedBool class.
+- Added `SychronizedBool` class.
+- Added `TestExtensions`.
 #### Changes
 - Refactored Cacher.
 - Removed `Promise` and `Progress`.
