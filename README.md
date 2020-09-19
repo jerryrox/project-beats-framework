@@ -13,7 +13,7 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.1.0 (WIP)
+### 1.1.0
 #### New features
 - Added `TaskListener` and `ITask`.
 - Added `SychronizedBool` class.
