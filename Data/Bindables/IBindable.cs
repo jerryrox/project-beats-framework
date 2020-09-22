@@ -62,6 +62,26 @@ namespace PBFramework.Data.Bindables
         /// Binds the specified value changed event listener and triggers for the listener immediately.
         /// </summary>
         void BindAndTrigger(Action<object, object> callback);
+
+        /// <summary>
+        /// Binds the specified new raw value event listener.
+        /// </summary>
+        void Bind(Action<object> callback);
+
+        /// <summary>
+        /// Binds the specified raw value changed event listener.
+        /// </summary>
+        void Bind(Action<object, object> callback);
+
+        /// <summary>
+        /// Unbinds the specified new raw value callback from this object.
+        /// </summary>
+        void Unbind(Action<object> callback);
+
+        /// <summary>
+        /// Unbinds the specified raw value change callback from this object.
+        /// </summary>
+        void Unbind(Action<object, object> callback);
     }
 
     public interface IBindable<T> : IBindable
@@ -119,5 +139,25 @@ namespace PBFramework.Data.Bindables
         /// Binds the specified value changed event listener and triggers for the listener immediately.
         /// </summary>
         void BindAndTrigger(Action<T, T> callback);
+
+        /// <summary>
+        /// Binds the specified new value event listener.
+        /// </summary>
+        void Bind(Action<T> callback);
+
+        /// <summary>
+        /// Binds the specified value changed event listener.
+        /// </summary>
+        void Bind(Action<T, T> callback);
+
+        /// <summary>
+        /// Unbinds the specified new value callback from this object.
+        /// </summary>
+        void Unbind(Action<T> callback);
+
+        /// <summary>
+        /// Unbinds the specified value change callback from this object.
+        /// </summary>
+        void Unbind(Action<T, T> callback);
     }
 }
