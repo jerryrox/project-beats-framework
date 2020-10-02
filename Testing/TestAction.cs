@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PBFramework.Testing
@@ -11,10 +9,9 @@ namespace PBFramework.Testing
     public class TestAction {
 
         /// <summary>
-        /// Delegate for handling key actions.
-        /// Specifies whether the call is from automatic testing process.
+        /// Delegate for handling test actions.
         /// </summary>
-        public delegate IEnumerator ActionHandler(bool isAuto);
+        public delegate IEnumerator ActionHandler();
 
         private bool hasKey = false;
 
@@ -40,9 +37,9 @@ namespace PBFramework.Testing
         public string Description { get; private set; }
 
 
-        public TestAction(Func<IEnumerator> action, string description = null) :
-            this(isAuto => action?.Invoke(), description) { }
-
+        /// <summary>
+        /// Initializes a new TestAction that runs during automatic test only.
+        /// </summary>
         public TestAction(ActionHandler action, string description = null)
         {
             this.Trigger = ActionTrigger.Auto;
@@ -50,12 +47,15 @@ namespace PBFramework.Testing
             this.Description = description ?? "";
         }
 
-        public TestAction(KeyCode keyCode, Func<IEnumerator> action, string description) :
-            this(false, keyCode, isAuto => action?.Invoke(), description) {}
+        /// <summary>
+        /// Initializes a new TestAction that runs on both automatic and manual tests.
+        /// </summary>
+        public TestAction(KeyCode keyCode, ActionHandler action, string description) :
+            this(false, keyCode, action, description) {}
 
-        public TestAction(bool manualOnly, KeyCode keyCode, Func<IEnumerator> action, string description) :
-            this(manualOnly, keyCode, isAuto => action?.Invoke(), description) {}
-
+        /// <summary>
+        /// Initializes a new TestAction that runs on manual test, and optionally, automatic test.
+        /// </summary>
         public TestAction(bool manualOnly, KeyCode keyCode, ActionHandler action, string description)
         {
             hasKey = true;
@@ -77,6 +77,12 @@ namespace PBFramework.Testing
         }
 
         /// <summary>
+        /// Returns whether the manual test trigger key is down.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsHoldingKey() => Input.GetKeyDown(Key);
+
+        /// <summary>
         /// Checks whether the bound key is pressed and if true, execute the associated action.
         /// </summary>
         public IEnumerator RunAction(bool isManual)
@@ -86,9 +92,7 @@ namespace PBFramework.Testing
             if((!isManual && Trigger == ActionTrigger.Manual) ||
                 (isManual && Trigger == ActionTrigger.Auto))
                 return null;
-            if(isManual && !Input.GetKeyDown(Key))
-                return null;
-            return Handler.Invoke(!isManual);
+            return Handler.Invoke();
         }
     }
 }

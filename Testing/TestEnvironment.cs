@@ -16,6 +16,7 @@ namespace PBFramework.Testing
         private TestOptions testOptions;
 
         private bool isEnded;
+        private bool isManualTestMode;
 
 
         /// <summary>
@@ -48,13 +49,17 @@ namespace PBFramework.Testing
             if(!IsRunning)
                 yield break;
 
+            // Toggle manual test mode.
+            isManualTestMode = Input.GetKey(KeyCode.LeftAlt);
+            LogInformation(true, "Enabled manual test drive.");
+
             // Actions
             if (testOptions.Actions != null)
             {
                 var actions = testOptions.Actions;
                 if (actions != null && actions.Length > 0)
                 {
-                    LogInformation(true, "Running key-bound test actions automatically.");
+                    LogInformation(true, "Running automatic tests.");
 
                     // Run automated key action tests.
                     foreach (var action in actions)
@@ -65,25 +70,28 @@ namespace PBFramework.Testing
                     }
 
                     // Output all the available keys for manual testing.
-                    if (testOptions.UseManualTesting)
+                    if (isManualTestMode)
                     {
+                        LogInformation(true, "You are now in manual test mode.");
                         LogInformation(false, "[LeftControl+1] : Success");
                         LogInformation(false, "[LeftControl+2] : Fail");
                         LogInformation(
                             false,
-                            actions.Select(k => k.GetUsage()).ToArray()
+                            actions.Where(a => a.Trigger != ActionTrigger.Auto)
+                                .Select(k => k.GetUsage())
+                                .ToArray()
                         );
                     }
                 }
             }
 
             // Update lifecycle method
-            if (testOptions.UpdateMethod != null || testOptions.UseManualTesting)
+            if (testOptions.UpdateMethod != null || isManualTestMode)
             {
                 while (IsRunning)
                 {
                     // Run manual key action tests.
-                    if (testOptions.UseManualTesting)
+                    if (isManualTestMode)
                     {
                         if (Input.GetKey(KeyCode.LeftControl))
                         {
@@ -101,12 +109,15 @@ namespace PBFramework.Testing
 
                         foreach (var action in testOptions.Actions)
                         {
-                            var coroutine = action.RunAction(true);
-                            if (coroutine != null)
+                            if (action.IsHoldingKey())
                             {
-                                LogInformation(true, $"Executing manual test ({action.Description})");
-                                yield return coroutine;
-                                LogInformation(false, "Test ended.");
+                                var coroutine = action.RunAction(true);
+                                if (coroutine != null)
+                                {
+                                    LogInformation(true, $"Executing manual test ({action.Description})");
+                                    yield return coroutine;
+                                    LogInformation(false, "Test ended.");
+                                }
                             }
                         }
                     }

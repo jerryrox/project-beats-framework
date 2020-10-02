@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using PBFramework.Dependencies;
-using UnityEngine;
 
 namespace PBFramework.Testing
 {
@@ -18,11 +15,6 @@ namespace PBFramework.Testing
         /// Whether the test environment should initialize a camera for a visual feedback.
         /// </summary>
         public bool UseCamera { get; set; }
-
-        /// <summary>
-        /// Whether manual test mode should be enabled.
-        /// </summary>
-        public bool UseManualTesting { get; set; }
 
         /// <summary>
         /// Actions to be executed within the test environment.
