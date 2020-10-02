@@ -139,5 +139,13 @@ namespace PBFramework
             return new DirectoryInfo(Path.Combine(context.FullName, innerPath));
         }
         #endregion
+
+        #region Color
+        /// <summary>
+        /// Returns this color with specified alpha.
+        /// </summary>
+        public static Color WithAlpha(this Color context, float alpha)
+            => new Color(context.r, context.g, context.b, alpha);
+        #endregion
     }
 }
