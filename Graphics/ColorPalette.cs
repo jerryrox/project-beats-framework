@@ -67,6 +67,16 @@ namespace PBFramework.Graphics
         }
 
         /// <summary>
+        /// Returns the base color with the specified alpha.
+        /// </summary>
+        public Color Alpha(float alpha)
+        {
+            Color color = Base;
+            color.a = alpha;
+            return color;
+        }
+
+        /// <summary>
         /// By default, the color palette can be converted directly to the base color impliticly.
         /// </summary>
         public static implicit operator Color(ColorPalette palette)

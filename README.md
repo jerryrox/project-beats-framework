@@ -13,9 +13,11 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.1.1 (WIP)
+### 1.2.0 (WIP)
 #### Improvements
 - Added `Bind` and `Unbind` methods to Bindable for semantic assistance.
+#### Changes
+- Changed the way manual tests are triggered in test environment.
 
 ### 1.1.0
 #### New features
