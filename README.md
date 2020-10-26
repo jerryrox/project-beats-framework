@@ -16,6 +16,7 @@ Slowly making progress 🧩
 ### 1.2.0 (WIP)
 #### Improvements
 - Added `Bind` and `Unbind` methods to Bindable for semantic assistance.
+- Added ability to retrieve Color from ColorPalette using a custom alpha.
 #### Changes
 - Changed the way manual tests are triggered in test environment.
 
