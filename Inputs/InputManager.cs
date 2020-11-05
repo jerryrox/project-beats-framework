@@ -128,6 +128,23 @@ namespace PBFramework.Inputs
 
         public ICursor GetTouch(int index) => touchCursors[index];
 
+        public ICursor FindCursor(Vector2 position)
+        {
+            if (useTouch)
+            {
+                ICursor touch = touchCursors.Where((c) => c.RawPosition == position && c.IsActive.Value).FirstOrDefault();
+                if(touch != null)
+                    return touch;
+            }
+            if (useMouse)
+            {
+                ICursor mouse = mouseCursors.Where((c) => c.RawPosition == position && c.IsActive.Value).FirstOrDefault();
+                if(mouse != null)
+                    return mouse;
+            }
+            return null;
+        }
+
         public IKey GetKey(KeyCode keyCode) => FindKey(keyCode);
 
         public IEnumerable<ICursor> GetMouses() => mouseCursors;

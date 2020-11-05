@@ -72,6 +72,11 @@ namespace PBFramework.Inputs
         ICursor GetTouch(int index);
 
         /// <summary>
+        /// Returns the cursor at the specified position.
+        /// </summary>
+        ICursor FindCursor(Vector2 position);
+
+        /// <summary>
         /// Returns the specific key input for specified keycode.
         /// </summary>
         IKey GetKey(KeyCode keyCode);
