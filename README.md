@@ -19,6 +19,7 @@ Slowly making progress 🧩
 - Added ability to retrieve Color from ColorPalette using a custom alpha.
 #### Changes
 - Changed the way manual tests are triggered in test environment.
+- Added UNITY_EDITOR preprocessor to Testing namespace.
 
 ### 1.1.0
 #### New features
