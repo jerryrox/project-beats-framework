@@ -13,7 +13,7 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.2.0 (WIP)
+### 1.2.0
 #### Improvements
 - Added `Bind` and `Unbind` methods to Bindable for semantic assistance.
 - Added ability to retrieve Color from ColorPalette using a custom alpha.
