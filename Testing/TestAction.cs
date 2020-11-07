@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections;
 using UnityEngine;
 
@@ -96,3 +97,4 @@ namespace PBFramework.Testing
         }
     }
 }
+#endif

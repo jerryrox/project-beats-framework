@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using PBFramework.Dependencies;
 
@@ -38,3 +39,4 @@ namespace PBFramework.Testing
         public Action CleanupMethod { get; set; }
     }
 }
+#endif

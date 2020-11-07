@@ -1,7 +1,7 @@
+#if UNITY_EDITOR
 using System;
 using System.Linq;
 using System.Collections;
-using System.Collections.Generic;
 using PBFramework.Graphics;
 using PBFramework.Dependencies;
 using UnityEngine;
@@ -204,3 +204,4 @@ namespace PBFramework.Testing
         }
     }
 }
+#endif

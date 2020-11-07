@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 namespace PBFramework.Testing
 {
     /// <summary>
@@ -10,3 +11,4 @@ namespace PBFramework.Testing
         Manual,
     }
 }
+#endif
