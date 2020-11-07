@@ -1,6 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEngine;
 
 namespace PBFramework.Testing
@@ -13,3 +11,4 @@ namespace PBFramework.Testing
         public Vector2 BaseResolution { get; set; } = new Vector2(1280f, 720f);
     }
 }
+#endif

@@ -13,6 +13,14 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
+### 1.2.0
+#### Improvements
+- Added `Bind` and `Unbind` methods to Bindable for semantic assistance.
+- Added ability to retrieve Color from ColorPalette using a custom alpha.
+#### Changes
+- Changed the way manual tests are triggered in test environment.
+- Added UNITY_EDITOR preprocessor to Testing namespace.
+
 ### 1.1.0
 #### New features
 - Added `TaskListener` and `ITask`.

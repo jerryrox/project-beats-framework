@@ -105,19 +105,33 @@ namespace PBFramework.Data.Bindables
 
         public void BindAndTrigger(Action<T> callback)
         {
-            if(callback == null)
-                throw new ArgumentNullException(nameof(callback));
-            OnNewValue += callback;
+            Bind(callback);
             callback.Invoke(Value);
         }
 
         public void BindAndTrigger(Action<T, T> callback)
         {
+            Bind(callback);
+            callback.Invoke(Value, Value);
+        }
+
+        public void Bind(Action<T> callback)
+        {
+            if(callback == null)
+                throw new ArgumentNullException(nameof(callback));
+            OnNewValue += callback;
+        }
+
+        public void Bind(Action<T, T> callback)
+        {
             if(callback == null)
                 throw new ArgumentNullException(nameof(callback));
             OnValueChanged += callback;
-            callback.Invoke(Value, Value);
         }
+
+        public void Unbind(Action<T> callback) => OnNewValue -= callback;
+
+        public void Unbind(Action<T, T> callback) => OnValueChanged -= callback;
 
         public virtual void Parse(string value)
         {
@@ -185,18 +199,32 @@ namespace PBFramework.Data.Bindables
 
         void IBindable.BindAndTrigger(Action<object> callback)
         {
-            if(callback == null)
-                throw new ArgumentNullException(nameof(callback));
-            OnNewRawValue += callback;
+            ((IBindable)this).Bind(callback);
             callback.Invoke(RawValue);
         }
 
         void IBindable.BindAndTrigger(Action<object, object> callback)
         {
+            ((IBindable)this).Bind(callback);
+            callback.Invoke(RawValue, RawValue);
+        }
+
+        void IBindable.Bind(Action<object> callback)
+        {
+            if(callback == null)
+                throw new ArgumentNullException(nameof(callback));
+            OnNewRawValue += callback;
+        }
+
+        void IBindable.Bind(Action<object, object> callback)
+        {
             if(callback == null)
                 throw new ArgumentNullException(nameof(callback));
             OnRawValueChanged += callback;
-            callback.Invoke(RawValue, RawValue);
         }
+
+        void IBindable.Unbind(Action<object> callback) => OnNewRawValue -= callback;
+
+        void IBindable.Unbind(Action<object, object> callback) => OnRawValueChanged -= callback;
     }
 }
