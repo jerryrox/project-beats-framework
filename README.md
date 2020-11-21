@@ -13,6 +13,10 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
+### 1.2.1
+#### Fixes
+- Fixed cursor inputs' processed position not being accurate when screen size is changed during run-time.
+
 ### 1.2.0
 #### Improvements
 - Added `Bind` and `Unbind` methods to Bindable for semantic assistance.
