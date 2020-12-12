@@ -14,6 +14,8 @@ Slowly making progress 🧩
 
 ## Versions
 ### 1.2.1
+#### New features
+- Added a new ITask implementation for UnityEngine.AsyncOperation.
 #### Fixes
 - Fixed cursor inputs' processed position not being accurate when screen size is changed during run-time.
 
