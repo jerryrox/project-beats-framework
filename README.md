@@ -13,7 +13,9 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### ??? (WIP)
+### 1.2.2 (WIP)
+#### Improvements
+- Exposed a function in `InputManager` to dynamically change base screen resolution.
 
 ### 1.2.1
 #### New features
