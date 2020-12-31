@@ -42,6 +42,11 @@ namespace PBFramework.Inputs
 
 
         /// <summary>
+        /// Adjusts internal state to work for the specified screen resolution.
+        /// </summary>
+        void SetResolution(Vector2 resolution);
+
+        /// <summary>
         /// Adds the specified input receiver to layered input handling queue.
         /// </summary>
         void AddReceiver(IInputReceiver receiver);

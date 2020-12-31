@@ -78,6 +78,14 @@ namespace PBFramework.Inputs
             return manager;
         }
 
+        public void SetResolution(Vector2 resolution)
+        {
+            foreach (var mouse in mouseCursors)
+                mouse.SetResolution(resolution);
+            foreach (var touch in touchCursors)
+                touch.SetResolution(resolution);
+        }
+
         public void AddReceiver(IInputReceiver receiver)
         {
             // Prepare for input sorting due to receiver addition
@@ -167,6 +175,8 @@ namespace PBFramework.Inputs
 
             // Use inputs by default.
             UseMouse = UseTouch = UseKeyboard = true;
+
+            SetResolution(resolution);
         }
 
         /// <summary>
