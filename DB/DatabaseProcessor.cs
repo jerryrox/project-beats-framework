@@ -104,7 +104,7 @@ namespace PBFramework.DB
                 }
                 for (int i = 0; i < data.Count; i++)
                 {
-                    File.WriteAllText(GetDataPath(data[i]["Id"].ToString()), data[i].ToString());
+                    File.WriteAllText(GetDataPath(data[i]["Id"].ToString()), data[i].ToString(Formatting.None));
                 }
                 SaveIndex();
             }

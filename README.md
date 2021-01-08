@@ -16,6 +16,7 @@ Slowly making progress 🧩
 ### 1.2.2 (WIP)
 #### Improvements
 - Exposed a function in `InputManager` to dynamically change base screen resolution.
+- Changed database data formatting option to non-pretty printing.
 
 ### 1.2.1
 #### New features
