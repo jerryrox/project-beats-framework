@@ -14,11 +14,11 @@ Slowly making progress 🧩
 
 ## Versions
 ### 1.2.2 (WIP)
-#### New features
-- Added an `UnbindAll` method for Bindables to remove all events attached to them.
 #### Improvements
 - Exposed a function in `InputManager` to dynamically change base screen resolution.
 - Changed database data formatting option to non-pretty printing.
+- Added an `UnbindAll` method for Bindables to remove all events attached to them.
+- Added `MaxCursorCount` property for InputManager.
 
 ### 1.2.1
 #### New features
