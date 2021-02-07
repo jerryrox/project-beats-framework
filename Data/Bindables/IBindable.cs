@@ -82,6 +82,11 @@ namespace PBFramework.Data.Bindables
         /// Unbinds the specified raw value change callback from this object.
         /// </summary>
         void Unbind(Action<object, object> callback);
+
+        /// <summary>
+        /// Unbinds all events attached to this bindable.
+        /// </summary>
+        void UnbindAll();
     }
 
     public interface IBindable<T> : IBindable
