@@ -275,7 +275,7 @@ namespace PBFramework.Stores
                     // Register this data as a new entry.
                     database.Edit().Write(data).Commit();
                     OnNewData?.Invoke(data);
-                    Logger.Log($"DirectoryBackedStore.LoadOrphanedData - Successfully adopted orphaned data at: {dir.FullName}");
+                    Logger.LogInfo($"DirectoryBackedStore.LoadOrphanedData - Successfully adopted orphaned data at: {dir.FullName}");
                 }
             }
             listener?.SetFinished();

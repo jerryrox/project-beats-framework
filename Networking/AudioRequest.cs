@@ -56,7 +56,7 @@ namespace PBFramework.Networking
             {
                 return AudioType.WAV;
             }
-            Logger.Log($"AudioRequest.GetAudioType - Unknown audio type for url: {url}");
+            Logger.LogInfo($"AudioRequest.GetAudioType - Unknown audio type for url: {url}");
             return AudioType.UNKNOWN;
         }
     }

@@ -2,7 +2,6 @@
 Reusable, core framework behind Project: Beats
   
 ## This project is a huge WIP.
-Currently, I'm restructuring my original source to make things more organized and scalable.  
 Slowly making progress 🧩
 
 ## Dependencies
@@ -13,7 +12,9 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.2.2 (WIP)
+### 1.3.0 (WIP)
+#### New features
+- Added "verbose" and "info" log types in replacement of the old "normal" type logs.
 #### Improvements
 - Exposed a function in `InputManager` to dynamically change base screen resolution.
 - Changed database data formatting option to non-pretty printing.

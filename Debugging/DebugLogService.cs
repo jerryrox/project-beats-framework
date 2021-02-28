@@ -5,9 +5,14 @@ namespace PBFramework.Debugging
     /// <summary>
     /// Log servicer using Unity's Debugger.
     /// </summary>
-    public class DebugLogService : ILogService {
-    
-        public void Log(object message)
+    public class DebugLogService : ILogService
+    {
+        public void LogVerbose(object message)
+        {
+            Debug.Log(message);
+        }
+
+        public void LogInfo(object message)
         {
             Debug.Log(message);
         }
