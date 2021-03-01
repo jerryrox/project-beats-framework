@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace PBFramework.Debugging
@@ -41,13 +40,40 @@ namespace PBFramework.Debugging
         }
 
         /// <summary>
-        /// Logs a normal message.
+        /// Logs a message with the specified type.
         /// </summary>
-        public static void Log(Object message)
+        public static void Log(LogType type, object message)
+        {
+            switch (type)
+            {
+                case LogType.Verbose: LogVerbose(message); break;
+                case LogType.Info: LogInfo(message); break;
+                case LogType.Warning: LogWarning(message); break;
+                case LogType.Error: LogError(message); break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Logs a verbose message.
+        /// </summary>
+        public static void LogVerbose(Object message)
         {
             lock (Lock)
             {
-                LogServices.ForEach(s => s.Log(message));
+                LogServices.ForEach(s => s.LogVerbose(message));
+            }
+        }
+
+        /// <summary>
+        /// Logs an info message.
+        /// </summary>
+        public static void LogInfo(Object message)
+        {
+            lock (Lock)
+            {
+                LogServices.ForEach(s => s.LogInfo(message));
             }
         }
 

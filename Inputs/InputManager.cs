@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,8 +7,8 @@ namespace PBFramework.Inputs
 {
     using ReceiverList = PBFramework.Data.SortedList<IInputReceiver>;
 
-    public class InputManager : MonoBehaviour, IInputManager {
-
+    public class InputManager : MonoBehaviour, IInputManager
+    {
         private bool useMouse;
         private bool useTouch;
         private bool useKeyboard;
@@ -28,6 +27,8 @@ namespace PBFramework.Inputs
         public int MaxMouseCount { get; private set; }
 
         public int MaxTouchCount { get; private set; }
+
+        public int MaxCursorCount => MaxMouseCount + MaxTouchCount;
 
         public IAccelerator Accelerator
         {
@@ -76,6 +77,14 @@ namespace PBFramework.Inputs
             var manager = new GameObject("_InputManager").AddComponent<InputManager>();;
             manager.Initialize(resolution, maxMouseCursors, maxTouchCursors);
             return manager;
+        }
+
+        public void SetResolution(Vector2 resolution)
+        {
+            foreach (var mouse in mouseCursors)
+                mouse.SetResolution(resolution);
+            foreach (var touch in touchCursors)
+                touch.SetResolution(resolution);
         }
 
         public void AddReceiver(IInputReceiver receiver)
@@ -167,6 +176,8 @@ namespace PBFramework.Inputs
 
             // Use inputs by default.
             UseMouse = UseTouch = UseKeyboard = true;
+
+            SetResolution(resolution);
         }
 
         /// <summary>

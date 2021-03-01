@@ -16,6 +16,11 @@ namespace PBFramework.Inputs
         int MaxTouchCount { get; }
 
         /// <summary>
+        /// Returns the sum of max mouse and touch counts.
+        /// </summary>
+        int MaxCursorCount { get; }
+
+        /// <summary>
         /// The accelerator module to use to capture acceleration information.
         /// </summary>
         IAccelerator Accelerator { get; set; }
@@ -40,6 +45,11 @@ namespace PBFramework.Inputs
         /// </summary>
         bool UseAcceleration { get; set; }
 
+
+        /// <summary>
+        /// Adjusts internal state to work for the specified screen resolution.
+        /// </summary>
+        void SetResolution(Vector2 resolution);
 
         /// <summary>
         /// Adds the specified input receiver to layered input handling queue.

@@ -41,7 +41,7 @@ namespace PBFramework.Storages
                     // If somehow the original directory exists, remove the backup path.
                     if (originalDir.Exists)
                     {
-                        Logger.Log($"DirectoryStorage.RestoreBackup - Original directory somehow exists at {originalDir.FullName}.");
+                        Logger.LogInfo($"DirectoryStorage.RestoreBackup - Original directory somehow exists at {originalDir.FullName}.");
                         backups[i].Delete(true);
                         continue;
                     }

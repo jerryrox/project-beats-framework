@@ -25,6 +25,8 @@ namespace PBFramework.Inputs
         protected Vector2 position = new Vector2();
         protected Vector2 delta = new Vector2();
 
+        protected Vector2 cachedScreenRatio = new Vector2();
+
 
         public KeyCode Key => keyCode;
 
@@ -58,6 +60,12 @@ namespace PBFramework.Inputs
             processScale = new Vector2(1f / Screen.width, 1f / Screen.height);
         }
 
+        public void SetResolution(Vector2 resolution)
+        {
+            cachedScreenRatio.x = 1f / resolution.x;
+            cachedScreenRatio.y = 1f / resolution.y;
+        }
+
         public virtual void SetActive(bool active) => isActive.Value = active;
 
         public virtual void Release() => state.Value = InputState.Idle;
@@ -72,8 +80,8 @@ namespace PBFramework.Inputs
             rawPosition.x = newX;
             rawPosition.y = newY;
 
-            float newProcessedX = (rawPosition.x / Screen.width - 0.5f) * resolution.x;
-            float newProcessedY = (rawPosition.y / Screen.height - 0.5f) * resolution.y;
+            float newProcessedX = (rawPosition.x * cachedScreenRatio.x - 0.5f) * resolution.x;
+            float newProcessedY = (rawPosition.y * cachedScreenRatio.y - 0.5f) * resolution.y;
             delta.x = newProcessedX - position.x;
             delta.y = newProcessedY - position.y;
             position.x = newProcessedX;

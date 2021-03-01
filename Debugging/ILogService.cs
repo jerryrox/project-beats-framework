@@ -6,9 +6,14 @@
     public interface ILogService {
 
         /// <summary>
-        /// Logs the specified message.
+        /// Logs the specified verbose message.
         /// </summary>
-        void Log(object message);
+        void LogVerbose(object message);
+
+        /// <summary>
+        /// Logs the specified info message.
+        /// </summary>
+        void LogInfo(object message);
         
         /// <summary>
         /// Logs the specified warning message.

@@ -26,5 +26,11 @@ namespace PBFramework.Inputs
         /// Returns the processed delta position of the cursor since last frame.
         /// </summary>
         Vector2 Delta { get; }
+
+
+        /// <summary>
+        /// Adjusts internal state to work for the specified screen resolution.
+        /// </summary>
+        void SetResolution(Vector2 resolution);
     }
 }

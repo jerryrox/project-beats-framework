@@ -31,7 +31,7 @@ namespace PBFramework.Allocation.Recyclers
         /// <summary>
         /// Returns the object at specified index.
         /// </summary>
-        public void Return(int index)
+        public virtual void Return(int index)
         {
             var item = ActiveObjects[index];
             ActiveObjects.RemoveAt(index);
@@ -41,7 +41,7 @@ namespace PBFramework.Allocation.Recyclers
         /// <summary>
         /// Returns all items in the active objects list.
         /// </summary>
-        public void ReturnAll()
+        public virtual void ReturnAll()
         {
             foreach(var obj in ActiveObjects)
                 base.Return(obj);

@@ -133,6 +133,15 @@ namespace PBFramework.Data.Bindables
 
         public void Unbind(Action<T, T> callback) => OnValueChanged -= callback;
 
+        public void UnbindAll()
+        {
+            OnNewRawValue = null;
+            OnRawValueChanged = null;
+            
+            OnNewValue = null;
+            OnValueChanged = null;
+        }
+
         public virtual void Parse(string value)
         {
             // There shouldn't be any parsing function for generic Bindable type.
