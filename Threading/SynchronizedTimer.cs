@@ -64,9 +64,9 @@ namespace PBFramework.Threading
         /// </summary>
         IEnumerator TimerRoutine()
         {
-            if(WaitFrameOnStart)
+            if (WaitFrameOnStart)
                 yield return null;
-                
+
             while (true)
             {
                 // Increase current time.
