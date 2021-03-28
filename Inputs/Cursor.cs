@@ -8,11 +8,6 @@ namespace PBFramework.Inputs
         protected readonly KeyCode keyCode;
 
         /// <summary>
-        /// Conversion scale applied while converting raw vector to processed vector.
-        /// </summary>
-        protected readonly Vector2 processScale;
-
-        /// <summary>
         /// Resolution of the game.
         /// </summary>
         protected readonly Vector2 resolution;
@@ -56,8 +51,6 @@ namespace PBFramework.Inputs
             {
                 TriggerWhenDifferent = true
             };
-
-            processScale = new Vector2(1f / Screen.width, 1f / Screen.height);
         }
 
         public void SetResolution(Vector2 resolution)
