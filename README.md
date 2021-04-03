@@ -13,6 +13,8 @@ Slowly making progress 🧩
 
 ## Versions
 ### 1.3.1 (WIP)
+#### New features
+- Added `FramedTimer` which implements `ITimer` while depending on framerates.
 
 ### 1.3.0
 #### New features
