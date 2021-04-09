@@ -15,6 +15,7 @@ Slowly making progress 🧩
 ### 1.3.1 (WIP)
 #### New features
 - Added `FramedTimer` which implements `ITimer` while depending on framerates.
+- Added `DateUtils` in the `Utils` namespace.
 
 ### 1.3.0
 #### New features
