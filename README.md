@@ -16,6 +16,8 @@ Slowly making progress 🧩
 #### New features
 - Added `FramedTimer` which implements `ITimer` while depending on framerates.
 - Added `DateUtils` in the `Utils` namespace.
+#### Changes
+- Exposed `Viewport` property for `IScrollView`.
 
 ### 1.3.0
 #### New features

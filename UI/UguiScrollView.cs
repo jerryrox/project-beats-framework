@@ -105,6 +105,8 @@ namespace PBFramework.UI
                 component.verticalScrollbar = scrollBar.GetComponent<Scrollbar>();
             }
         }
+        
+        public IGraphicObject Viewport => viewport;
 
         public IGraphicObject Container => container;
 

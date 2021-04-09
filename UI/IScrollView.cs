@@ -56,6 +56,12 @@ namespace PBFramework.UI
         IScrollBar VerticalScrollbar { get; set; }
 
         /// <summary>
+        /// Returns the viewport object which defines the boundary of the scrollview.
+        /// </summary>
+        /// <value></value>
+        IGraphicObject Viewport { get; }
+
+        /// <summary>
         /// Returns the scrollview content container object.
         /// </summary>
         IGraphicObject Container { get; }
