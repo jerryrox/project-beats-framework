@@ -18,7 +18,7 @@ namespace PBFramework.Networking.API
 
         protected override UnityWebRequest CreateWebRequester(string url)
         {
-            var request = UnityWebRequest.Post(url, "");
+            var request = UnityWebRequest.PostWwwForm(url, "");
             if(postData != null)
                 postData.ApplyData(request);
             return request;

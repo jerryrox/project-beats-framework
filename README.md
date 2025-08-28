@@ -12,7 +12,14 @@ Slowly making progress 🧩
 [https://trello.com/b/5gpuJrRa/project-beats-renewed]
 
 ## Versions
-### 1.3.1 (WIP)
+### 1.3.2
+#### Changes
+- Updated Unity APIs for Unity 6000.
+#### Fixes
+- Fixed `CurvedLineDrawable` throwing error due to missing `CanvasRenderer` dependency after upgrade to Unity 6000.
+- Fixed `UguiListView`'s cell size not being set correctly after assigning a new size value.
+
+### 1.3.1
 #### New features
 - Added `FramedTimer` which implements `ITimer` while depending on framerates.
 - Added `DateUtils` in the `Utils` namespace.

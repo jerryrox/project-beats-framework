@@ -7,7 +7,8 @@ using PBFramework.Dependencies;
 
 namespace PBFramework.UI
 {
-    public class UguiListView : UguiScrollView, IListView {
+    public class UguiListView : UguiScrollView, IListView
+    {
 
         private Func<IListItem> createItem;
         private Action<IListItem> updateItem;
@@ -208,8 +209,8 @@ namespace PBFramework.UI
 
         public void Initialize(Func<IListItem> createItem, Action<IListItem> updateItem)
         {
-            if(createItem == null) throw new ArgumentNullException(nameof(createItem));
-            if(updateItem == null) throw new ArgumentNullException(nameof(updateItem));
+            if (createItem == null) throw new ArgumentNullException(nameof(createItem));
+            if (updateItem == null) throw new ArgumentNullException(nameof(updateItem));
 
             this.createItem = createItem;
             this.updateItem = updateItem;
@@ -220,7 +221,7 @@ namespace PBFramework.UI
 
         public void ForceUpdate()
         {
-            if(!isInitialized) return;
+            if (!isInitialized) return;
 
             int count = Mathf.Min(cells.Count, totalItems);
             for (int i = 0; i < count; i++)
@@ -229,7 +230,7 @@ namespace PBFramework.UI
 
         public void Recalibrate()
         {
-            if(!isInitialized) return;
+            if (!isInitialized) return;
 
             // Calculate direction related variables
             CalculateCellDirection();
@@ -254,11 +255,11 @@ namespace PBFramework.UI
 
         public IListItem FindItem(Func<IListItem, bool> predicate)
         {
-            if(predicate == null) return null;
-            
+            if (predicate == null) return null;
+
             for (int i = 0; i < cells.Count; i++)
             {
-                if(predicate.Invoke(cells[i]))
+                if (predicate.Invoke(cells[i]))
                     return cells[i];
             }
             return null;
@@ -266,7 +267,7 @@ namespace PBFramework.UI
 
         public override void ResetPosition()
         {
-            if(!isInitialized) return;
+            if (!isInitialized) return;
 
             // Reset the cells position.
             for (int i = 0; i < cells.Count; i++)
@@ -289,7 +290,7 @@ namespace PBFramework.UI
         {
             var startPos = ContainerStartPos;
             var endPos = ContainerEndPos;
-            if(startPos.x < endPos.x)
+            if (startPos.x < endPos.x)
                 position.x = Mathf.Clamp(position.x, startPos.x, endPos.x);
             else
                 position.x = Mathf.Clamp(position.x, endPos.x, startPos.x);
@@ -302,7 +303,7 @@ namespace PBFramework.UI
 
         protected virtual void Update()
         {
-            if(!ShouldUpdate)
+            if (!ShouldUpdate)
                 return;
 
             var curPos = axis == GridLayoutGroup.Axis.Horizontal ? container.Position.x : container.Position.y;
@@ -377,7 +378,7 @@ namespace PBFramework.UI
                 first.ItemIndex = last.ItemIndex + limit;
 
                 // Position the item
-                if(axis == GridLayoutGroup.Axis.Horizontal)
+                if (axis == GridLayoutGroup.Axis.Horizontal)
                     first.X = last.X + cellSize.x * cellDirection.x;
                 else
                     first.Y = last.Y + cellSize.y * cellDirection.y;
@@ -420,7 +421,7 @@ namespace PBFramework.UI
                 last.ItemIndex = first.ItemIndex - limit;
 
                 // Position the item
-                if(axis == GridLayoutGroup.Axis.Horizontal)
+                if (axis == GridLayoutGroup.Axis.Horizontal)
                     last.X = first.X - cellSize.x * cellDirection.x;
                 else
                     last.Y = first.Y - cellSize.y * cellDirection.y;
@@ -476,7 +477,7 @@ namespace PBFramework.UI
                 return;
             }
 
-            int countInDirection = (totalItems-1) / limit + 1;
+            int countInDirection = (totalItems - 1) / limit + 1;
             int countInAdjacent = limit;
 
             if (axis == GridLayoutGroup.Axis.Vertical)
@@ -530,14 +531,17 @@ namespace PBFramework.UI
             {
                 var item = createItem.Invoke();
                 // Enforce same parent
-                if((UguiObject)item.Parent != container)
+                if ((UguiObject)item.Parent != container)
                     item.SetParent(container);
                 cells.Add(item);
             }
 
-            // Activate/deactivate cells
+            // Activate/deactivate cells & set cell size
             for (int i = 0; i < cells.Count; i++)
+            {
                 cells[i].Active = i < totalItems;
+                cells[i].Size = cellSize;
+            }
 
             // Cache the boundary index limit value.
             boundIndexLimit = Mathf.Max((totalItems - cells.Count + 1) / limit + 1, 0);
@@ -634,7 +638,7 @@ namespace PBFramework.UI
         /// </summary>
         private float GetViewportSizeInDirection()
         {
-            if(axis == GridLayoutGroup.Axis.Horizontal)
+            if (axis == GridLayoutGroup.Axis.Horizontal)
                 return viewport.Size.x;
             return viewport.Size.y;
         }
@@ -644,7 +648,7 @@ namespace PBFramework.UI
         /// </summary>
         private float GetCellSizeInDirection()
         {
-            if(axis == GridLayoutGroup.Axis.Horizontal)
+            if (axis == GridLayoutGroup.Axis.Horizontal)
                 return cellSize.x;
             return cellSize.y;
         }

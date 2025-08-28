@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 namespace PBFramework.Graphics
 {
-    public class CurvedLineDrawable : MaskableGraphic {
+    [RequireComponent(typeof(CanvasRenderer))]
+    public class CurvedLineDrawable : MaskableGraphic
+    {
 
         private float radius = 5f;
         private float curveAngle = 4 * Mathf.Deg2Rad;
@@ -28,7 +30,7 @@ namespace PBFramework.Graphics
             get => texture;
             set
             {
-                if(texture == value)
+                if (texture == value)
                     return;
                 texture = value;
                 SetVerticesDirty();
@@ -46,7 +48,7 @@ namespace PBFramework.Graphics
             get => radius;
             set
             {
-                if(radius == value)
+                if (radius == value)
                     return;
                 radius = Mathf.Clamp(value, 0.1f, value);
                 SetVerticesDirty();
@@ -62,7 +64,7 @@ namespace PBFramework.Graphics
             set
             {
                 value *= Mathf.Deg2Rad;
-                if(curveAngle == value)
+                if (curveAngle == value)
                     return;
                 curveAngle = value;
                 SetVerticesDirty();
@@ -77,7 +79,7 @@ namespace PBFramework.Graphics
             get => smoothEnds;
             set
             {
-                if(smoothEnds == value)
+                if (smoothEnds == value)
                     return;
                 smoothEnds = value;
                 SetVerticesDirty();
@@ -199,7 +201,7 @@ namespace PBFramework.Graphics
             vertex.uv0 = Vector2.one;
             vh.AddVert(vertex);
 
-            vh.AddTriangle(vertCount, vertCount + 2, vertCount +1);
+            vh.AddTriangle(vertCount, vertCount + 2, vertCount + 1);
 
         }
 
